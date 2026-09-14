@@ -1087,7 +1087,8 @@ const shuffle = a => a.map(v => [Math.random(), v]).sort((x,y) => x[0]-y[0]).map
 /* Zieht eine Auswahl, die die gewählten Schwierigkeiten möglichst gleichmäßig abbildet */
 function buildDeck(){
   const pool = matching();
-  if (size === 0 || size >= pool.length) return pool.slice();
+  /* Auch bei "Alles" gemischt – sonst käme immer dieselbe Reihenfolge */
+  if (size === 0 || size >= pool.length) return shuffle(pool);
   const levels = [...selDiffs].sort();
   const buckets = levels.map(d => shuffle(pool.filter(q => q.d === d)));
   const out = [];
