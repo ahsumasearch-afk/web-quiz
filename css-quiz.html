@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSS Check — Wissensstand testen</title>
+<style>
+:root{
+  --bg:#f6f7fb;
+  --bg-glow-1:rgba(20,184,166,.16);
+  --bg-glow-2:rgba(99,102,241,.10);
+  --card:#ffffff;
+  --card-2:#f1f3f9;
+  --text:#101322;
+  --muted:#646b83;
+  --line:#e2e5ee;
+  --line-strong:#cdd2e0;
+  --accent:#0d7d7d;
+  --accent-soft:rgba(13,125,125,.10);
+  --ok:#0f9d58;
+  --ok-soft:rgba(15,157,88,.12);
+  --bad:#d93b47;
+  --bad-soft:rgba(217,59,71,.10);
+  --warn:#c8860d;
+  --warn-soft:rgba(200,134,13,.14);
+  --code-bg:#161a2b;
+  --code-text:#e7eaf3;
+  --shadow:0 1px 2px rgba(16,19,34,.05), 0 12px 32px -12px rgba(16,19,34,.18);
+  --radius:16px;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0c0e18;
+    --bg-glow-1:rgba(20,184,166,.20);
+    --bg-glow-2:rgba(99,102,241,.14);
+    --card:#151827;
+    --card-2:#1c2032;
+    --text:#eef0f7;
+    --muted:#98a0bb;
+    --line:#262b40;
+    --line-strong:#39405c;
+    --accent:#4fd1c5;
+    --accent-soft:rgba(79,209,197,.14);
+    --ok:#3ecf8e;
+    --ok-soft:rgba(62,207,142,.14);
+    --bad:#ff6b76;
+    --bad-soft:rgba(255,107,118,.14);
+    --warn:#e8b13c;
+    --warn-soft:rgba(232,177,60,.16);
+    --code-bg:#0a0d18;
+    --code-text:#e7eaf3;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 16px 40px -16px rgba(0,0,0,.7);
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);
+  background-image:
+    radial-gradient(900px 500px at 12% -8%, var(--bg-glow-1), transparent 60%),
+    radial-gradient(760px 460px at 92% 4%, var(--bg-glow-2), transparent 62%);
+  background-attachment:fixed;
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  padding:32px 18px 80px;
+}
+.wrap{max-width:820px;margin:0 auto}
+
+/* ---------- Kopf ---------- */
+.masthead{margin-bottom:22px}
+.brand{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-soft);
+  border:1px solid var(--line);border-radius:999px;padding:5px 12px;margin-bottom:14px;
+}
+.brand__dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+h1{
+  margin:0;font-size:clamp(30px,6.4vw,46px);font-weight:800;letter-spacing:-.035em;line-height:1.08;
+}
+.sub{margin:9px 0 0;color:var(--muted);font-size:15px;max-width:56ch}
+
+/* ---------- Karten ---------- */
+.panel{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:22px;
+  margin-top:18px;
+}
+@media (min-width:640px){.panel{padding:26px 28px}}
+.label{
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 12px;font-weight:600;
+}
+.hint{color:var(--muted);font-size:13.5px;margin:-4px 0 14px}
+
+/* ---------- Chips ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  font:inherit;font-size:14px;font-weight:500;
+  padding:8px 14px;background:transparent;color:var(--text);
+  border:1px solid var(--line-strong);border-radius:999px;cursor:pointer;
+  transition:background .15s ease,border-color .15s ease,color .15s ease,transform .1s ease;
+}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip:active{transform:scale(.97)}
+.chip[aria-pressed="true"]{
+  background:var(--accent);border-color:var(--accent);color:#fff;
+}
+.chip--d1[aria-pressed="true"]{background:var(--ok);border-color:var(--ok)}
+.chip--d2[aria-pressed="true"]{background:var(--warn);border-color:var(--warn);color:#1a1300}
+.chip--d3[aria-pressed="true"]{background:var(--bad);border-color:var(--bad)}
+.chip__n{font-family:var(--mono);font-size:11px;opacity:.6;margin-right:5px}
+
+.fieldset{margin-bottom:20px}
+.fieldset:last-of-type{margin-bottom:0}
+
+/* Themenliste */
+.topics{
+  margin-top:8px;max-height:0;overflow:hidden;
+  transition:max-height .3s ease;
+}
+.topics.open{max-height:1400px;overflow:auto}
+.topics__inner{
+  border:1px solid var(--line);border-radius:12px;background:var(--card-2);
+  padding:14px 16px;
+}
+.group{margin-bottom:16px}
+.group:last-child{margin-bottom:0}
+.group__h{
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);font-weight:700;margin:0 0 8px;
+}
+.disclosure{
+  font:inherit;font-size:14px;font-weight:600;color:var(--accent);
+  background:none;border:0;padding:0;cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+}
+.disclosure__caret{transition:transform .25s ease;display:inline-block}
+.disclosure[aria-expanded="true"] .disclosure__caret{transform:rotate(90deg)}
+
+/* ---------- Buttons ---------- */
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px}
+.btn{
+  font:inherit;font-weight:650;font-size:15px;
+  padding:13px 24px;border-radius:11px;cursor:pointer;
+  border:1px solid var(--accent);background:var(--accent);color:#fff;
+  transition:filter .15s ease,transform .1s ease,background .15s ease;
+}
+.btn:hover{filter:brightness(1.08)}
+.btn:active{transform:translateY(1px)}
+.btn--ghost{background:transparent;color:var(--text);border-color:var(--line-strong)}
+.btn--ghost:hover{border-color:var(--accent);color:var(--accent);filter:none}
+.btn--quiet{background:transparent;border-color:transparent;color:var(--muted);padding:13px 12px}
+.btn--quiet:hover{color:var(--bad);filter:none}
+.btn:disabled{opacity:.4;cursor:not-allowed;filter:none;transform:none}
+.btn:focus-visible,.chip:focus-visible,.opt:focus-visible,.disclosure:focus-visible{
+  outline:3px solid var(--accent);outline-offset:2px;
+}
+
+/* ---------- Quiz ---------- */
+.meta{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.meta__left{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-family:var(--mono);font-size:12.5px;color:var(--muted);font-weight:600}
+.clock{
+  font-family:var(--mono);font-size:12.5px;font-weight:700;
+  padding:4px 10px;border-radius:999px;
+  background:var(--card-2);border:1px solid var(--line);color:var(--text);
+  font-variant-numeric:tabular-nums;
+}
+.awaybadge{
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  padding:4px 9px;border-radius:999px;
+  background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn);
+}
+.meta__right{display:flex;align-items:center;gap:7px}
+.badge{
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:4px 10px;border-radius:999px;border:1px solid transparent;
+}
+.badge--d1{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}
+.badge--d2{background:var(--warn-soft);color:var(--warn);border-color:var(--warn)}
+.badge--d3{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.tally{font-family:var(--mono);font-size:12px;font-weight:700;padding:4px 9px;border-radius:999px}
+.tally--ok{background:var(--ok-soft);color:var(--ok)}
+.tally--bad{background:var(--bad-soft);color:var(--bad)}
+
+.meter{height:7px;border-radius:999px;background:var(--card-2);border:1px solid var(--line);overflow:hidden;margin-bottom:22px}
+.meter__fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--ok));transition:width .35s cubic-bezier(.4,0,.2,1)}
+
+.topicline{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:600}
+.question{font-size:clamp(20px,3.2vw,25px);font-weight:700;letter-spacing:-.015em;line-height:1.35;margin:0 0 18px}
+.question code,.explain code,.review code{
+  font-family:var(--mono);font-size:.86em;background:var(--card-2);
+  border:1px solid var(--line);padding:1px 6px;border-radius:6px;white-space:nowrap;
+}
+pre{
+  font-family:var(--mono);font-size:13px;line-height:1.6;
+  background:var(--code-bg);color:var(--code-text);
+  padding:16px 18px;border-radius:12px;overflow:auto;margin:0 0 18px;
+  border:1px solid var(--line);
+}
+
+.opts{display:grid;gap:9px}
+.opt{
+  font:inherit;font-size:15.5px;text-align:left;
+  padding:14px 16px;border-radius:12px;
+  border:1px solid var(--line-strong);background:var(--card);color:var(--text);
+  cursor:pointer;display:flex;gap:13px;align-items:flex-start;
+  transition:border-color .15s ease,background .15s ease,transform .1s ease;
+}
+.opt:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}
+.opt:active:not(:disabled){transform:scale(.995)}
+.opt__key{
+  flex:none;width:24px;height:24px;border-radius:7px;
+  display:grid;place-items:center;
+  font-family:var(--mono);font-size:12px;font-weight:700;
+  background:var(--card-2);border:1px solid var(--line);color:var(--muted);
+  margin-top:1px;
+}
+.opt__txt{flex:1}
+.opt__mark{flex:none;font-weight:700;font-size:16px;opacity:0;transition:opacity .2s ease}
+.opt--right{background:var(--ok-soft);border-color:var(--ok)}
+.opt--right .opt__key{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt--right .opt__mark{opacity:1;color:var(--ok)}
+.opt--wrong{background:var(--bad-soft);border-color:var(--bad)}
+.opt--wrong .opt__key{background:var(--bad);border-color:var(--bad);color:#fff}
+.opt--wrong .opt__mark{opacity:1;color:var(--bad)}
+.opt:disabled{cursor:default}
+.opt--dim{opacity:.5}
+
+.explain{
+  margin-top:18px;padding:15px 17px;border-radius:12px;
+  background:var(--card-2);border:1px solid var(--line);
+  border-left:3px solid var(--accent);font-size:15px;
+  animation:rise .25s ease;
+}
+.explain--ok{border-left-color:var(--ok)}
+.explain--bad{border-left-color:var(--bad)}
+.explain strong{
+  display:block;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  margin-bottom:5px;color:var(--muted);
+}
+.explain--ok strong{color:var(--ok)}
+.explain--bad strong{color:var(--bad)}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.keyhint{margin-top:14px;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.gapmark{
+  background:var(--warn-soft);color:var(--warn);
+  border:1px dashed var(--warn);border-radius:5px;
+  padding:0 7px;font-weight:700;
+}
+.gapmark--ok{background:var(--ok-soft);color:var(--ok);border-color:var(--ok);border-style:solid}
+.gapmark--bad{background:var(--bad-soft);color:var(--bad);border-color:var(--bad);border-style:solid}
+.gapbox{display:grid;gap:10px}
+.gapbox__row{display:flex;gap:9px;flex-wrap:wrap}
+.gapbox__input{
+  flex:1;min-width:210px;
+  font-family:var(--mono);font-size:15.5px;
+  padding:13px 15px;border-radius:11px;
+  border:1px solid var(--line-strong);
+  background:var(--card-2);color:var(--text);
+}
+.gapbox__input::placeholder{color:var(--muted);font-family:inherit}
+.gapbox__input:focus{outline:3px solid var(--accent);outline-offset:2px;border-color:var(--accent)}
+.gapbox__input:disabled{opacity:.75}
+.gapbox__tipp{margin:0;font-size:13.5px;color:var(--muted)}
+.tipprow{margin:0 0 16px}
+.tipprow__head{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.tippbtn:disabled{opacity:.45;cursor:not-allowed;border-style:solid}
+.tippbtn:disabled:hover{border-color:var(--line-strong);color:var(--muted)}
+.tippneu{
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  padding:4px 9px;border-radius:999px;
+  background:var(--ok-soft);color:var(--ok);border:1px solid var(--ok);
+  animation:rise .25s ease;
+}
+.vorrat{
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+  color:var(--muted);margin:10px 0 0;
+}
+.tippbtn{
+  font:inherit;font-size:13px;font-weight:600;cursor:pointer;
+  padding:7px 13px;border-radius:9px;
+  border:1px dashed var(--line-strong);background:transparent;color:var(--muted);
+  display:inline-flex;align-items:center;gap:6px;
+  transition:border-color .15s ease,color .15s ease;
+}
+.tippbtn:hover{border-color:var(--warn);color:var(--warn)}
+.tipptext{
+  margin:10px 0 0;padding:11px 14px;border-radius:10px;font-size:14px;
+  background:var(--warn-soft);border:1px solid var(--warn);color:var(--text);
+  animation:rise .2s ease;
+}
+.tipptext b{color:var(--warn);font-weight:700}
+.tippbadge{
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  padding:4px 9px;border-radius:999px;
+  background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent);
+}
+.badge--tipp{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+.tippliste{margin-top:24px}
+.tippliste__list{display:grid;gap:8px;margin-top:6px}
+.tippitem{
+  display:flex;gap:11px;align-items:flex-start;
+  background:var(--card-2);border:1px solid var(--line);
+  border-radius:11px;padding:11px 14px;font-size:14.5px;
+}
+.tippitem__mark{flex:none;font-weight:700;font-size:15px;line-height:1.5}
+.tippitem--ok .tippitem__mark{color:var(--ok)}
+.tippitem--bad .tippitem__mark{color:var(--bad)}
+.tippitem__txt{flex:1}
+.tippitem__thema{
+  display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:2px;
+}
+.loesung{
+  font-family:var(--mono);font-size:14px;
+  background:var(--card);border:1px solid var(--line-strong);
+  border-radius:7px;padding:2px 9px;display:inline-block;
+}
+.keyhint kbd{
+  font-family:var(--mono);font-size:11px;border:1px solid var(--line-strong);
+  border-bottom-width:2px;border-radius:5px;padding:1px 5px;background:var(--card-2);
+}
+
+/* ---------- Ergebnis ---------- */
+.scorewrap{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.facts{margin-top:24px;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(148px,1fr))}
+.fact{background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+.fact__k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 5px}
+.fact__v{font-size:21px;font-weight:750;letter-spacing:-.02em;margin:0;font-variant-numeric:tabular-nums}
+.fact__s{font-size:12.5px;color:var(--muted);margin:3px 0 0;line-height:1.4}
+.fact--warn{border-color:var(--warn);background:var(--warn-soft)}
+.fact--warn .fact__v{color:var(--warn)}
+.fact--ok{border-color:var(--ok)}
+.aborted{
+  margin:14px 0 0;padding:11px 14px;border-radius:11px;font-size:14px;
+  background:var(--warn-soft);border:1px solid var(--warn);color:var(--warn);
+}
+.ring{
+  --p:0;
+  flex:none;width:132px;height:132px;border-radius:50%;
+  background:conic-gradient(var(--accent) calc(var(--p)*1%), var(--card-2) 0);
+  display:grid;place-items:center;position:relative;
+  transition:--p .8s ease;
+}
+.ring::after{
+  content:"";position:absolute;inset:9px;border-radius:50%;background:var(--card);
+}
+.ring__num{position:relative;z-index:1;font-size:31px;font-weight:800;letter-spacing:-.03em}
+.ring__num span{font-size:15px;font-weight:600;color:var(--muted)}
+.scoretext{flex:1;min-width:220px}
+.level{font-size:clamp(21px,3.4vw,27px);font-weight:800;letter-spacing:-.02em;margin:0 0 6px}
+.leveldesc{margin:0;color:var(--muted);font-size:15px}
+
+.bars{margin-top:24px;display:grid;gap:13px}
+.bar__head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px}
+.bar__name{font-weight:600}
+.bar__val{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.bar__track{height:8px;border-radius:999px;background:var(--card-2);border:1px solid var(--line);overflow:hidden}
+.bar__fill{height:100%;border-radius:999px;transition:width .6s ease}
+.bar__fill--d1{background:var(--ok)}
+.bar__fill--d2{background:var(--warn)}
+.bar__fill--d3{background:var(--bad)}
+
+.gaps{margin-top:24px}
+.gaps__list{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+.gap{
+  font-size:13px;font-weight:500;padding:5px 11px;border-radius:999px;
+  background:var(--bad-soft);color:var(--bad);border:1px solid var(--bad);
+}
+.gap__n{font-family:var(--mono);font-size:11px;opacity:.75;margin-left:4px}
+.plan__list{display:grid;gap:10px;margin-top:6px}
+.plan__item{
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+  background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+}
+.plan__name{font-weight:650;font-size:15px}
+.plan__n{
+  font-family:var(--mono);font-size:11px;font-weight:700;margin-left:8px;
+  color:var(--bad);background:var(--bad-soft);border:1px solid var(--bad);
+  padding:2px 8px;border-radius:999px;
+}
+.plan__links,.review__links{display:flex;gap:8px;flex-wrap:wrap}
+.review__links{margin-top:11px}
+.lnk{
+  font:inherit;font-size:13px;font-weight:600;text-decoration:none;
+  padding:7px 13px;border-radius:9px;
+  border:1px solid var(--line-strong);color:var(--text);
+  display:inline-flex;align-items:center;gap:6px;white-space:nowrap;
+  transition:border-color .15s ease,color .15s ease;
+}
+.lnk:hover{border-color:var(--accent);color:var(--accent)}
+.lnk--video{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.lnk--video:hover{border-color:var(--bad);color:var(--bad);filter:brightness(1.12)}
+.kurse{margin-top:14px;padding:13px 15px;border:1px solid var(--line);border-radius:12px;background:var(--card-2)}
+.kurse__list{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.quelle{margin:10px 0 0;font-size:12px;color:var(--muted)}
+
+.review{margin-top:26px;border-top:1px solid var(--line);padding-top:6px}
+.review__item{border-bottom:1px solid var(--line);padding:14px 0}
+.review__top{display:flex;gap:9px;align-items:baseline;flex-wrap:wrap;margin-bottom:5px}
+.review__topic{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.review__q{font-weight:650;font-size:15px;margin:0 0 8px}
+.review__a{font-size:13.5px;display:grid;gap:3px}
+.review__a b{font-weight:600}
+.review__mine{color:var(--bad)}
+.review__right{color:var(--ok)}
+.review__e{margin-top:7px;font-size:13.5px;color:var(--muted)}
+.review__empty{padding:16px 0;color:var(--muted)}
+
+.hidden{display:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <span class="brand"><span class="brand__dot"></span>Wissenscheck</span>
+    <h1>CSS — wo stehst du?</h1>
+    <p class="sub" id="count">Fragen werden geladen …</p>
+  </header>
+
+  <!-- ===== Start ===== -->
+  <section class="panel" id="start">
+
+    <div class="fieldset">
+      <p class="label">Schwierigkeit</p>
+      <p class="hint">Ein guter Test mischt: leichte Fragen zeigen, ob die Basis sitzt, knifflige zeigen das echte Verständnis.</p>
+      <div class="chips" id="diffs"></div>
+    </div>
+
+    <div class="fieldset">
+      <p class="label">Umfang</p>
+      <div class="chips" id="sizes"></div>
+      <p class="vorrat">&#128161; Du startest mit 3 Tipps · ab jeder 10. Frage kommt einer dazu</p>
+    </div>
+
+    <div class="fieldset">
+      <button class="disclosure" id="topicToggle" aria-expanded="false">
+        <span class="disclosure__caret">&#9656;</span>
+        <span id="topicSummary">Themen eingrenzen — aktuell alle</span>
+      </button>
+      <div class="topics" id="topicsBox">
+        <div class="topics__inner" id="topics"></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <button class="btn" id="go">Test starten</button>
+      <button class="btn btn--ghost" id="all">Alle Themen an/aus</button>
+    </div>
+  </section>
+
+  <!-- ===== Quiz ===== -->
+  <section class="panel hidden" id="quiz">
+    <div class="meta">
+      <span class="meta__left">
+        <span id="pos"></span>
+        <span class="clock" id="clock">00:00</span>
+        <span class="awaybadge hidden" id="awayBadge"></span>
+        <span class="tippbadge hidden" id="tippBadge"></span>
+      </span>
+      <span class="meta__right" id="stats"></span>
+    </div>
+    <div class="meter"><div class="meter__fill" id="fill"></div></div>
+    <p class="topicline" id="topicline"></p>
+    <h2 class="question" id="q"></h2>
+    <pre id="code" class="hidden"></pre>
+
+    <div class="tipprow hidden" id="tipprow">
+      <div class="tipprow__head">
+        <button class="tippbtn" id="tippBtn" type="button">&#128161; Tipp anzeigen</button>
+        <span class="tippneu hidden" id="tippNeu">+1 Tipp freigeschaltet</span>
+      </div>
+      <p class="tipptext hidden" id="tippText"></p>
+    </div>
+
+    <div class="gapbox hidden" id="gapbox">
+      <div class="gapbox__row">
+        <input class="gapbox__input" id="gapInput" type="text" autocomplete="off"
+               autocapitalize="none" autocorrect="off" spellcheck="false"
+               placeholder="Fehlendes Stück hier eintippen …">
+        <button class="btn" id="gapCheck" type="button">Prüfen</button>
+      </div>
+      <p class="gapbox__tipp" id="gapTipp"></p>
+    </div>
+
+    <div class="opts" id="opts"></div>
+    <div class="explain hidden" id="explain"></div>
+    <div class="row">
+      <button class="btn btn--ghost" id="prev" disabled>Zurück</button>
+      <button class="btn" id="next" disabled>Weiter</button>
+      <button class="btn btn--quiet" id="quit">Abbrechen</button>
+    </div>
+    <p class="keyhint" id="keyhint"><kbd>A</kbd>–<kbd>D</kbd> antworten · <kbd>Enter</kbd> weiter · <kbd>&larr;</kbd> <kbd>&rarr;</kbd> blättern</p>
+  </section>
+
+  <!-- ===== Ergebnis ===== -->
+  <section class="panel hidden" id="result">
+    <p class="label" id="resultLabel">Auswertung</p>
+    <div class="scorewrap">
+      <div class="ring" id="ring"><span class="ring__num" id="ringNum"></span></div>
+      <div class="scoretext">
+        <p class="level" id="levelName"></p>
+        <p class="leveldesc" id="levelDesc"></p>
+      </div>
+    </div>
+
+    <p class="aborted hidden" id="abortNote"></p>
+    <div class="facts" id="facts"></div>
+    <div class="bars" id="bars"></div>
+    <div class="tippliste hidden" id="tippliste"></div>
+    <div class="gaps hidden" id="gaps"></div>
+
+    <div class="row">
+      <button class="btn" id="again">Neuer Test</button>
+      <button class="btn btn--ghost" id="wrongOnly">Nur Fehler wiederholen</button>
+    </div>
+
+    <div class="review" id="review"></div>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================
+   Fragenkatalog
+   d = Schwierigkeit: 1 leicht · 2 mittel · 3 knifflig
+   a = Index der richtigen Antwort (immer 0, Optionen werden gemischt)
+   ========================================================= */
+const QUESTIONS = [
+/* ---------- Selektoren & Kaskade ---------- */
+{g:"Selektoren & Kaskade",t:"Syntax & Einbinden",d:1,typ:"luecke",q:"Deine erste Regel läuft nicht. Ein Zeichen fehlt.",code:"p {\n  color▁▁▁ red;\n}",loesung:[":"],tipp:"Es steht zwischen Eigenschaft und Wert.",e:"Zwischen Eigenschaft und Wert gehört ein Doppelpunkt."},
+{g:"Selektoren & Kaskade",t:"Syntax & Einbinden",d:1,q:"Du schreibst deine erste CSS-Regel. Welche ist richtig gebaut?",o:["<code>p { color: red; }</code>","<code>color: red { p }</code>","<code>p = red;</code>","<code>set p to red</code>"],a:0,tipp:"Erst wer, dann was.",e:"Aufbau: Selektor, dann geschweifte Klammern, darin Eigenschaft und Wert."},
+{g:"Selektoren & Kaskade",t:"Syntax & Einbinden",d:1,q:"Du willst eine Notiz im Code hinterlassen, die auf der Seite niemand sieht.",o:["<code>/* Notiz */</code>","<code>// Notiz</code>","<code>&lt;!-- Notiz --&gt;</code>","<code>#Notiz</code>"],a:0,tipp:"Eine der drei anderen Schreibweisen kommt aus HTML, eine aus JavaScript.",e:"CSS kennt nur <code>/* … */</code>."},
+{g:"Selektoren & Kaskade",t:"Syntax & Einbinden",d:2,typ:"luecke",q:"Die CSS-Datei wird geladen, aber nichts passiert. Ein Wort fehlt.",code:"<link rel=\"▁▁▁\" href=\"style.css\">",loesung:["stylesheet"],tipp:"Englisch für Stilvorlage, in einem Wort.",e:"Erst <code>rel=\"stylesheet\"</code> sagt dem Browser, wozu die Datei gut ist."},
+{g:"Selektoren & Kaskade",t:"Syntax & Einbinden",d:3,q:"Du hast dich vertippt. Welche Farbe landet auf der Seite?",code:"p {\n  colr: red;\n  color: green;\n}",o:["<code>green</code>","<code>red</code>","<code>black</code>","gar keine, die Regel ist kaputt"],a:0,tipp:"CSS ist gutmütig mit Fehlern.",e:"Was der Browser nicht kennt, überspringt er stillschweigend — nur diese eine Zeile fällt weg."},
+
+{g:"Selektoren & Kaskade",t:"Selektoren",d:1,typ:"luecke",q:"Die Box soll rot werden. Setze den passenden Selektor ein.",code:"/* gilt für: div class=\"box\" */\n▁▁▁ {\n  color: red;\n}",loesung:[".box"],tipp:"Ein Zeichen entscheidet, ob Klasse oder id gemeint ist.",e:"Klassen spricht man mit einem Punkt an."},
+{g:"Selektoren & Kaskade",t:"Selektoren",d:1,q:"Ein Element hat <code>id=\"kopf\"</code>. Womit sprichst du genau dieses an?",o:["<code>#kopf</code>","<code>.kopf</code>","<code>@kopf</code>","<code>id(kopf)</code>"],a:0,tipp:"Der Punkt ist schon für die Klasse vergeben.",e:"IDs bekommen die Raute, Klassen den Punkt."},
+{g:"Selektoren & Kaskade",t:"Selektoren",d:1,q:"Alle Absätze auf der Seite sollen grau werden. Welcher Selektor?",o:["<code>p</code>","<code>&lt;p&gt;</code>","<code>.paragraph</code>","<code>all-p</code>"],a:0,tipp:"Elementnamen brauchen kein Zeichen davor und keine Klammern.",e:"Der Elementtyp steht schlicht als Name da — ohne Klammern, Punkt oder Raute."},
+{g:"Selektoren & Kaskade",t:"Selektoren",d:2,typ:"luecke",q:"Du willst die Regel auf wirklich jedes Element loslassen.",code:"▁▁▁ {\n  box-sizing: border-box;\n}",loesung:["*"],tipp:"Ein einziges Zeichen, oft Sternchen genannt.",e:"Der Universalselektor gilt für alles — genau so setzt man <code>border-box</code> global."},
+{g:"Selektoren & Kaskade",t:"Selektoren",d:2,q:"Überschrift und Absatz sollen dieselbe Schrift bekommen. Wie schreibst du das in einer Regel?",o:["<code>h1, p { … }</code>","<code>h1 p { … }</code>","<code>h1 and p { … }</code>","<code>h1 || p { … }</code>"],a:0,tipp:"Ein Satzzeichen gruppiert, ein Leerzeichen verschachtelt.",e:"Das Komma fasst zusammen. Ein Leerzeichen würde „p innerhalb von h1“ bedeuten."},
+{g:"Selektoren & Kaskade",t:"Selektoren",d:3,q:"Nur Absätze mit <code>class=\"hinweis\"</code> sollen gelb werden — andere Elemente mit dieser Klasse nicht.",o:["<code>p.hinweis</code>","<code>.hinweis</code>","<code>p &gt; .hinweis</code>","<code>p und .hinweis</code>"],a:0,tipp:"Beides muss auf dasselbe Element zutreffen.",e:"<code>p.hinweis</code> verlangt beides am selben Element. <code>.hinweis</code> allein träfe auch jedes andere Element mit dieser Klasse."},
+
+{g:"Selektoren & Kaskade",t:"Kombinatoren",d:1,q:"Alle Absätze irgendwo in der Seitenleiste sollen kleiner werden.",o:["<code>.leiste p</code>","<code>p.leiste</code>","<code>.leiste &gt; p</code>","<code>p:in(.leiste)</code>"],a:0,tipp:"Das unscheinbarste Zeichen von allen trennt hier zwei Selektoren.",e:"Das Leerzeichen trifft alle Nachfahren, egal wie tief. <code>p.leiste</code> wäre dagegen ein Absatz, der selbst diese Klasse trägt."},
+{g:"Selektoren & Kaskade",t:"Kombinatoren",d:2,q:"Nur die Menüpunkte der obersten Ebene sollen fett werden, die aus dem Untermenü nicht.",o:["<code>.menu &gt; li</code>","<code>.menu li</code>","<code>li &gt; .menu</code>","<code>.menu li:only-child</code>"],a:0,tipp:"Ein Pfeil geht genau eine Ebene tief.",e:"Der Kind-Kombinator stoppt nach einer Ebene. Das Leerzeichen würde auch die verschachtelten Einträge erwischen."},
+{g:"Selektoren & Kaskade",t:"Kombinatoren",d:2,typ:"luecke",q:"Nur der Absatz direkt nach der Überschrift soll oben keinen Abstand haben.",code:"h2 ▁▁▁ p {\n  margin-top: 0;\n}",loesung:["+"],tipp:"Ein Rechenzeichen.",e:"<code>+</code> trifft genau das unmittelbar folgende Geschwisterelement."},
+{g:"Selektoren & Kaskade",t:"Kombinatoren",d:3,q:"Jetzt sollen <em>alle</em> Absätze nach der Überschrift grau werden, nicht nur der erste.",o:["<code>h2 ~ p</code>","<code>h2 + p</code>","<code>h2 &gt; p</code>","<code>h2 * p</code>"],a:0,tipp:"Die Wellenlinie ist großzügiger als das Plus.",e:"<code>~</code> trifft alle folgenden Geschwister, <code>+</code> nur das direkt nächste."},
+
+{g:"Selektoren & Kaskade",t:"Pseudo-Klassen & -Elemente",d:1,typ:"luecke",q:"Der Link soll beim Drüberfahren rot werden. Ein Zeichen fehlt.",code:"a▁▁▁hover {\n  color: red;\n}",loesung:[":"],tipp:"Ein einzelnes Satzzeichen.",e:"Zustände wie <code>:hover</code> hängen an einem Doppelpunkt."},
+{g:"Selektoren & Kaskade",t:"Pseudo-Klassen & -Elemente",d:1,q:"Dein Button soll reagieren, sobald jemand mit der Maus draufgeht.",o:["<code>.btn:hover { … }</code>","<code>.btn.hover { … }</code>","<code>.btn { on-hover: red; }</code>","<code>hover .btn { … }</code>"],a:0,tipp:"Ein Zustand hängt an einem Doppelpunkt, eine Klasse an einem Punkt.",e:"<code>:hover</code> ist ein Zustand. <code>.hover</code> wäre dagegen eine ganz normale Klasse, die jemand vergeben hätte."},
+{g:"Selektoren & Kaskade",t:"Pseudo-Klassen & -Elemente",d:2,q:"Deine Tabelle soll Zebrastreifen bekommen — jede zweite Zeile grau.",o:["<code>tr:nth-child(2n)</code>","<code>tr:nth-child(2)</code>","<code>tr:every(2)</code>","<code>tr:zebra</code>"],a:0,tipp:"2n meint 2, 4, 6 und so weiter.",e:"<code>(2n)</code> trifft alle geraden Zeilen. <code>(2)</code> allein wäre nur die zweite."},
+{g:"Selektoren & Kaskade",t:"Pseudo-Klassen & -Elemente",d:2,typ:"luecke",q:"Vor jeden Listeneintrag soll ein Pfeil. Ergänze das Pseudo-Element.",code:"li::▁▁▁ {\n  content: \"→ \";\n}",loesung:["before"],tipp:"Englisch für davor.",e:"<code>::before</code> setzt Inhalt an den Anfang, <code>::after</code> ans Ende."},
+{g:"Selektoren & Kaskade",t:"Pseudo-Klassen & -Elemente",d:3,q:"Du hast ein <code>::after</code> gebaut, aber es erscheint nichts. Welche Zeile fehlt?",code:"a::after {\n  color: gray;\n  font-size: 12px;\n}",o:["<code>content: \"\";</code>","<code>display: block;</code>","<code>opacity: 1;</code>","<code>position: absolute;</code>"],a:0,tipp:"Ohne diese Eigenschaft entsteht das Element gar nicht erst.",e:"<code>content</code> ist bei <code>::before</code> und <code>::after</code> Pflicht — notfalls leer."},
+{g:"Selektoren & Kaskade",t:"Pseudo-Klassen & -Elemente",d:3,q:"Der erste Buchstabe deines Artikels soll riesig werden wie in einer Zeitschrift.",o:["<code>p::first-letter</code>","<code>p:first-letter()</code>","<code>p.first-letter</code>","<code>p::initial</code>"],a:0,tipp:"Teilbereiche bekommen einen Doppelpunkt mehr als Zustände.",e:"Pseudo-Elemente schreibt man mit zwei Doppelpunkten, Pseudo-Klassen mit einem."},
+
+{g:"Selektoren & Kaskade",t:"Spezifität & Vererbung",d:1,q:"Vier Regeln streiten sich um dasselbe Element. Welche gewinnt?",o:["<code>#box { color: red; }</code>","<code>.box { color: blue; }</code>","<code>div { color: green; }</code>","<code>* { color: black; }</code>"],a:0,tipp:"Je genauer der Selektor, desto stärker.",e:"Rangfolge: Inline-Style, dann ID, dann Klasse, dann Elementtyp, zuletzt der Universalselektor."},
+{g:"Selektoren & Kaskade",t:"Spezifität & Vererbung",d:2,q:"Zwei gleich starke Regeln, zwei Farben. Was siehst du?",code:".text { color: blue; }\n.text { color: green; }",o:["<code>green</code>","<code>blue</code>","<code>black</code>","einen Fehler in der Konsole"],a:0,tipp:"Bei Gleichstand zählt die Reihenfolge.",e:"Die zuletzt notierte Regel gewinnt."},
+{g:"Selektoren & Kaskade",t:"Spezifität & Vererbung",d:2,q:"Du setzt etwas am <code>body</code>. Welche dieser Eigenschaften erben die Kinder automatisch?",o:["<code>color</code>","<code>margin</code>","<code>border</code>","<code>width</code>"],a:0,tipp:"Textbezogenes wird weitergereicht, Maße nicht.",e:"Vererbt werden unter anderem <code>color</code> und <code>font-family</code> — Abstände, Rahmen und Größen nicht."},
+{g:"Selektoren & Kaskade",t:"Spezifität & Vererbung",d:2,typ:"luecke",q:"Das Kind soll genau die Farbe des Elternteils übernehmen.",code:".kind {\n  color: ▁▁▁;\n}",loesung:["inherit"],tipp:"Englisch für erben.",e:"<code>inherit</code> erzwingt die Übernahme, auch bei Eigenschaften, die sonst nicht vererbt werden."},
+{g:"Selektoren & Kaskade",t:"Spezifität & Vererbung",d:3,q:"Drei Anweisungen, eine Farbe. Welche gewinnt?",code:"<p id=\"intro\" class=\"text\" style=\"color: green;\">Hallo</p>\n\n#intro { color: red; }\n.text  { color: blue; }",o:["<code>green</code>","<code>red</code>","<code>blue</code>","<code>black</code>"],a:0,tipp:"Was direkt am Element klebt, ist am stärksten.",e:"Ein Inline-Style schlägt jeden normalen Selektor. Nur <code>!important</code> käme noch darüber."},
+{g:"Selektoren & Kaskade",t:"Spezifität & Vererbung",d:3,typ:"luecke",q:"Diese eine Regel soll sich gegen alles durchsetzen. Was hängst du an?",code:".warnung {\n  color: red ▁▁▁;\n}",loesung:["!important"],tipp:"Beginnt mit einem Ausrufezeichen.",e:"<code>!important</code> ist das letzte Mittel — danach hilft nur noch ein weiteres <code>!important</code>."},
+
+/* ---------- Box & Größen ---------- */
+{g:"Box & Größen",t:"Box-Modell",d:1,q:"Von innen nach außen: In welcher Reihenfolge liegen die Schichten einer Box?",o:["Inhalt, Innenabstand, Rahmen, Außenabstand","Inhalt, Rahmen, Innenabstand, Außenabstand","Außenabstand, Rahmen, Innenabstand, Inhalt","Rahmen, Inhalt, Innenabstand, Außenabstand"],a:0,tipp:"Der Rahmen liegt zwischen den beiden Abständen.",e:"Innen der Inhalt, dann die Polsterung, dann der Rahmen, ganz außen der Abstand zu den Nachbarn."},
+{g:"Box & Größen",t:"Box-Modell",d:2,q:"Du gibst der Box 200px Breite. Wie breit ist sie am Ende wirklich?",code:"div {\n  width: 200px;\n  padding: 20px;\n  border: 5px solid black;\n}",o:["<code>250px</code>","<code>200px</code>","<code>225px</code>","<code>160px</code>"],a:0,tipp:"Polsterung und Rahmen zählen links und rechts.",e:"200 + 2×20 + 2×5 = 250px. Ohne <code>border-box</code> meint <code>width</code> nur den Inhalt."},
+{g:"Box & Größen",t:"Box-Modell",d:2,typ:"luecke",q:"Der Text klebt am Rahmen. Was gibst du der Karte?",code:".karte {\n  ▁▁▁: 16px;\n  border: 1px solid gray;\n}",loesung:["padding"],tipp:"Englisch für Polsterung.",e:"<code>padding</code> schafft Luft nach innen, <code>margin</code> nach außen."},
+{g:"Box & Größen",t:"Box-Modell",d:3,q:"Du färbst die Karte grau. Bis wohin reicht die Farbe?",o:["Bis zum Rahmen, der Innenabstand ist mitgefärbt","Nur bis zum Text","Bis zum Ende des Außenabstands","Nur der Rahmen wird gefärbt"],a:0,tipp:"Einer der beiden Abstände bleibt immer durchsichtig.",e:"Der Hintergrund deckt Inhalt und Innenabstand ab. Der Außenabstand bleibt transparent — daran erkennt man beide gut auseinander."},
+{g:"Box & Größen",t:"Box-Modell",d:3,q:"Du willst eine Linie um das Element, ohne dass sich das Layout verschiebt.",o:["<code>outline: 2px solid red;</code>","<code>border: 2px solid red;</code>","<code>padding: 2px;</code>","<code>margin: 2px;</code>"],a:0,tipp:"Eine davon liegt über dem Element statt daneben.",e:"<code>outline</code> nimmt keinen Platz ein. Genau deshalb nutzen Browser sie für den Fokusrahmen."},
+
+{g:"Box & Größen",t:"margin & padding",d:1,q:"Was löst <code>margin: 10px 20px;</code> aus?",o:["Oben und unten 10px, links und rechts 20px","Oben 10px, alles andere 20px","Links 10px, rechts 20px","Rundherum 30px"],a:0,tipp:"Erst senkrecht, dann waagerecht.",e:"Bei zwei Werten: der erste für oben und unten, der zweite für die Seiten."},
+{g:"Box & Größen",t:"margin & padding",d:1,typ:"luecke",q:"Der Inhaltsbereich soll mittig auf der Seite sitzen.",code:".inhalt {\n  max-width: 800px;\n  margin: 0 ▁▁▁;\n}",loesung:["auto"],tipp:"Der Browser soll den Rest selbst aufteilen.",e:"<code>auto</code> links und rechts verteilt den freien Platz gleichmäßig."},
+{g:"Box & Größen",t:"margin & padding",d:2,q:"Nur unten soll Abstand hin. Was schreibst du?",o:["<code>margin-bottom: 20px;</code>","<code>margin: bottom 20px;</code>","<code>margin-end: 20px;</code>","<code>margin: 0 0 20px 0 auto;</code>"],a:0,tipp:"Die Richtung gehört an den Namen der Eigenschaft.",e:"Einzelne Seiten heißen <code>margin-top</code>, <code>-right</code>, <code>-bottom</code> und <code>-left</code>."},
+{g:"Box & Größen",t:"margin & padding",d:3,q:"Zwei Absätze untereinander: oben 30px Abstand nach unten, unten 20px nach oben. Wie groß ist die Lücke?",o:["<code>30px</code>","<code>50px</code>","<code>20px</code>","<code>25px</code>"],a:0,tipp:"Senkrechte Abstände addieren sich nicht.",e:"Margin Collapsing: Sie verschmelzen zum größeren Wert. Waagerecht passiert das nicht."},
+{g:"Box & Größen",t:"margin & padding",d:3,q:"Was bewirkt <code>padding: 5px 10px 15px;</code>?",o:["Oben 5, Seiten 10, unten 15","Oben 5, rechts 10, unten 15, links 0","Im Uhrzeigersinn ab links","Nichts, drei Werte sind ungültig"],a:0,tipp:"Drei Werte: oben, die Seiten zusammen, unten.",e:"Bei vier Werten ginge es im Uhrzeigersinn ab oben: oben, rechts, unten, links."},
+
+{g:"Box & Größen",t:"border & Ecken",d:1,q:"Du willst einen sichtbaren roten Rahmen. Welche Zeile reicht?",o:["<code>border: 2px solid red;</code>","<code>border: 2px red;</code>","<code>border-width: 2px; border-color: red;</code>","<code>border: red 2px thick;</code>"],a:0,tipp:"Ohne Angabe der Linienart wird nichts gezeichnet.",e:"Die Kurzform braucht Breite, Linienart und Farbe. Fehlt die Linienart, bleibt der Rahmen unsichtbar."},
+{g:"Box & Größen",t:"border & Ecken",d:2,typ:"luecke",q:"Die Karte soll runde Ecken bekommen.",code:".karte {\n  ▁▁▁: 12px;\n}",loesung:["border-radius"],tipp:"Zwei Wörter mit Bindestrich, das zweite ist ein Fachbegriff aus der Geometrie.",e:"<code>border-radius</code> rundet die Ecken ab, auch ganz ohne sichtbaren Rahmen."},
+{g:"Box & Größen",t:"border & Ecken",d:2,q:"Aus deinem quadratischen Profilbild soll ein Kreis werden.",o:["<code>border-radius: 50%;</code>","<code>border-radius: 50px;</code>","<code>shape: circle;</code>","<code>border-style: round;</code>"],a:0,tipp:"Prozent bezieht sich auf die Größe des Elements.",e:"Bei einem Quadrat ergeben 50 % an allen Ecken einen Kreis. Ein fester Pixelwert würde nur abrunden."},
+{g:"Box & Größen",t:"border & Ecken",d:3,q:"Unter der Überschrift soll eine Trennlinie sitzen — sonst kein Rahmen.",o:["<code>border-bottom: 1px solid gray;</code>","<code>border: 1px solid gray bottom;</code>","<code>underline: 1px gray;</code>","<code>text-decoration: underline;</code>"],a:0,tipp:"Wie bei margin gehört die Richtung an den Namen.",e:"Jede Seite hat ihre eigene Eigenschaft. <code>text-decoration</code> würde dagegen den Text unterstreichen, nicht die Box."},
+
+{g:"Box & Größen",t:"Größen & box-sizing",d:1,typ:"luecke",q:"Du hast keine Lust mehr aufs Nachrechnen. Was setzt du global?",code:"* {\n  box-sizing: ▁▁▁;\n}",loesung:["border-box"],tipp:"Endet auf -box.",e:"Mit <code>border-box</code> ist die angegebene Breite die tatsächliche Außenbreite."},
+{g:"Box & Größen",t:"Größen & box-sizing",d:2,q:"Jetzt mit <code>border-box</code>. Wie breit erscheint die Box?",code:"div {\n  box-sizing: border-box;\n  width: 200px;\n  padding: 20px;\n  border: 5px solid black;\n}",o:["<code>200px</code>","<code>250px</code>","<code>150px</code>","<code>240px</code>"],a:0,tipp:"Jetzt zählt alles in die Breite hinein.",e:"Die Außenkante bleibt bei 200px. Für den Inhalt bleiben davon 150px übrig."},
+{g:"Box & Größen",t:"Größen & box-sizing",d:2,q:"Der Text soll auf dem Handy schrumpfen, aber am Monitor nicht endlos breit laufen.",o:["<code>max-width: 800px;</code>","<code>width: 800px;</code>","<code>min-width: 800px;</code>","<code>width: 100vw;</code>"],a:0,tipp:"Du brauchst eine Obergrenze, keine feste Größe.",e:"<code>max-width</code> ist der Klassiker: nach unten flexibel, nach oben gedeckelt."},
+{g:"Box & Größen",t:"Größen & box-sizing",d:3,q:"Du setzt <code>height: 100%</code> und es passiert nichts. Woran liegt das?",o:["Das Elternelement hat keine Höhe","Prozente sind bei height verboten","Es fehlt <code>width: 100%</code>","Der Wert muss <code>100vh</code> heißen"],a:0,tipp:"Hundert Prozent — wovon eigentlich?",e:"Ohne Bezugsgröße kann der Browser die Prozente nicht auflösen. Heute nimmt man dafür <code>vh</code>, Flexbox oder Grid."},
+{g:"Box & Größen",t:"Größen & box-sizing",d:3,q:"Der Text quillt aus der Box heraus. Womit schneidest du ab?",o:["<code>overflow: hidden;</code>","<code>display: none;</code>","<code>visibility: hidden;</code>","<code>text-overflow: clip;</code>"],a:0,tipp:"Es geht nur um das, was über den Rand hinausragt.",e:"<code>overflow</code> entscheidet, was mit überstehendem Inhalt passiert: abschneiden, scrollen oder stehenlassen."},
+
+/* ---------- Farben, Text & Werte ---------- */
+{g:"Farben, Text & Werte",t:"Farben & Hintergründe",d:1,q:"Welcher Wert ergibt ein sattes Rot?",o:["<code>#ff0000</code>","<code>#00ff00</code>","<code>#0000ff</code>","<code>#000000</code>"],a:0,tipp:"Das Muster lautet #RotGrünBlau, je zwei Stellen.",e:"Die ersten beiden Stellen sind der Rotanteil — hier auf Maximum, der Rest auf null."},
+{g:"Farben, Text & Werte",t:"Farben & Hintergründe",d:1,typ:"luecke",q:"Die Karte soll einen hellgrauen Hintergrund bekommen.",code:".karte {\n  ▁▁▁: #f5f5f5;\n  color: #222;\n}",loesung:["background-color","background"],tipp:"Nicht color — das ist schon für den Text vergeben.",e:"<code>color</code> färbt den Text, <code>background-color</code> die Fläche."},
+{g:"Farben, Text & Werte",t:"Farben & Hintergründe",d:2,q:"Du willst einen halbdurchsichtigen schwarzen Schleier über dem Bild.",o:["<code>rgba(0, 0, 0, 0.5)</code>","<code>rgb(0, 0, 0, 50)</code>","<code>black-50</code>","<code>#000 halb</code>"],a:0,tipp:"Der vierte Wert läuft von 0 bis 1.",e:"Der Alpha-Kanal steuert die Deckkraft: 0 unsichtbar, 1 voll deckend."},
+{g:"Farben, Text & Werte",t:"Farben & Hintergründe",d:2,typ:"luecke",q:"Ergänze die Funktion, in der der Bildpfad steht.",code:".held {\n  background-image: ▁▁▁(\"bild.jpg\");\n}",loesung:["url"],tipp:"Drei Buchstaben.",e:"Pfade stehen in CSS immer in <code>url()</code>."},
+{g:"Farben, Text & Werte",t:"Farben & Hintergründe",d:3,q:"Das Hintergrundbild soll die Fläche füllen. Verzerren darf es nicht, abschneiden schon.",o:["<code>background-size: cover;</code>","<code>background-size: contain;</code>","<code>background-size: 100% 100%;</code>","<code>background-repeat: repeat;</code>"],a:0,tipp:"Einer der beiden füllt, der andere passt komplett hinein.",e:"<code>cover</code> füllt und schneidet notfalls ab. <code>contain</code> zeigt alles und lässt Rand frei, <code>100% 100%</code> würde verzerren."},
+{g:"Farben, Text & Werte",t:"Farben & Hintergründe",d:3,q:"Der Kopfbereich soll von Blau nach Grün verlaufen.",o:["<code>background: linear-gradient(blue, green);</code>","<code>background-color: linear-gradient(blue, green);</code>","<code>background: fade(blue, green);</code>","<code>color-blend: blue green;</code>"],a:0,tipp:"Ein Verlauf ist technisch gesehen ein Bild, keine Farbe.",e:"Deshalb gehört er zu <code>background</code> und nicht zu <code>background-color</code>."},
+
+{g:"Farben, Text & Werte",t:"Schrift & Text",d:1,typ:"luecke",q:"Die Überschrift soll mittig stehen.",code:"h1 {\n  text-align: ▁▁▁;\n}",loesung:["center"],tipp:"Englisch für Mitte.",e:"<code>text-align</code> richtet den Inhalt waagerecht aus."},
+{g:"Farben, Text & Werte",t:"Schrift & Text",d:1,q:"Die blauen Unterstriche unter deinen Links nerven. Was schaltet sie ab?",o:["<code>text-decoration: none;</code>","<code>border-bottom: none;</code>","<code>underline: off;</code>","<code>font-style: normal;</code>"],a:0,tipp:"Die Unterstreichung zählt als Dekoration.",e:"<code>text-decoration</code> steuert Unter-, Über- und Durchstreichung."},
+{g:"Farben, Text & Werte",t:"Schrift & Text",d:2,q:"Warum steht in fast jedem Projekt eine ganze Liste von Schriften?",code:"body {\n  font-family: Inter, Arial, sans-serif;\n}",o:["Als Ausweichkette, falls eine Schrift fehlt","Damit alle drei gemischt werden","Für verschiedene Bildschirmgrößen","Weil eine Schrift allein ungültig wäre"],a:0,tipp:"Der Browser arbeitet die Liste von links nach rechts ab.",e:"Fehlt eine Schrift, rutscht der Browser zur nächsten. Am Ende steht sinnvollerweise eine Gattung wie <code>sans-serif</code>."},
+{g:"Farben, Text & Werte",t:"Schrift & Text",d:2,q:"Der Text soll fett werden. Welche Zeile stimmt?",o:["<code>font-weight: bold;</code>","<code>font-style: bold;</code>","<code>text-weight: bold;</code>","<code>font-bold: true;</code>"],a:0,tipp:"Achte darauf, welcher Wert zu welcher Eigenschaft gehört.",e:"<code>font-weight</code> regelt die Stärke, <code>font-style</code> dagegen kursiv."},
+{g:"Farben, Text & Werte",t:"Schrift & Text",d:3,q:"Welche Angabe für den Zeilenabstand macht am wenigsten Ärger?",o:["<code>line-height: 1.5;</code>","<code>line-height: 150%;</code>","<code>line-height: 24px;</code>","<code>line-height: 1.5em;</code>"],a:0,tipp:"Was wird vererbt: die Rechenregel oder das fertige Ergebnis?",e:"Ohne Einheit wird der Faktor vererbt und pro Element neu gerechnet. Sonst erbt das Kind den fertigen Pixelwert — und der passt dann oft nicht."},
+
+{g:"Farben, Text & Werte",t:"Einheiten",d:1,q:"Welche dieser Einheiten ist eine feste Länge?",o:["<code>px</code>","<code>em</code>","<code>%</code>","<code>vh</code>"],a:0,tipp:"Drei davon hängen von etwas anderem ab.",e:"<code>px</code> ist absolut. Die anderen beziehen sich auf Schriftgröße, Elternelement oder Fenster."},
+{g:"Farben, Text & Werte",t:"Einheiten",d:2,q:"Worauf bezieht sich <code>rem</code>?",o:["Auf die Schriftgröße von <code>html</code>","Auf die Schriftgröße des Elternelements","Auf die Fensterbreite","Auf die Breite des Containers"],a:0,tipp:"Das r steht für root.",e:"<code>em</code> nimmt das Elternelement und kann sich aufschaukeln. <code>rem</code> bleibt im ganzen Dokument gleich."},
+{g:"Farben, Text & Werte",t:"Einheiten",d:2,typ:"luecke",q:"Der Kopfbereich soll genau die halbe Fensterbreite einnehmen.",code:".held {\n  width: 50▁▁▁;\n}",loesung:["vw"],tipp:"Zwei Buchstaben, das v steht für viewport.",e:"<code>vw</code> ist ein Prozent der Fensterbreite, <code>vh</code> der Fensterhöhe. Prozent würde sich dagegen aufs Elternelement beziehen."},
+{g:"Farben, Text & Werte",t:"Einheiten",d:3,q:"Deine Überschrift bleibt stur klein. Was ist hier los?",code:"h1 {\n  font-size: 32;\n}",o:["Die Einheit fehlt","Der Wert ist zu klein","Es fehlt ein Semikolon","<code>font-size</code> wirkt nicht bei h1"],a:0,tipp:"Was steht bei Größenangaben sonst immer hinter der Zahl?",e:"Längen brauchen eine Einheit, etwa <code>32px</code>. Ohne wird die Zeile verworfen."},
+{g:"Farben, Text & Werte",t:"Einheiten",d:3,q:"Die Schrift soll mit dem Fenster wachsen, aber nie winzig oder riesig werden.",o:["<code>clamp(1rem, 2.5vw, 2rem)</code>","<code>calc(1rem + 2.5vw)</code>","<code>min(1rem, 2.5vw)</code>","<code>2.5vw</code>"],a:0,tipp:"Du brauchst drei Werte: Untergrenze, Wunsch, Obergrenze.",e:"<code>clamp()</code> skaliert flüssig, hält aber Minimum und Maximum ein."},
+
+{g:"Farben, Text & Werte",t:"CSS-Variablen",d:1,typ:"luecke",q:"Daraus soll eine CSS-Variable werden. Zwei Zeichen fehlen.",code:":root {\n  ▁▁▁hauptfarbe: #0d7d7d;\n}",loesung:["--"],tipp:"Zweimal dasselbe Satzzeichen.",e:"Eigene Eigenschaften beginnen immer mit zwei Bindestrichen."},
+{g:"Farben, Text & Werte",t:"CSS-Variablen",d:1,typ:"luecke",q:"Jetzt willst du die Variable benutzen.",code:".btn {\n  background: ▁▁▁(--hauptfarbe);\n}",loesung:["var"],tipp:"Drei Buchstaben.",e:"Der Zugriff läuft immer über <code>var()</code>."},
+{g:"Farben, Text & Werte",t:"CSS-Variablen",d:2,q:"Wo legst du Variablen ab, damit sie auf der ganzen Seite gelten?",o:["<code>:root { … }</code>","<code>body { … }</code>","<code>@variables { … }</code>","<code>head { … }</code>"],a:0,tipp:"Ganz oben im Dokumentbaum.",e:"<code>:root</code> ist das Wurzelelement. Von dort werden die Variablen an alles vererbt."},
+{g:"Farben, Text & Werte",t:"CSS-Variablen",d:3,q:"Wozu ist der zweite Wert in <code>var(--farbe, #333)</code> gut?",o:["Er springt ein, falls die Variable fehlt","Er mischt beide Farben","Er überschreibt die Variable","Er legt die Deckkraft fest"],a:0,tipp:"Eine Absicherung für den Notfall.",e:"Ist die Variable nicht definiert, greift der zweite Wert als Rückfallebene."},
+
+/* ---------- Layout ---------- */
+{g:"Layout",t:"display",d:1,q:"Das Werbebanner soll komplett weg — auch der Platz.",o:["<code>display: none;</code>","<code>visibility: hidden;</code>","<code>opacity: 0;</code>","<code>height: 0;</code>"],a:0,tipp:"Bei drei davon bleibt eine Lücke zurück.",e:"<code>display: none</code> nimmt das Element aus dem Layout. Die anderen machen es nur unsichtbar."},
+{g:"Layout",t:"display",d:2,q:"Deine Buttons stehen nebeneinander, aber Höhe und Abstände wirken nicht. Welcher Wert hilft?",o:["<code>inline-block</code>","<code>inline</code>","<code>block</code>","<code>contents</code>"],a:0,tipp:"Du brauchst beides: in einer Zeile bleiben und trotzdem Maße annehmen.",e:"Bei reinem <code>inline</code> wirken Höhe und senkrechte Abstände nicht — <code>inline-block</code> verbindet beides."},
+{g:"Layout",t:"display",d:2,q:"Was ist der Unterschied zwischen diesen beiden Zeilen?",code:"display: none;\nvisibility: hidden;",o:["Bei <code>visibility</code> bleibt eine Lücke stehen","Es gibt keinen Unterschied","<code>visibility</code> löscht das Element aus dem HTML","<code>display</code> macht es nur durchsichtig"],a:0,tipp:"Achte darauf, was mit dem Platz passiert.",e:"Unsichtbar ist nicht gleich weg: <code>visibility: hidden</code> hinterlässt eine Lücke."},
+{g:"Layout",t:"display",d:3,q:"Womit machst du aus einem Container einen Flex-Container?",o:["<code>display: flex;</code>","<code>flex: 1;</code>","<code>flex-direction: row;</code>","<code>position: flex;</code>"],a:0,tipp:"Es ist dieselbe Eigenschaft wie bei block oder none.",e:"Erst <code>display: flex</code> am Elternelement macht dessen Kinder zu Flex-Items."},
+
+{g:"Layout",t:"position & z-index",d:1,q:"Welchen Wert hat <code>position</code>, wenn du gar nichts angibst?",o:["<code>static</code>","<code>relative</code>","<code>absolute</code>","<code>normal</code>"],a:0,tipp:"In diesem Zustand wirken top und left überhaupt nicht.",e:"<code>static</code> heißt: normaler Fluss, Verschiebungen greifen nicht."},
+{g:"Layout",t:"position & z-index",d:2,typ:"luecke",q:"Die Kopfleiste soll beim Scrollen oben kleben bleiben.",code:".kopf {\n  position: ▁▁▁;\n  top: 0;\n}",loesung:["sticky"],tipp:"Englisch für klebrig.",e:"<code>sticky</code> verhält sich normal, bis die Scrollposition erreicht ist — dann bleibt es stehen."},
+{g:"Layout",t:"position & z-index",d:2,q:"Du positionierst ein Preisschild mit <code>absolute</code> in einer Karte. Woran richtet es sich aus?",o:["Am nächsten Vorfahren mit eigener <code>position</code>","Immer am direkten Elternelement","Immer am Browserfenster","Am nächsten Geschwisterelement"],a:0,tipp:"Deshalb bekommt die Karte meistens <code>position: relative</code>.",e:"Gibt es keinen positionierten Vorfahren, richtet es sich an der ganzen Seite aus."},
+{g:"Layout",t:"position & z-index",d:3,q:"Dein Element hat <code>z-index: 999</code> und liegt trotzdem hinten. Was fehlt?",code:"div {\n  z-index: 999;\n}",o:["Eine <code>position</code>-Angabe","Ein kleinerer Wert","Eine Einheit hinter der Zahl","Ein Elternelement mit <code>overflow</code>"],a:0,tipp:"Beim Standardwert von position passiert gar nichts.",e:"<code>z-index</code> greift nur bei positionierten Elementen — oder bei Flex- und Grid-Items."},
+{g:"Layout",t:"position & z-index",d:3,typ:"luecke",q:"Der Cookie-Hinweis soll unten am Fenster kleben und beim Scrollen nicht mitwandern.",code:".hinweis {\n  position: ▁▁▁;\n  bottom: 0;\n}",loesung:["fixed"],tipp:"Englisch für festgesetzt.",e:"<code>fixed</code> bezieht sich immer aufs Fenster und scrollt nie mit."},
+
+{g:"Layout",t:"Flexbox",d:1,typ:"luecke",q:"Deine Karten stapeln sich untereinander. Sie sollen nebeneinander.",code:".karten {\n  display: ▁▁▁;\n}",loesung:["flex"],tipp:"Vier Buchstaben.",e:"<code>display: flex</code> stellt die Kinder standardmäßig in eine Reihe."},
+{g:"Layout",t:"Flexbox",d:1,q:"Womit schiebst du die Elemente in einer Flex-Reihe nach rechts, links oder in die Mitte?",o:["<code>justify-content</code>","<code>align-items</code>","<code>text-align</code>","<code>float</code>"],a:0,tipp:"Es geht um die Richtung, in der die Elemente aufgereiht sind.",e:"<code>justify-content</code> arbeitet auf der Hauptachse — bei einer Reihe also waagerecht."},
+{g:"Layout",t:"Flexbox",d:2,typ:"luecke",q:"Das Logo sitzt schon waagerecht mittig. Jetzt noch senkrecht.",code:".box {\n  display: flex;\n  justify-content: center;\n  align-items: ▁▁▁;\n}",loesung:["center"],tipp:"Derselbe Wert wie eine Zeile darüber.",e:"Beide zusammen zentrieren in beide Richtungen."},
+{g:"Layout",t:"Flexbox",d:2,q:"Jetzt sollen die Karten doch untereinander. Was änderst du?",o:["<code>flex-direction: column;</code>","<code>flex-wrap: wrap;</code>","<code>display: block;</code>","<code>align-items: stretch;</code>"],a:0,tipp:"Englisch für Spalte.",e:"<code>row</code> ist die Vorgabe, <code>column</code> stapelt senkrecht."},
+{g:"Layout",t:"Flexbox",d:2,q:"Logo links, Menü rechts, dazwischen Luft. Welche Angabe?",o:["<code>justify-content: space-between;</code>","<code>justify-content: center;</code>","<code>align-items: flex-end;</code>","<code>gap: auto;</code>"],a:0,tipp:"Der erste und der letzte sollen an den Rändern kleben.",e:"<code>space-between</code> steckt den freien Platz in die Lücken, nicht an die Ränder."},
+{g:"Layout",t:"Flexbox",d:3,q:"Deine fünf Karten quetschen sich in eine Zeile, statt umzubrechen. Was fehlt?",code:".leiste {\n  display: flex;\n}",o:["<code>flex-wrap: wrap;</code>","<code>flex-direction: column;</code>","<code>overflow: auto;</code>","<code>width: 100%;</code>"],a:0,tipp:"Es gibt eine Eigenschaft, die den Umbruch überhaupt erst erlaubt.",e:"Die Vorgabe ist <code>nowrap</code> — die Items schrumpfen lieber. Mit <code>wrap</code> dürfen sie in die nächste Zeile."},
+{g:"Layout",t:"Flexbox",d:3,q:"Du stellst auf <code>flex-direction: column</code> um. Was passiert mit den Achsen?",o:["Sie tauschen: justify wirkt jetzt senkrecht","Nichts, sie bleiben gleich","Beide wirken dann senkrecht","<code>align-items</code> wird wirkungslos"],a:0,tipp:"Die Hauptachse folgt immer der eingestellten Richtung.",e:"Bei <code>column</code> wirkt <code>justify-content</code> senkrecht und <code>align-items</code> waagerecht. Genau hier verrutscht es bei den meisten."},
+
+{g:"Layout",t:"Grid",d:1,typ:"luecke",q:"Du willst ein echtes Raster statt einer Reihe.",code:".raster {\n  display: ▁▁▁;\n}",loesung:["grid"],tipp:"Vier Buchstaben.",e:"<code>display: grid</code> macht den Container zum Raster."},
+{g:"Layout",t:"Grid",d:1,typ:"luecke",q:"Die drei Spalten sollen sich den Platz gerecht teilen. Ergänze die Einheit.",code:".raster {\n  display: grid;\n  grid-template-columns: repeat(3, 1▁▁▁);\n}",loesung:["fr"],tipp:"Zwei Buchstaben, kurz für fraction.",e:"<code>1fr</code> heißt: ein gleicher Anteil am freien Platz."},
+{g:"Layout",t:"Grid",d:2,q:"Womit legst du drei gleich breite Spalten an?",o:["<code>grid-template-columns: repeat(3, 1fr);</code>","<code>grid-template-rows: repeat(3, 1fr);</code>","<code>columns: 3;</code>","<code>grid: 3;</code>"],a:0,tipp:"Achte auf columns statt rows.",e:"<code>repeat(3, 1fr)</code> spart Tipparbeit und verteilt gleichmäßig."},
+{g:"Layout",t:"Grid",d:2,typ:"luecke",q:"Zwischen den Rasterfeldern soll Luft sein.",code:".raster {\n  display: grid;\n  ▁▁▁: 16px;\n}",loesung:["gap"],tipp:"Drei Buchstaben, englisch für Lücke.",e:"<code>gap</code> funktioniert in Grid und Flexbox — ohne Randtricks an den Kindern."},
+{g:"Layout",t:"Grid",d:3,q:"Die erste Karte soll doppelt so breit sein wie die anderen.",o:["<code>grid-column: span 2;</code>","<code>width: 200%;</code>","<code>column-span: 2;</code>","<code>flex: 2;</code>"],a:0,tipp:"Ein englisches Wort für überspannen.",e:"<code>span 2</code> zieht das Element über zwei Spalten des Rasters."},
+{g:"Layout",t:"Grid",d:3,q:"Dein Kartenraster soll sich ohne Media Query an jede Breite anpassen.",o:["<code>repeat(auto-fit, minmax(200px, 1fr))</code>","<code>repeat(3, minmax(200px, 1fr))</code>","<code>1fr 1fr 1fr</code>","<code>repeat(3, 200px)</code>"],a:0,tipp:"Zwei Bausteine: automatisch füllen und eine Mindestbreite.",e:"<code>auto-fit</code> legt so viele Spalten an, wie hineinpassen. <code>minmax</code> gibt jeder mindestens 200px und lässt sie den Rest teilen."},
+
+/* ---------- Responsive & Effekte ---------- */
+{g:"Responsive & Effekte",t:"Responsive",d:1,typ:"luecke",q:"Auf dem Handy soll die Schrift kleiner werden. Wie beginnt die Regel?",code:"▁▁▁ (max-width: 600px) {\n  body { font-size: 14px; }\n}",loesung:["@media"],tipp:"Beginnt mit einem Klammeraffen.",e:"<code>@media</code> leitet eine Media Query ein. Die Bedingung in Klammern entscheidet, wann sie gilt."},
+{g:"Responsive & Effekte",t:"Responsive",d:1,typ:"luecke",q:"Dein Bild sprengt auf dem Handy das Layout.",code:"img {\n  ▁▁▁: 100%;\n  height: auto;\n}",loesung:["max-width"],tipp:"Eine Obergrenze, kein fester Wert.",e:"So schrumpft das Bild mit, wird aber nie über seine Originalgröße hinaus aufgeblasen."},
+{g:"Responsive & Effekte",t:"Responsive",d:2,q:"Die Regel soll erst ab Tablet-Breite gelten, also ab 768px aufwärts.",o:["<code>@media (min-width: 768px)</code>","<code>@media (max-width: 768px)</code>","<code>@media (screen &gt; 768px)</code>","<code>@media tablet</code>"],a:0,tipp:"min heißt: mindestens so breit.",e:"Mobile-first arbeitet mit <code>min-width</code>: Basis fürs Handy, Ergänzungen nach oben."},
+{g:"Responsive & Effekte",t:"Responsive",d:2,q:"Deine Galeriebilder haben alle dieselbe Kachelgröße, aber unterschiedliche Seitenverhältnisse. Was verhindert das Stauchen?",o:["<code>object-fit: cover;</code>","<code>object-fit: fill;</code>","<code>background-size: cover;</code>","<code>overflow: hidden;</code>"],a:0,tipp:"Lieber beschneiden als verzerren.",e:"<code>cover</code> füllt die Kachel formatfüllend und schneidet ab. <code>fill</code> würde verzerren."},
+{g:"Responsive & Effekte",t:"Responsive",d:3,q:"Das Fenster ist 500px breit. Welche Schriftgröße gilt?",code:"body { font-size: 16px; }\n\n@media (max-width: 600px) {\n  body { font-size: 14px; }\n}\n\n@media (max-width: 400px) {\n  body { font-size: 12px; }\n}",o:["<code>14px</code>","<code>12px</code>","<code>16px</code>","<code>13px</code>"],a:0,tipp:"Prüfe für jede Bedingung einzeln, ob 500 sie erfüllt.",e:"500 ist kleiner als 600, aber größer als 400 — nur die erste Bedingung greift."},
+
+{g:"Responsive & Effekte",t:"Transitions & Animationen",d:1,typ:"luecke",q:"Der Button soll seine Farbe weich wechseln statt zu springen.",code:".btn {\n  ▁▁▁: background-color 0.3s ease;\n}",loesung:["transition"],tipp:"Englisch für Übergang.",e:"<code>transition</code> lässt die Änderung über die angegebene Dauer gleiten."},
+{g:"Responsive & Effekte",t:"Transitions & Animationen",d:2,q:"Welche Schreibweise ist gültig?",o:["<code>transition: color 0.3s ease;</code>","<code>transition: color, 0.3s, ease;</code>","<code>transition: ease color 0.3s;</code>","<code>transition-effect: color 0.3s;</code>"],a:0,tipp:"Die Bestandteile trennt man nicht mit Kommas.",e:"Reihenfolge: Eigenschaft, Dauer, Zeitverlauf — durch Leerzeichen getrennt. Kommas trennen mehrere Übergänge."},
+{g:"Responsive & Effekte",t:"Transitions & Animationen",d:2,typ:"luecke",q:"Du beschreibst die einzelnen Schritte einer Animation. Wie beginnt der Block?",code:"▁▁▁ puls {\n  50% { transform: scale(1.1); }\n}",loesung:["@keyframes"],tipp:"Beginnt mit einem Klammeraffen.",e:"<code>@keyframes</code> beschreibt den Ablauf, <code>animation</code> weist ihn dann einem Element zu."},
+{g:"Responsive & Effekte",t:"Transitions & Animationen",d:3,q:"Dein Ladepunkt soll dauerhaft pulsieren, ganz ohne dass jemand etwas tut.",o:["<code>animation: puls 2s infinite;</code>","<code>transition: transform 2s infinite;</code>","<code>transform: scale(1.1) 2s;</code>","<code>animation-play: loop;</code>"],a:0,tipp:"Eine Transition braucht immer einen Auslöser.",e:"Nur eine Animation läuft von selbst. <code>transition</code> reagiert bloß auf einen Zustandswechsel wie <code>:hover</code>."},
+
+{g:"Responsive & Effekte",t:"Effekte & Transforms",d:1,typ:"luecke",q:"Die Karte soll leicht über dem Hintergrund schweben.",code:".karte {\n  ▁▁▁: 0 4px 12px rgba(0, 0, 0, 0.3);\n}",loesung:["box-shadow"],tipp:"Zwei Wörter mit Bindestrich.",e:"Die Werte bedeuten: waagerecht, senkrecht, Weichzeichnung, Farbe."},
+{g:"Responsive & Effekte",t:"Effekte & Transforms",d:2,q:"Der Störer auf deiner Aktionsseite soll schräg sitzen.",o:["<code>transform: rotate(45deg);</code>","<code>rotate: 45;</code>","<code>transform: tilt(45);</code>","<code>angle: 45deg;</code>"],a:0,tipp:"Auch der Winkel braucht eine Einheit.",e:"<code>transform</code> nimmt Funktionen wie <code>rotate()</code>, <code>scale()</code> und <code>translate()</code>. Winkel stehen in <code>deg</code>."},
+{g:"Responsive & Effekte",t:"Effekte & Transforms",d:3,q:"Du verschiebst ein Element mit <code>translateX</code>. Warum rücken die Nachbarn nicht nach?",o:["Der ursprüngliche Platz bleibt reserviert","Der Wert ist zu klein","Es wirkt nur bei Bildern","Die Nachbarn sind <code>static</code>"],a:0,tipp:"Was wäre anders, wenn du <code>margin-left</code> genommen hättest?",e:"<code>transform</code> ändert nur die Darstellung, nicht das Layout. Genau deshalb laufen Animationen damit so viel flüssiger."}
+];
+
+/* =========================================================
+   Logik
+   ========================================================= */
+/* Lernmaterial je Thema: Suchbegriff für ein Video + passende Referenzseite */
+const LERNSTOFF = {
+ "Syntax & Einbinden": {
+  "doc": "css/css_syntax.asp",
+  "yt": "CSS Syntax und einbinden"
+ },
+ "Selektoren": {
+  "doc": "css/css_selectors.asp",
+  "yt": "CSS Selektoren Klasse ID"
+ },
+ "Kombinatoren": {
+  "doc": "css/css_combinators.asp",
+  "yt": "CSS Kombinatoren"
+ },
+ "Pseudo-Klassen & -Elemente": {
+  "doc": "css/css_pseudo_classes.asp",
+  "yt": "CSS Pseudo-Klassen und Pseudo-Elemente"
+ },
+ "Spezifität & Vererbung": {
+  "doc": "css/css_specificity.asp",
+  "yt": "CSS Spezifität und Vererbung"
+ },
+ "Box-Modell": {
+  "doc": "css/css_boxmodel.asp",
+  "yt": "CSS Box-Modell"
+ },
+ "margin & padding": {
+  "doc": "css/css_margin.asp",
+  "yt": "CSS margin und padding"
+ },
+ "border & Ecken": {
+  "doc": "css/css_border.asp",
+  "yt": "CSS border und border-radius"
+ },
+ "Größen & box-sizing": {
+  "doc": "css/css3_box-sizing.asp",
+  "yt": "CSS box-sizing width height"
+ },
+ "Farben & Hintergründe": {
+  "doc": "css/css_background.asp",
+  "yt": "CSS Farben und Hintergrund"
+ },
+ "Schrift & Text": {
+  "doc": "css/css_font.asp",
+  "yt": "CSS Schrift und Text formatieren"
+ },
+ "Einheiten": {
+  "doc": "css/css_units.asp",
+  "yt": "CSS Einheiten px em rem vw"
+ },
+ "CSS-Variablen": {
+  "doc": "css/css3_variables.asp",
+  "yt": "CSS Variablen custom properties"
+ },
+ "display": {
+  "doc": "css/css_display.asp",
+  "yt": "CSS display block inline flex"
+ },
+ "position & z-index": {
+  "doc": "css/css_positioning.asp",
+  "yt": "CSS position und z-index"
+ },
+ "Flexbox": {
+  "doc": "css/css3_flexbox.asp",
+  "yt": "CSS Flexbox"
+ },
+ "Grid": {
+  "doc": "css/css_grid.asp",
+  "yt": "CSS Grid Layout"
+ },
+ "Responsive": {
+  "doc": "css/css3_mediaqueries.asp",
+  "yt": "CSS Media Queries responsive"
+ },
+ "Transitions & Animationen": {
+  "doc": "css/css3_animations.asp",
+  "yt": "CSS Transition und Animation"
+ },
+ "Effekte & Transforms": {
+  "doc": "css/css3_shadows.asp",
+  "yt": "CSS box-shadow und transform"
+ }
+};
+const KURSE = [
+  {t:"Martin Lexow · CSS für Anfänger", id:"HfN85lEz6bE"},
+  {t:"Mit Mario · CSS in 60 Minuten", id:"ZbsIkwsaVhI"},
+  {t:"CSS Kurs in 40 Minuten", id:"I84aQhbJl_Y"}
+];
+
+const $ = id => document.getElementById(id);
+
+/* Erzeugt die Linkzeile zu einem Thema */
+function lernLinks(thema, klein){
+  const l = LERNSTOFF[thema] || {};
+  const box = document.createElement("div");
+  box.className = klein ? "review__links" : "plan__links";
+  const a = (href, text, cls) => {
+    const el = document.createElement("a");
+    el.className = "lnk" + (cls ? " " + cls : "");
+    el.href = href; el.target = "_blank"; el.rel = "noopener";
+    el.textContent = text;
+    return el;
+  };
+  box.appendChild(a(
+    "https://www.youtube.com/results?search_query=" +
+      encodeURIComponent((l.yt || thema) + " Tutorial deutsch"),
+    "\u25B6 Lernvideo", "lnk--video"));
+  if (l.doc) box.appendChild(a("https://www.w3schools.com/" + l.doc, "Nachlesen"));
+  return box;
+}
+
+/* Baut Text mit erlaubter Auszeichnung (<code>, <em>) auf.
+   Falls rohes Markup vom Browser verschluckt wuerde und nichts uebrig bleibt,
+   wird der Text stattdessen unveraendert angezeigt statt einer leeren Zeile. */
+function rich(txt, cls){
+  const el = document.createElement("span");
+  if (cls) el.className = cls;
+  el.innerHTML = txt;
+  if (!el.textContent.trim()) el.textContent = txt;
+  return el;
+}
+const DIFF = {1:{name:"Leicht",cls:"d1"},2:{name:"Mittel",cls:"d2"},3:{name:"Knifflig",cls:"d3"}};
+
+let selTopics = new Set();
+let selDiffs  = new Set([1,2,3]);
+let size      = 24;                       /* 0 = alle */
+let deck = [], idx = 0, score = 0, wrong = 0, answers = [], orders = [], log = [];
+
+/* ----- Zeitmessung & Fensterwechsel ----- */
+let running = false;          /* laeuft gerade ein Test? */
+let tStart = 0, tTotal = 0;   /* Startzeitpunkt, Gesamtdauer in ms */
+let ticker = null;
+let awayNow = false, awaySince = 0, awayCount = 0, awayTotal = 0;
+let tippBenutzt = [];        /* je Frage: wurde der Tipp aufgedeckt? */
+let tippVorrat = 3;          /* Startguthaben */
+let tippVergeben = [];       /* je Frage: wurde hier schon nachgelegt? */
+
+function fmt(ms){
+  const sec = Math.max(0, Math.round(ms/1000));
+  const h = Math.floor(sec/3600), m = Math.floor(sec%3600/60), s = sec%60;
+  const pad = n => String(n).padStart(2,"0");
+  return h ? h + ":" + pad(m) + ":" + pad(s) : pad(m) + ":" + pad(s);
+}
+function fmtLong(ms){
+  const sec = Math.max(0, Math.round(ms/1000));
+  if (sec < 60) return sec + " Sek.";
+  const m = Math.floor(sec/60), s = sec%60;
+  return m + " Min. " + s + " Sek.";
+}
+function paintClock(){
+  $("clock").textContent = fmt(Date.now() - tStart);
+  const b = $("awayBadge");
+  if (awayCount){
+    b.classList.remove("hidden");
+    b.textContent = "\u26A0 " + awayCount + "\u00D7 weg";
+  } else b.classList.add("hidden");
+  const t = $("tippBadge");
+  const n = tippBenutzt.filter(Boolean).length;
+  if (running){
+    t.classList.remove("hidden");
+    t.textContent = "\u{1F4A1} " + tippVorrat + " übrig" + (n ? " · " + n + " genutzt" : "");
+  } else t.classList.add("hidden");
+}
+function timerStart(){
+  running = true;
+  tStart = Date.now(); tTotal = 0;
+  awayNow = false; awaySince = 0; awayCount = 0; awayTotal = 0;
+  tippBenutzt = []; tippVorrat = 3; tippVergeben = [];
+  paintClock();
+  clearInterval(ticker);
+  ticker = setInterval(paintClock, 1000);
+}
+function timerStop(){
+  if (!running) return;
+  if (awayNow){ awayTotal += Date.now() - awaySince; awayNow = false; }
+  tTotal = Date.now() - tStart;
+  running = false;
+  clearInterval(ticker); ticker = null;
+}
+
+/* Zaehlt jedes Verlassen des Fensters: Tabwechsel, anderes Programm, minimiert */
+function leave(){
+  if (!running || awayNow) return;
+  awayNow = true; awaySince = Date.now(); awayCount++;
+  paintClock();
+}
+function comeBack(){
+  if (!running || !awayNow) return;
+  awayTotal += Date.now() - awaySince;
+  awayNow = false;
+  paintClock();
+}
+document.addEventListener("visibilitychange", () => document.hidden ? leave() : comeBack());
+window.addEventListener("blur",  leave);
+window.addEventListener("focus", comeBack);
+
+/* ----- Themen sammeln ----- */
+const topics = [];
+QUESTIONS.forEach(q => {
+  let t = topics.find(x => x.t === q.t);
+  if (!t) topics.push({ t:q.t, g:q.g, n:1 }); else t.n++;
+});
+const groups = [...new Set(topics.map(t => t.g))];
+$("count").textContent =
+  QUESTIONS.length + " Fragen · " + topics.length + " Themen · von leicht bis knifflig gestaffelt";
+
+/* ----- Schwierigkeits-Chips ----- */
+[1,2,3].forEach(d => {
+  const n = QUESTIONS.filter(q => q.d === d).length;
+  const b = document.createElement("button");
+  b.className = "chip chip--" + DIFF[d].cls;
+  b.type = "button";
+  b.setAttribute("aria-pressed","true");
+  b.innerHTML = DIFF[d].name + ' <span class="chip__n">' + n + '</span>';
+  b.onclick = () => {
+    if (selDiffs.has(d)) { if (selDiffs.size === 1) return; selDiffs.delete(d); b.setAttribute("aria-pressed","false"); }
+    else { selDiffs.add(d); b.setAttribute("aria-pressed","true"); }
+    updateGo();
+  };
+  $("diffs").appendChild(b);
+});
+
+/* ----- Umfang-Chips ----- */
+[{v:12,l:"Kurz · 12 Fragen"},{v:24,l:"Standard · 24 Fragen"},{v:40,l:"Ausführlich · 40 Fragen"},{v:0,l:"Alles"}].forEach(o => {
+  const b = document.createElement("button");
+  b.className = "chip"; b.type = "button"; b.textContent = o.l;
+  b.setAttribute("aria-pressed", String(o.v === size));
+  b.onclick = () => {
+    size = o.v;
+    [...$("sizes").children].forEach(c => c.setAttribute("aria-pressed","false"));
+    b.setAttribute("aria-pressed","true");
+    updateGo();
+  };
+  $("sizes").appendChild(b);
+});
+
+/* ----- Themen-Chips ----- */
+groups.forEach(g => {
+  const box = document.createElement("div");
+  box.className = "group";
+  const h = document.createElement("p");
+  h.className = "group__h"; h.textContent = g;
+  const row = document.createElement("div");
+  row.className = "chips";
+  topics.filter(t => t.g === g).forEach(t => {
+    const b = document.createElement("button");
+    b.className = "chip"; b.type = "button";
+    b.innerHTML = t.t + ' <span class="chip__n">' + t.n + '</span>';
+    b.setAttribute("aria-pressed","false");
+    b.onclick = () => {
+      if (selTopics.has(t.t)) { selTopics.delete(t.t); b.setAttribute("aria-pressed","false"); }
+      else { selTopics.add(t.t); b.setAttribute("aria-pressed","true"); }
+      updateGo();
+    };
+    row.appendChild(b);
+  });
+  box.append(h,row);
+  $("topics").appendChild(box);
+});
+
+$("topicToggle").onclick = () => {
+  const open = $("topicsBox").classList.toggle("open");
+  $("topicToggle").setAttribute("aria-expanded", String(open));
+};
+
+$("all").onclick = () => {
+  const on = selTopics.size !== topics.length;
+  selTopics = on ? new Set(topics.map(t => t.t)) : new Set();
+  document.querySelectorAll("#topics .chip").forEach(c => c.setAttribute("aria-pressed", String(on)));
+  updateGo();
+};
+
+function matching(){
+  return QUESTIONS.filter(q =>
+    selDiffs.has(q.d) && (selTopics.size === 0 || selTopics.has(q.t))
+  );
+}
+function updateGo(){
+  const n = matching().length;
+  const take = size === 0 ? n : Math.min(size, n);
+  $("go").disabled = n === 0;
+  $("go").textContent = n === 0 ? "Keine Fragen im Filter" : "Test starten · " + take + " Fragen";
+  $("topicSummary").textContent = selTopics.size === 0
+    ? "Themen eingrenzen — aktuell alle"
+    : "Themen eingrenzen — " + selTopics.size + " von " + topics.length + " gewählt";
+}
+updateGo();
+
+/* Selbsttest: meldet in der Konsole, falls ein Text beim Rendern leer bliebe */
+(function pruefe(){
+  const leer = [];
+  QUESTIONS.forEach((q,i) => {
+    const test = t => {
+      const d = document.createElement("span"); d.innerHTML = t;
+      const sichtbar = d.textContent.replace(/\\u00A0/g, " ").trim();
+      return !sichtbar || sichtbar.length < String(t).replace(/<[^>]*>/g, "").trim().length / 3;
+    };
+    if (test(q.q)) leer.push("Frage " + i + " (" + q.t + "): Fragetext");
+    if (q.typ === "luecke"){
+      if (!q.code || q.code.indexOf("\u2581\u2581\u2581") < 0)
+        leer.push("Frage " + i + " (" + q.t + "): keine Lücke im Code");
+      if (!Array.isArray(q.loesung) || !q.loesung.length || !String(q.loesung[0]).trim())
+        leer.push("Frage " + i + " (" + q.t + "): keine Lösung hinterlegt");
+    } else {
+      if (!Array.isArray(q.o) || q.o.length !== 4)
+        leer.push("Frage " + i + " (" + q.t + "): Antworten fehlen");
+      else q.o.forEach((o,j) => { if (test(o)) leer.push("Frage " + i + " (" + q.t + "): Antwort " + "ABCD"[j]); });
+    }
+    if (test(q.e)) leer.push("Frage " + i + " (" + q.t + "): Erklaerung");
+  });
+  if (leer.length) console.warn("Leer gerenderte Texte:\\n" + leer.join("\\n"));
+})();
+
+/* Statusanzeige oben rechts */
+function zeigeStats(q){
+  $("stats").innerHTML =
+    '<span class="badge badge--' + DIFF[q.d].cls + '">' + DIFF[q.d].name + '</span>' +
+    '<span class="tally tally--ok">&#10003; ' + score + '</span>' +
+    '<span class="tally tally--bad">&#10007; ' + wrong + '</span>';
+}
+
+/* Codeblock ausgeben; bei Lueckenfragen wird die Luecke hervorgehoben.
+   Alles ueber Textknoten, damit Markup niemals interpretiert wird. */
+const LUECKE = "\u2581\u2581\u2581";
+function zeigeCode(text, zustand, ersatz){
+  const pre = $("code");
+  pre.textContent = "";
+  const teile = String(text).split(LUECKE);
+  teile.forEach((t, i) => {
+    pre.appendChild(document.createTextNode(t));
+    if (i < teile.length - 1){
+      const m = document.createElement("span");
+      m.className = "gapmark" + (zustand ? " gapmark--" + zustand : "");
+      m.textContent = ersatz || LUECKE;
+      pre.appendChild(m);
+    }
+  });
+  pre.classList.remove("hidden");
+}
+
+/* Vergleich grosszuegig: Gross-/Kleinschreibung, Mehrfach-Leerzeichen
+   und die Anfuehrungszeichenart sind egal. */
+function normAntwort(t){
+  return String(t).trim().toLowerCase()
+    .replace(/\s+/g, " ")
+    .replace(/[\u2018\u2019\u201A\u201C\u201D\u201E']/g, '"');
+}
+
+function lueckeSperren(q, eingabe, ok){
+  $("gapInput").value = eingabe;
+  $("gapInput").disabled = true;
+  $("gapCheck").disabled = true;
+  zeigeCode(q.code, ok ? "ok" : "bad", ok ? q.loesung[0] : eingabe);
+  $("gapTipp").textContent = "";
+
+  const ex = $("explain");
+  ex.className = "explain " + (ok ? "explain--ok" : "explain--bad");
+  ex.textContent = "";
+  const titel = document.createElement("strong");
+  titel.textContent = ok ? "Richtig" : "Leider falsch";
+  ex.appendChild(titel);
+  if (!ok){
+    const zeile = document.createElement("p");
+    zeile.style.margin = "0 0 7px";
+    zeile.appendChild(document.createTextNode("Richtig wäre: "));
+    const l = document.createElement("span");
+    l.className = "loesung";
+    l.textContent = q.loesung[0];
+    zeile.appendChild(l);
+    ex.appendChild(zeile);
+  }
+  ex.insertAdjacentHTML("beforeend", q.e);
+}
+
+function lueckePruefen(){
+  const q = deck[idx];
+  if (!q || q.typ !== "luecke" || answers[idx] !== undefined) return;
+  const eingabe = $("gapInput").value;
+  if (!eingabe.trim()){ $("gapInput").focus(); return; }
+  const ok = q.loesung.some(l => normAntwort(l) === normAntwort(eingabe));
+  answers[idx] = eingabe;
+  ok ? score++ : wrong++;
+  log[idx] = { q, chosen: eingabe, ok, tipp: !!tippBenutzt[idx] };
+  lueckeSperren(q, eingabe, ok);
+  $("tipprow").classList.add("hidden");
+  zeigeStats(q);
+  $("next").disabled = false;
+  $("next").focus();
+}
+
+const shuffle = a => a.map(v => [Math.random(), v]).sort((x,y) => x[0]-y[0]).map(p => p[1]);
+
+/* Zieht eine Auswahl, die die gewählten Schwierigkeiten möglichst gleichmäßig abbildet */
+function buildDeck(){
+  const pool = matching();
+  if (size === 0 || size >= pool.length) return pool.slice();
+  const levels = [...selDiffs].sort();
+  const buckets = levels.map(d => shuffle(pool.filter(q => q.d === d)));
+  const out = [];
+  let i = 0;
+  while (out.length < size) {
+    const b = buckets[i % buckets.length];
+    if (b.length) out.push(b.pop());
+    else if (buckets.every(x => x.length === 0)) break;
+    i++;
+  }
+  return shuffle(out);
+}
+
+/* ----- Ablauf ----- */
+function start(pool){
+  deck = pool; idx = 0; score = 0; wrong = 0; answers = []; orders = []; log = [];
+  timerStart();
+  $("start").classList.add("hidden");
+  $("result").classList.add("hidden");
+  $("quiz").classList.remove("hidden");
+  render();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+$("go").onclick = () => start(buildDeck());
+
+function render(){
+  const q = deck[idx];
+  $("pos").textContent = "Frage " + (idx+1) + " von " + deck.length;
+  $("stats").innerHTML =
+    '<span class="badge badge--' + DIFF[q.d].cls + '">' + DIFF[q.d].name + '</span>' +
+    '<span class="tally tally--ok">&#10003; ' + score + '</span>' +
+    '<span class="tally tally--bad">&#10007; ' + wrong + '</span>';
+  $("fill").style.width = (idx / deck.length * 100) + "%";
+  $("topicline").textContent = q.g + " · " + q.t;
+  $("q").replaceChildren(rich(q.q));
+
+  const istLuecke = q.typ === "luecke";
+  $("opts").classList.toggle("hidden", istLuecke);
+  $("gapbox").classList.toggle("hidden", !istLuecke);
+  $("keyhint").innerHTML = istLuecke
+    ? 'Antwort eintippen · <kbd>Enter</kbd> prüfen, dann <kbd>Enter</kbd> weiter'
+    : '<kbd>A</kbd>\u2013<kbd>D</kbd> antworten · <kbd>Enter</kbd> weiter · <kbd>\u2190</kbd> <kbd>\u2192</kbd> blättern';
+
+  if (q.code){
+    if (istLuecke) zeigeCode(q.code);
+    else { $("code").textContent = q.code; $("code").classList.remove("hidden"); }
+  } else $("code").classList.add("hidden");
+
+  $("prev").disabled = idx === 0;
+  $("next").textContent = idx+1 === deck.length ? "Auswerten" : "Weiter";
+
+  const opts = $("opts");
+  opts.innerHTML = "";
+  if (!istLuecke){
+  if (!orders[idx]) orders[idx] = shuffle(q.o.map((text,i) => ({text,i})));
+  orders[idx].forEach((o,n) => {
+    const b = document.createElement("button");
+    b.className = "opt"; b.type = "button";
+    const key = document.createElement("span");
+    key.className = "opt__key"; key.textContent = "ABCD"[n];
+    const mark = document.createElement("span");
+    mark.className = "opt__mark";
+    b.append(key, rich(o.text, "opt__txt"), mark);
+    b.onclick = () => answer(o.i, q, opts);
+    opts.appendChild(b);
+  });
+  }
+
+  /* Ab jeder 10. Frage kommt ein Tipp dazu – pro Frage nur einmal */
+  let neuerTipp = false;
+  if ((idx + 1) % 10 === 0 && !tippVergeben[idx]){
+    tippVergeben[idx] = true;
+    tippVorrat++;
+    neuerTipp = true;
+  }
+  if (running) paintClock();   /* Anzeige oben sofort nachziehen, nicht erst beim nächsten Takt */
+
+  /* Tipp gibt es auf Knopfdruck – er nennt nie die Lösung selbst */
+  const hatTipp = !!q.tipp && answers[idx] === undefined;
+  $("tipprow").classList.toggle("hidden", !hatTipp);
+  $("tippNeu").classList.toggle("hidden", !(neuerTipp && hatTipp));
+  /* Knopfbeschriftung immer aktuell halten, auch wenn die Zeile gerade versteckt ist */
+  $("tippBtn").disabled = tippVorrat < 1;
+  $("tippBtn").textContent = tippVorrat > 0
+    ? "\u{1F4A1} Tipp anzeigen (" + tippVorrat + " übrig)"
+    : "\u{1F4A1} Keine Tipps mehr übrig";
+
+  if (hatTipp){
+    $("tippText").textContent = q.tipp;
+    if (tippBenutzt[idx]){
+      /* schon aufgedeckt: Text zeigen, nicht erneut abbuchen */
+      $("tippBtn").classList.add("hidden");
+      $("tippText").classList.remove("hidden");
+    } else {
+      $("tippBtn").classList.remove("hidden");
+      $("tippText").classList.add("hidden");
+    }
+  }
+
+  if (answers[idx] === undefined){
+    $("explain").classList.add("hidden");
+    $("next").disabled = true;
+    if (istLuecke){
+      $("gapInput").value = "";
+      $("gapInput").disabled = false;
+      $("gapCheck").disabled = false;
+      setTimeout(() => $("gapInput").focus(), 0);
+    }
+  } else {
+    if (istLuecke) lueckeSperren(q, answers[idx], log[idx] && log[idx].ok);
+    else lock(opts, q, answers[idx]);
+    $("next").disabled = false;
+  }
+}
+
+function lock(opts, q, chosen){
+  const ok = chosen === q.a;
+  [...opts.children].forEach((b,n) => {
+    b.disabled = true;
+    const i = orders[idx][n].i;
+    const mark = b.querySelector(".opt__mark");
+    if (i === q.a){ b.classList.add("opt--right"); mark.textContent = "✓"; }
+    else if (i === chosen){ b.classList.add("opt--wrong"); mark.textContent = "✗"; }
+    else b.classList.add("opt--dim");
+  });
+  const ex = $("explain");
+  ex.className = "explain " + (ok ? "explain--ok" : "explain--bad");
+  ex.innerHTML = "<strong>" + (ok ? "Richtig" : "Leider falsch") + "</strong>" + q.e;
+}
+
+function answer(chosen, q, opts){
+  if (answers[idx] !== undefined) return;
+  answers[idx] = chosen;
+  const ok = chosen === q.a;
+  ok ? score++ : wrong++;
+  log[idx] = { q, chosen, ok, tipp: !!tippBenutzt[idx] };
+  lock(opts, q, chosen);
+  $("tipprow").classList.add("hidden");
+  zeigeStats(q);
+  $("next").disabled = false;
+  $("next").focus();
+}
+
+$("tippBtn").onclick = () => {
+  if (tippVorrat < 1 || tippBenutzt[idx]) return;
+  tippVorrat--;
+  tippBenutzt[idx] = true;
+  $("tippBtn").classList.add("hidden");
+  $("tippNeu").classList.add("hidden");
+  $("tippText").classList.remove("hidden");
+  paintClock();
+};
+$("gapCheck").onclick = lueckePruefen;
+$("prev").onclick = () => { if (idx > 0){ idx--; render(); } };
+$("next").onclick = () => { idx++; idx < deck.length ? render() : (timerStop(), finish(false)); };
+$("quit").onclick = () => {
+  const beantwortet = log.filter(Boolean).length;
+  timerStop();
+  if (!beantwortet){                                  /* nichts beantwortet: nur zurueck */
+    $("quiz").classList.add("hidden");
+    $("start").classList.remove("hidden");
+    return;
+  }
+  finish(true);                                       /* sonst Auswertung des Bearbeiteten */
+};
+$("again").onclick = () => { $("result").classList.add("hidden"); $("start").classList.remove("hidden"); };
+$("wrongOnly").onclick = () => start(log.filter(l => l && !l.ok).map(l => l.q));
+
+/* ----- Auswertung ----- */
+function finish(aborted){
+  timerStop();
+  $("quiz").classList.add("hidden");
+  $("result").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+
+  const total = log.filter(Boolean).length;           /* bei Abbruch nur das Bearbeitete */
+  $("resultLabel").textContent = aborted ? "Auswertung · abgebrochen" : "Auswertung";
+  const note = $("abortNote");
+  if (aborted){
+    note.classList.remove("hidden");
+    note.textContent = "Test vorzeitig beendet — ausgewertet sind die " + total +
+      " von " + deck.length + " bearbeiteten Fragen.";
+  } else note.classList.add("hidden");
+
+  const pct = Math.round(score / total * 100);
+  $("ring").style.setProperty("--p", pct);
+  $("ringNum").innerHTML = pct + '<span>%</span>';
+
+  /* Trefferquote je Schwierigkeit */
+  const per = {};
+  [1,2,3].forEach(d => {
+    const all = log.filter(l => l && l.q.d === d);
+    if (all.length) per[d] = { n:all.length, ok:all.filter(l => l.ok).length };
+  });
+  const rate = d => per[d] ? Math.round(per[d].ok / per[d].n * 100) : null;
+
+  /* Niveau */
+  let name, desc;
+  if (pct >= 92)      { name = "Sehr sicher";            desc = "Nahezu alles sitzt — auch die kniffligen Details."; }
+  else if (pct >= 78) { name = "Fortgeschritten";        desc = "Gutes, belastbares Verständnis. Es fehlen nur einzelne Feinheiten."; }
+  else if (pct >= 62) { name = "Solide Grundlagen";      desc = "Die wichtigsten Bausteine sind da, bei Details wird es stellenweise unsicher."; }
+  else if (pct >= 45) { name = "Grundlagen im Aufbau";   desc = "Vieles ist bekannt, aber noch nicht gefestigt. Wiederholung lohnt sich."; }
+  else                { name = "Einsteiger";             desc = "Die Basis ist noch dünn — am besten Schritt für Schritt von vorn."; }
+
+  const r1 = rate(1), r3 = rate(3);
+  if (r1 !== null && r3 !== null){
+    if (r1 >= 80 && r3 < 45) desc += " Auffällig: Die Grundlagen sitzen, bei den kniffligen Fragen wird es deutlich dünner — es fehlt noch das Verständnis hinter den Regeln.";
+    else if (r1 < 60 && r3 >= 70) desc += " Interessant: Die schweren Fragen laufen besser als die leichten — hier fehlen eher Begriffe als Verständnis.";
+    else if (r3 >= 75) desc += " Auch die kniffligen Fragen sitzen — das spricht für echtes Verständnis, nicht nur Auswendiggelerntes.";
+  }
+  $("levelName").textContent = name;
+  $("levelDesc").textContent = score + " von " + total + " richtig. " + desc;
+
+  /* Tipps: wo wurde geholfen? */
+  const beantwortet = log.filter(Boolean);
+  const mitTipp = beantwortet.filter(l => l.tipp);
+  const tippMoeglich = beantwortet.filter(l => l.q.tipp).length;
+  const tippVerfuegbar = 3 + Math.floor(beantwortet.length / 10);   /* Start plus Nachschub */
+
+  /* Zeit & Fensterwechsel */
+  const facts = $("facts");
+  facts.innerHTML = "";
+  const proFrage = total ? tTotal / total : 0;
+  const fact = (k,v,sub,cls) =>
+    '<div class="fact ' + (cls||"") + '"><p class="fact__k">' + k + '</p>' +
+    '<p class="fact__v">' + v + '</p>' +
+    (sub ? '<p class="fact__s">' + sub + '</p>' : '') + '</div>';
+
+  facts.innerHTML =
+    fact("Benötigte Zeit", fmt(tTotal), total + " Fragen bearbeitet") +
+    fact("Pro Frage", Math.round(proFrage/1000) + " Sek.",
+         proFrage < 12000 ? "zügig — sehr schnell entschieden"
+         : proFrage > 45000 ? "gründlich — lange überlegt"
+         : "in normalem Tempo") +
+    fact("Fenster verlassen", awayCount + "\u00D7",
+         awayCount === 0 ? "durchgehend im Test geblieben"
+         : "insgesamt " + fmtLong(awayTotal) + " außerhalb",
+         awayCount === 0 ? "fact--ok" : "fact--warn") +
+    fact("Tipps genutzt", mitTipp.length + " von " + tippVerfuegbar,
+         mitTipp.length === 0 ? "ohne Hilfe durchgekommen"
+         : "noch " + Math.max(0, tippVerfuegbar - mitTipp.length) + " übrig · " +
+           tippMoeglich + " Fragen boten einen Tipp an",
+         mitTipp.length === 0 ? "fact--ok" : "");
+
+  /* Balken je Schwierigkeit */
+  const bars = $("bars");
+  bars.innerHTML = '<p class="label">Nach Schwierigkeit</p>';
+  [1,2,3].forEach(d => {
+    if (!per[d]) return;
+    const p = rate(d);
+    const el = document.createElement("div");
+    el.innerHTML =
+      '<div class="bar__head"><span class="bar__name">' + DIFF[d].name + '</span>' +
+      '<span class="bar__val">' + per[d].ok + '/' + per[d].n + ' · ' + p + '%</span></div>' +
+      '<div class="bar__track"><div class="bar__fill bar__fill--' + DIFF[d].cls + '" style="width:' + p + '%"></div></div>';
+    bars.appendChild(el);
+  });
+
+  /* Welche Fragen brauchten einen Tipp? */
+  const tl = $("tippliste");
+  if (mitTipp.length){
+    tl.classList.remove("hidden");
+    tl.innerHTML = '<p class="label">Tipp geholt bei diesen Fragen (' + mitTipp.length + ')</p>';
+    const liste = document.createElement("div");
+    liste.className = "tippliste__list";
+    mitTipp.forEach(l => {
+      const zeile = document.createElement("div");
+      zeile.className = "tippitem " + (l.ok ? "tippitem--ok" : "tippitem--bad");
+      const mark = document.createElement("span");
+      mark.className = "tippitem__mark";
+      mark.textContent = l.ok ? "\u2713" : "\u2717";
+      const txt = document.createElement("span");
+      txt.className = "tippitem__txt";
+      const thema = document.createElement("span");
+      thema.className = "tippitem__thema";
+      thema.textContent = l.q.t + " · " + DIFF[l.q.d].name +
+        (l.ok ? " · danach richtig" : " · danach trotzdem falsch");
+      txt.append(thema, rich(l.q.q));
+      zeile.append(mark, txt);
+      liste.appendChild(zeile);
+    });
+    tl.appendChild(liste);
+  } else tl.classList.add("hidden");
+
+  /* Schwache Themen */
+  const bad = {};
+  log.forEach(l => { if (l && !l.ok) bad[l.q.t] = (bad[l.q.t] || 0) + 1; });
+  const badList = Object.keys(bad).sort((a,b) => bad[b] - bad[a]);
+  const gaps = $("gaps");
+  if (badList.length){
+    gaps.classList.remove("hidden");
+    gaps.innerHTML = '<p class="label">Lernplan — diese Themen nochmal ansehen</p>';
+    const liste = document.createElement("div");
+    liste.className = "plan__list";
+    badList.forEach(t => {
+      const zeile = document.createElement("div");
+      zeile.className = "plan__item";
+      const name = document.createElement("span");
+      name.className = "plan__name";
+      name.textContent = t;
+      const n = document.createElement("span");
+      n.className = "plan__n";
+      n.textContent = bad[t] + (bad[t] === 1 ? " Fehler" : " Fehler");
+      name.appendChild(n);
+      zeile.append(name, lernLinks(t, false));
+      liste.appendChild(zeile);
+    });
+    gaps.appendChild(liste);
+
+    const kurse = document.createElement("div");
+    kurse.className = "kurse";
+    kurse.innerHTML = '<p class="label" style="margin:0">Oder von vorn: komplette Kurse</p>';
+    const kl = document.createElement("div");
+    kl.className = "kurse__list";
+    KURSE.forEach(k => {
+      const a = document.createElement("a");
+      a.className = "lnk"; a.target = "_blank"; a.rel = "noopener";
+      a.href = "https://www.youtube.com/watch?v=" + k.id;
+      a.textContent = "\u25B6 " + k.t;
+      kl.appendChild(a);
+    });
+    kurse.appendChild(kl);
+    const q = document.createElement("p");
+    q.className = "quelle";
+    q.textContent = "Videolinks führen zur YouTube-Suche zum jeweiligen Thema, „Nachlesen“ zu W3Schools.";
+    kurse.appendChild(q);
+    gaps.appendChild(kurse);
+  } else gaps.classList.add("hidden");
+
+  /* Fehler im Detail */
+  const wrongs = log.filter(l => l && !l.ok);
+  $("wrongOnly").disabled = wrongs.length === 0;
+  const rev = $("review");
+  rev.innerHTML = "";
+  if (!wrongs.length){
+    rev.innerHTML = '<p class="review__empty">Keine Fehler — nichts zu wiederholen.</p>';
+    return;
+  }
+  const head = document.createElement("p");
+  head.className = "label"; head.style.marginTop = "22px";
+  head.textContent = "Falsch beantwortet (" + wrongs.length + ")";
+  rev.appendChild(head);
+  wrongs.forEach(l => {
+    const d = document.createElement("div");
+    d.className = "review__item";
+    d.innerHTML =
+      '<div class="review__top">' +
+        '<span class="badge badge--' + DIFF[l.q.d].cls + '">' + DIFF[l.q.d].name + '</span>' +
+        '<span class="review__topic">' + l.q.t + '</span>' +
+        (l.tipp ? '<span class="badge badge--tipp">Tipp benutzt</span>' : '') +
+      '</div>' +
+      '<p class="review__q">' + l.q.q + '</p>' +
+      '<div class="review__a"></div>' +
+      '<p class="review__e">' + l.q.e + '</p>';
+    const box = d.querySelector(".review__a");
+    const zeile = (titel, text, cls) => {
+      const s = document.createElement("span");
+      s.className = cls;
+      s.innerHTML = "<b>" + titel + "</b> ";
+      s.appendChild(rich(text));
+      return s;
+    };
+    if (l.q.typ === "luecke"){
+      const nur = (titel, text, cls) => {
+        const s = document.createElement("span");
+        s.className = cls;
+        s.innerHTML = "<b>" + titel + "</b> ";
+        const c = document.createElement("code");
+        c.textContent = text;
+        s.appendChild(c);
+        return s;
+      };
+      box.append(
+        nur("Deine Antwort:", l.chosen,        "review__mine"),
+        nur("Richtig:",       l.q.loesung[0],  "review__right")
+      );
+    } else {
+      box.append(
+        zeile("Deine Antwort:", l.q.o[l.chosen], "review__mine"),
+        zeile("Richtig:",       l.q.o[l.q.a],    "review__right")
+      );
+    }
+    d.appendChild(lernLinks(l.q.t, true));
+    rev.appendChild(d);
+  });
+}
+
+/* ----- Tastatur ----- */
+document.addEventListener("keydown", e => {
+  if ($("quiz").classList.contains("hidden")) return;
+  /* Waehrend des Tippens keine Buchstaben-Kuerzel abfangen */
+  if (document.activeElement && document.activeElement.tagName === "INPUT"){
+    if (e.key === "Enter"){
+      e.preventDefault();
+      if (!$("gapCheck").disabled) $("gapCheck").click();
+      else if (!$("next").disabled) $("next").click();
+    }
+    return;
+  }
+  const map = {a:0,b:1,c:2,d:3,"1":0,"2":1,"3":2,"4":3};
+  const k = e.key.toLowerCase();
+  const onBtn = ["BUTTON"].includes(document.activeElement && document.activeElement.tagName);
+  if (k in map){ const b = $("opts").children[map[k]]; if (b && !b.disabled){ e.preventDefault(); b.click(); } }
+  /* Enter nicht doppelt ausloesen, wenn bereits ein Button den Fokus hat */
+  if (e.key === "Enter" && !onBtn && !$("next").disabled) $("next").click();
+  if (e.key === "ArrowLeft"  && !$("prev").disabled) $("prev").click();
+  if (e.key === "ArrowRight" && !$("next").disabled) $("next").click();
+});
+</script>
+</body>
+</html>

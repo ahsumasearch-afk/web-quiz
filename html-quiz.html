@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Check — Wissensstand testen</title>
+<style>
+:root{
+  --bg:#f6f7fb;
+  --bg-glow-1:rgba(99,102,241,.14);
+  --bg-glow-2:rgba(20,184,166,.12);
+  --card:#ffffff;
+  --card-2:#f1f3f9;
+  --text:#101322;
+  --muted:#646b83;
+  --line:#e2e5ee;
+  --line-strong:#cdd2e0;
+  --accent:#5b5bd6;
+  --accent-soft:rgba(91,91,214,.10);
+  --ok:#0f9d58;
+  --ok-soft:rgba(15,157,88,.12);
+  --bad:#d93b47;
+  --bad-soft:rgba(217,59,71,.10);
+  --warn:#c8860d;
+  --warn-soft:rgba(200,134,13,.14);
+  --code-bg:#161a2b;
+  --code-text:#e7eaf3;
+  --shadow:0 1px 2px rgba(16,19,34,.05), 0 12px 32px -12px rgba(16,19,34,.18);
+  --radius:16px;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0c0e18;
+    --bg-glow-1:rgba(99,102,241,.20);
+    --bg-glow-2:rgba(20,184,166,.14);
+    --card:#151827;
+    --card-2:#1c2032;
+    --text:#eef0f7;
+    --muted:#98a0bb;
+    --line:#262b40;
+    --line-strong:#39405c;
+    --accent:#8b8bf5;
+    --accent-soft:rgba(139,139,245,.14);
+    --ok:#3ecf8e;
+    --ok-soft:rgba(62,207,142,.14);
+    --bad:#ff6b76;
+    --bad-soft:rgba(255,107,118,.14);
+    --warn:#e8b13c;
+    --warn-soft:rgba(232,177,60,.16);
+    --code-bg:#0a0d18;
+    --code-text:#e7eaf3;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 16px 40px -16px rgba(0,0,0,.7);
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);
+  background-image:
+    radial-gradient(900px 500px at 12% -8%, var(--bg-glow-1), transparent 60%),
+    radial-gradient(760px 460px at 92% 4%, var(--bg-glow-2), transparent 62%);
+  background-attachment:fixed;
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  padding:32px 18px 80px;
+}
+.wrap{max-width:820px;margin:0 auto}
+
+/* ---------- Kopf ---------- */
+.masthead{margin-bottom:22px}
+.brand{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-soft);
+  border:1px solid var(--line);border-radius:999px;padding:5px 12px;margin-bottom:14px;
+}
+.brand__dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+h1{
+  margin:0;font-size:clamp(30px,6.4vw,46px);font-weight:800;letter-spacing:-.035em;line-height:1.08;
+}
+.sub{margin:9px 0 0;color:var(--muted);font-size:15px;max-width:56ch}
+
+/* ---------- Karten ---------- */
+.panel{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:22px;
+  margin-top:18px;
+}
+@media (min-width:640px){.panel{padding:26px 28px}}
+.label{
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 12px;font-weight:600;
+}
+.hint{color:var(--muted);font-size:13.5px;margin:-4px 0 14px}
+
+/* ---------- Chips ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  font:inherit;font-size:14px;font-weight:500;
+  padding:8px 14px;background:transparent;color:var(--text);
+  border:1px solid var(--line-strong);border-radius:999px;cursor:pointer;
+  transition:background .15s ease,border-color .15s ease,color .15s ease,transform .1s ease;
+}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip:active{transform:scale(.97)}
+.chip[aria-pressed="true"]{
+  background:var(--accent);border-color:var(--accent);color:#fff;
+}
+.chip--d1[aria-pressed="true"]{background:var(--ok);border-color:var(--ok)}
+.chip--d2[aria-pressed="true"]{background:var(--warn);border-color:var(--warn);color:#1a1300}
+.chip--d3[aria-pressed="true"]{background:var(--bad);border-color:var(--bad)}
+.chip__n{font-family:var(--mono);font-size:11px;opacity:.6;margin-right:5px}
+
+.fieldset{margin-bottom:20px}
+.fieldset:last-of-type{margin-bottom:0}
+
+/* Themenliste */
+.topics{
+  margin-top:8px;max-height:0;overflow:hidden;
+  transition:max-height .3s ease;
+}
+.topics.open{max-height:1400px;overflow:auto}
+.topics__inner{
+  border:1px solid var(--line);border-radius:12px;background:var(--card-2);
+  padding:14px 16px;
+}
+.group{margin-bottom:16px}
+.group:last-child{margin-bottom:0}
+.group__h{
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);font-weight:700;margin:0 0 8px;
+}
+.disclosure{
+  font:inherit;font-size:14px;font-weight:600;color:var(--accent);
+  background:none;border:0;padding:0;cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+}
+.disclosure__caret{transition:transform .25s ease;display:inline-block}
+.disclosure[aria-expanded="true"] .disclosure__caret{transform:rotate(90deg)}
+
+/* ---------- Buttons ---------- */
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px}
+.btn{
+  font:inherit;font-weight:650;font-size:15px;
+  padding:13px 24px;border-radius:11px;cursor:pointer;
+  border:1px solid var(--accent);background:var(--accent);color:#fff;
+  transition:filter .15s ease,transform .1s ease,background .15s ease;
+}
+.btn:hover{filter:brightness(1.08)}
+.btn:active{transform:translateY(1px)}
+.btn--ghost{background:transparent;color:var(--text);border-color:var(--line-strong)}
+.btn--ghost:hover{border-color:var(--accent);color:var(--accent);filter:none}
+.btn--quiet{background:transparent;border-color:transparent;color:var(--muted);padding:13px 12px}
+.btn--quiet:hover{color:var(--bad);filter:none}
+.btn:disabled{opacity:.4;cursor:not-allowed;filter:none;transform:none}
+.btn:focus-visible,.chip:focus-visible,.opt:focus-visible,.disclosure:focus-visible{
+  outline:3px solid var(--accent);outline-offset:2px;
+}
+
+/* ---------- Quiz ---------- */
+.meta{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.meta__left{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-family:var(--mono);font-size:12.5px;color:var(--muted);font-weight:600}
+.clock{
+  font-family:var(--mono);font-size:12.5px;font-weight:700;
+  padding:4px 10px;border-radius:999px;
+  background:var(--card-2);border:1px solid var(--line);color:var(--text);
+  font-variant-numeric:tabular-nums;
+}
+.awaybadge{
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  padding:4px 9px;border-radius:999px;
+  background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn);
+}
+.meta__right{display:flex;align-items:center;gap:7px}
+.badge{
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:4px 10px;border-radius:999px;border:1px solid transparent;
+}
+.badge--d1{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}
+.badge--d2{background:var(--warn-soft);color:var(--warn);border-color:var(--warn)}
+.badge--d3{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.tally{font-family:var(--mono);font-size:12px;font-weight:700;padding:4px 9px;border-radius:999px}
+.tally--ok{background:var(--ok-soft);color:var(--ok)}
+.tally--bad{background:var(--bad-soft);color:var(--bad)}
+
+.meter{height:7px;border-radius:999px;background:var(--card-2);border:1px solid var(--line);overflow:hidden;margin-bottom:22px}
+.meter__fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--ok));transition:width .35s cubic-bezier(.4,0,.2,1)}
+
+.topicline{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:600}
+.question{font-size:clamp(20px,3.2vw,25px);font-weight:700;letter-spacing:-.015em;line-height:1.35;margin:0 0 18px}
+.question code,.explain code,.review code{
+  font-family:var(--mono);font-size:.86em;background:var(--card-2);
+  border:1px solid var(--line);padding:1px 6px;border-radius:6px;white-space:nowrap;
+}
+pre{
+  font-family:var(--mono);font-size:13px;line-height:1.6;
+  background:var(--code-bg);color:var(--code-text);
+  padding:16px 18px;border-radius:12px;overflow:auto;margin:0 0 18px;
+  border:1px solid var(--line);
+}
+
+.opts{display:grid;gap:9px}
+.opt{
+  font:inherit;font-size:15.5px;text-align:left;
+  padding:14px 16px;border-radius:12px;
+  border:1px solid var(--line-strong);background:var(--card);color:var(--text);
+  cursor:pointer;display:flex;gap:13px;align-items:flex-start;
+  transition:border-color .15s ease,background .15s ease,transform .1s ease;
+}
+.opt:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}
+.opt:active:not(:disabled){transform:scale(.995)}
+.opt__key{
+  flex:none;width:24px;height:24px;border-radius:7px;
+  display:grid;place-items:center;
+  font-family:var(--mono);font-size:12px;font-weight:700;
+  background:var(--card-2);border:1px solid var(--line);color:var(--muted);
+  margin-top:1px;
+}
+.opt__txt{flex:1}
+.opt__mark{flex:none;font-weight:700;font-size:16px;opacity:0;transition:opacity .2s ease}
+.opt--right{background:var(--ok-soft);border-color:var(--ok)}
+.opt--right .opt__key{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt--right .opt__mark{opacity:1;color:var(--ok)}
+.opt--wrong{background:var(--bad-soft);border-color:var(--bad)}
+.opt--wrong .opt__key{background:var(--bad);border-color:var(--bad);color:#fff}
+.opt--wrong .opt__mark{opacity:1;color:var(--bad)}
+.opt:disabled{cursor:default}
+.opt--dim{opacity:.5}
+
+.explain{
+  margin-top:18px;padding:15px 17px;border-radius:12px;
+  background:var(--card-2);border:1px solid var(--line);
+  border-left:3px solid var(--accent);font-size:15px;
+  animation:rise .25s ease;
+}
+.explain--ok{border-left-color:var(--ok)}
+.explain--bad{border-left-color:var(--bad)}
+.explain strong{
+  display:block;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  margin-bottom:5px;color:var(--muted);
+}
+.explain--ok strong{color:var(--ok)}
+.explain--bad strong{color:var(--bad)}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.keyhint{margin-top:14px;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.gapmark{
+  background:var(--warn-soft);color:var(--warn);
+  border:1px dashed var(--warn);border-radius:5px;
+  padding:0 7px;font-weight:700;
+}
+.gapmark--ok{background:var(--ok-soft);color:var(--ok);border-color:var(--ok);border-style:solid}
+.gapmark--bad{background:var(--bad-soft);color:var(--bad);border-color:var(--bad);border-style:solid}
+.gapbox{display:grid;gap:10px}
+.gapbox__row{display:flex;gap:9px;flex-wrap:wrap}
+.gapbox__input{
+  flex:1;min-width:210px;
+  font-family:var(--mono);font-size:15.5px;
+  padding:13px 15px;border-radius:11px;
+  border:1px solid var(--line-strong);
+  background:var(--card-2);color:var(--text);
+}
+.gapbox__input::placeholder{color:var(--muted);font-family:inherit}
+.gapbox__input:focus{outline:3px solid var(--accent);outline-offset:2px;border-color:var(--accent)}
+.gapbox__input:disabled{opacity:.75}
+.gapbox__tipp{margin:0;font-size:13.5px;color:var(--muted)}
+.tipprow{margin:0 0 16px}
+.tipprow__head{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.tippbtn:disabled{opacity:.45;cursor:not-allowed;border-style:solid}
+.tippbtn:disabled:hover{border-color:var(--line-strong);color:var(--muted)}
+.tippneu{
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  padding:4px 9px;border-radius:999px;
+  background:var(--ok-soft);color:var(--ok);border:1px solid var(--ok);
+  animation:rise .25s ease;
+}
+.vorrat{
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+  color:var(--muted);margin:10px 0 0;
+}
+.tippbtn{
+  font:inherit;font-size:13px;font-weight:600;cursor:pointer;
+  padding:7px 13px;border-radius:9px;
+  border:1px dashed var(--line-strong);background:transparent;color:var(--muted);
+  display:inline-flex;align-items:center;gap:6px;
+  transition:border-color .15s ease,color .15s ease;
+}
+.tippbtn:hover{border-color:var(--warn);color:var(--warn)}
+.tipptext{
+  margin:10px 0 0;padding:11px 14px;border-radius:10px;font-size:14px;
+  background:var(--warn-soft);border:1px solid var(--warn);color:var(--text);
+  animation:rise .2s ease;
+}
+.tipptext b{color:var(--warn);font-weight:700}
+.tippbadge{
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  padding:4px 9px;border-radius:999px;
+  background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent);
+}
+.badge--tipp{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+.tippliste{margin-top:24px}
+.tippliste__list{display:grid;gap:8px;margin-top:6px}
+.tippitem{
+  display:flex;gap:11px;align-items:flex-start;
+  background:var(--card-2);border:1px solid var(--line);
+  border-radius:11px;padding:11px 14px;font-size:14.5px;
+}
+.tippitem__mark{flex:none;font-weight:700;font-size:15px;line-height:1.5}
+.tippitem--ok .tippitem__mark{color:var(--ok)}
+.tippitem--bad .tippitem__mark{color:var(--bad)}
+.tippitem__txt{flex:1}
+.tippitem__thema{
+  display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:2px;
+}
+.loesung{
+  font-family:var(--mono);font-size:14px;
+  background:var(--card);border:1px solid var(--line-strong);
+  border-radius:7px;padding:2px 9px;display:inline-block;
+}
+.keyhint kbd{
+  font-family:var(--mono);font-size:11px;border:1px solid var(--line-strong);
+  border-bottom-width:2px;border-radius:5px;padding:1px 5px;background:var(--card-2);
+}
+
+/* ---------- Ergebnis ---------- */
+.scorewrap{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.facts{margin-top:24px;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(148px,1fr))}
+.fact{background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+.fact__k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 5px}
+.fact__v{font-size:21px;font-weight:750;letter-spacing:-.02em;margin:0;font-variant-numeric:tabular-nums}
+.fact__s{font-size:12.5px;color:var(--muted);margin:3px 0 0;line-height:1.4}
+.fact--warn{border-color:var(--warn);background:var(--warn-soft)}
+.fact--warn .fact__v{color:var(--warn)}
+.fact--ok{border-color:var(--ok)}
+.aborted{
+  margin:14px 0 0;padding:11px 14px;border-radius:11px;font-size:14px;
+  background:var(--warn-soft);border:1px solid var(--warn);color:var(--warn);
+}
+.ring{
+  --p:0;
+  flex:none;width:132px;height:132px;border-radius:50%;
+  background:conic-gradient(var(--accent) calc(var(--p)*1%), var(--card-2) 0);
+  display:grid;place-items:center;position:relative;
+  transition:--p .8s ease;
+}
+.ring::after{
+  content:"";position:absolute;inset:9px;border-radius:50%;background:var(--card);
+}
+.ring__num{position:relative;z-index:1;font-size:31px;font-weight:800;letter-spacing:-.03em}
+.ring__num span{font-size:15px;font-weight:600;color:var(--muted)}
+.scoretext{flex:1;min-width:220px}
+.level{font-size:clamp(21px,3.4vw,27px);font-weight:800;letter-spacing:-.02em;margin:0 0 6px}
+.leveldesc{margin:0;color:var(--muted);font-size:15px}
+
+.bars{margin-top:24px;display:grid;gap:13px}
+.bar__head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px}
+.bar__name{font-weight:600}
+.bar__val{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.bar__track{height:8px;border-radius:999px;background:var(--card-2);border:1px solid var(--line);overflow:hidden}
+.bar__fill{height:100%;border-radius:999px;transition:width .6s ease}
+.bar__fill--d1{background:var(--ok)}
+.bar__fill--d2{background:var(--warn)}
+.bar__fill--d3{background:var(--bad)}
+
+.gaps{margin-top:24px}
+.gaps__list{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+.gap{
+  font-size:13px;font-weight:500;padding:5px 11px;border-radius:999px;
+  background:var(--bad-soft);color:var(--bad);border:1px solid var(--bad);
+}
+.gap__n{font-family:var(--mono);font-size:11px;opacity:.75;margin-left:4px}
+.plan__list{display:grid;gap:10px;margin-top:6px}
+.plan__item{
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+  background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+}
+.plan__name{font-weight:650;font-size:15px}
+.plan__n{
+  font-family:var(--mono);font-size:11px;font-weight:700;margin-left:8px;
+  color:var(--bad);background:var(--bad-soft);border:1px solid var(--bad);
+  padding:2px 8px;border-radius:999px;
+}
+.plan__links,.review__links{display:flex;gap:8px;flex-wrap:wrap}
+.review__links{margin-top:11px}
+.lnk{
+  font:inherit;font-size:13px;font-weight:600;text-decoration:none;
+  padding:7px 13px;border-radius:9px;
+  border:1px solid var(--line-strong);color:var(--text);
+  display:inline-flex;align-items:center;gap:6px;white-space:nowrap;
+  transition:border-color .15s ease,color .15s ease;
+}
+.lnk:hover{border-color:var(--accent);color:var(--accent)}
+.lnk--video{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.lnk--video:hover{border-color:var(--bad);color:var(--bad);filter:brightness(1.12)}
+.kurse{margin-top:14px;padding:13px 15px;border:1px solid var(--line);border-radius:12px;background:var(--card-2)}
+.kurse__list{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.quelle{margin:10px 0 0;font-size:12px;color:var(--muted)}
+
+.review{margin-top:26px;border-top:1px solid var(--line);padding-top:6px}
+.review__item{border-bottom:1px solid var(--line);padding:14px 0}
+.review__top{display:flex;gap:9px;align-items:baseline;flex-wrap:wrap;margin-bottom:5px}
+.review__topic{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.review__q{font-weight:650;font-size:15px;margin:0 0 8px}
+.review__a{font-size:13.5px;display:grid;gap:3px}
+.review__a b{font-weight:600}
+.review__mine{color:var(--bad)}
+.review__right{color:var(--ok)}
+.review__e{margin-top:7px;font-size:13.5px;color:var(--muted)}
+.review__empty{padding:16px 0;color:var(--muted)}
+
+.hidden{display:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <span class="brand"><span class="brand__dot"></span>Wissenscheck</span>
+    <h1>HTML — wo stehst du?</h1>
+    <p class="sub" id="count">Fragen werden geladen …</p>
+  </header>
+
+  <!-- ===== Start ===== -->
+  <section class="panel" id="start">
+
+    <div class="fieldset">
+      <p class="label">Schwierigkeit</p>
+      <p class="hint">Ein guter Test mischt: leichte Fragen zeigen, ob die Basis sitzt, knifflige zeigen das echte Verständnis.</p>
+      <div class="chips" id="diffs"></div>
+    </div>
+
+    <div class="fieldset">
+      <p class="label">Umfang</p>
+      <div class="chips" id="sizes"></div>
+      <p class="vorrat">&#128161; Du startest mit 3 Tipps · ab jeder 10. Frage kommt einer dazu</p>
+    </div>
+
+    <div class="fieldset">
+      <button class="disclosure" id="topicToggle" aria-expanded="false">
+        <span class="disclosure__caret">&#9656;</span>
+        <span id="topicSummary">Themen eingrenzen — aktuell alle</span>
+      </button>
+      <div class="topics" id="topicsBox">
+        <div class="topics__inner" id="topics"></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <button class="btn" id="go">Test starten</button>
+      <button class="btn btn--ghost" id="all">Alle Themen an/aus</button>
+    </div>
+  </section>
+
+  <!-- ===== Quiz ===== -->
+  <section class="panel hidden" id="quiz">
+    <div class="meta">
+      <span class="meta__left">
+        <span id="pos"></span>
+        <span class="clock" id="clock">00:00</span>
+        <span class="awaybadge hidden" id="awayBadge"></span>
+        <span class="tippbadge hidden" id="tippBadge"></span>
+      </span>
+      <span class="meta__right" id="stats"></span>
+    </div>
+    <div class="meter"><div class="meter__fill" id="fill"></div></div>
+    <p class="topicline" id="topicline"></p>
+    <h2 class="question" id="q"></h2>
+    <pre id="code" class="hidden"></pre>
+
+    <div class="tipprow hidden" id="tipprow">
+      <div class="tipprow__head">
+        <button class="tippbtn" id="tippBtn" type="button">&#128161; Tipp anzeigen</button>
+        <span class="tippneu hidden" id="tippNeu">+1 Tipp freigeschaltet</span>
+      </div>
+      <p class="tipptext hidden" id="tippText"></p>
+    </div>
+
+    <div class="gapbox hidden" id="gapbox">
+      <div class="gapbox__row">
+        <input class="gapbox__input" id="gapInput" type="text" autocomplete="off"
+               autocapitalize="none" autocorrect="off" spellcheck="false"
+               placeholder="Fehlendes Stück hier eintippen …">
+        <button class="btn" id="gapCheck" type="button">Prüfen</button>
+      </div>
+      <p class="gapbox__tipp" id="gapTipp"></p>
+    </div>
+
+    <div class="opts" id="opts"></div>
+    <div class="explain hidden" id="explain"></div>
+    <div class="row">
+      <button class="btn btn--ghost" id="prev" disabled>Zurück</button>
+      <button class="btn" id="next" disabled>Weiter</button>
+      <button class="btn btn--quiet" id="quit">Abbrechen</button>
+    </div>
+    <p class="keyhint" id="keyhint"><kbd>A</kbd>–<kbd>D</kbd> antworten · <kbd>Enter</kbd> weiter · <kbd>&larr;</kbd> <kbd>&rarr;</kbd> blättern</p>
+  </section>
+
+  <!-- ===== Ergebnis ===== -->
+  <section class="panel hidden" id="result">
+    <p class="label" id="resultLabel">Auswertung</p>
+    <div class="scorewrap">
+      <div class="ring" id="ring"><span class="ring__num" id="ringNum"></span></div>
+      <div class="scoretext">
+        <p class="level" id="levelName"></p>
+        <p class="leveldesc" id="levelDesc"></p>
+      </div>
+    </div>
+
+    <p class="aborted hidden" id="abortNote"></p>
+    <div class="facts" id="facts"></div>
+    <div class="bars" id="bars"></div>
+    <div class="tippliste hidden" id="tippliste"></div>
+    <div class="gaps hidden" id="gaps"></div>
+
+    <div class="row">
+      <button class="btn" id="again">Neuer Test</button>
+      <button class="btn btn--ghost" id="wrongOnly">Nur Fehler wiederholen</button>
+    </div>
+
+    <div class="review" id="review"></div>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================
+   Fragenkatalog
+   d = Schwierigkeit: 1 leicht · 2 mittel · 3 knifflig
+   a = Index der richtigen Antwort (immer 0, Optionen werden gemischt)
+   ========================================================= */
+const QUESTIONS = [
+/* ---------- Grundlagen ---------- */
+{g:"Grundlagen",t:"Was ist HTML",d:1,q:"Wofür steht HTML?",o:["HyperText Markup Language","Hyperlink Modern Language","Home Tool Markup Language","HighText Machine Language"],a:0,tipp:"Das M steht für Markup, also Auszeichnung.",e:"HTML heißt HyperText Markup Language. Man zeichnet Text aus und gibt ihm damit eine Bedeutung."},
+{g:"Grundlagen",t:"Was ist HTML",d:1,q:"Was baut man mit HTML?",o:["Den Aufbau einer Webseite","Die Farben einer Webseite","Die Datenbank einer Webseite","Die Internetverbindung"],a:0,tipp:"Denk an das Gerüst eines Hauses, nicht an die Wandfarbe.",e:"HTML liefert die Struktur. Die Farben kommen aus CSS."},
+{g:"Grundlagen",t:"Was ist HTML",d:2,q:"Was macht CSS, was HTML nicht macht?",o:["Farben und Abstände festlegen","Text auf die Seite schreiben","Links einbauen","Bilder einbinden"],a:0,e:"HTML bestimmt, was da ist. CSS bestimmt, wie es aussieht."},
+{g:"Grundlagen",t:"Was ist HTML",d:3,q:"Kann HTML rechnen oder Dinge wiederholen?",o:["Nein, dafür braucht es JavaScript","Ja, mit Schleifen","Ja, seit HTML5","Ja, mit dem Attribut loop"],a:0,tipp:"Überleg, ob HTML Bedingungen kennt.",e:"HTML beschreibt nur Struktur. Es kennt keine Variablen, Schleifen oder Bedingungen — deshalb ist es keine Programmiersprache."},
+
+{g:"Grundlagen",t:"HTML-Datei & Aufbau",d:1,q:"Wie heißt die Startseite einer Website meistens?",o:["<code>index.html</code>","<code>start.html</code>","<code>home.html</code>","<code>main.html</code>"],a:0,tipp:"Der Webserver sucht immer nach demselben Namen.",e:"<code>index.html</code> wird automatisch geladen, wenn jemand nur die Adresse eingibt."},
+{g:"Grundlagen",t:"HTML-Datei & Aufbau",d:1,typ:"luecke",q:"Ergänze die erste Zeile jeder HTML-Datei.",code:"▁▁▁\n<html lang=\"de\">\n  <head></head>\n  <body></body>\n</html>",loesung:["<!DOCTYPE html>"],tipp:"Nach der spitzen Klammer kommt ein Ausrufezeichen.",e:"<code>&lt;!DOCTYPE html&gt;</code> sagt dem Browser: Das ist HTML5."},
+{g:"Grundlagen",t:"HTML-Datei & Aufbau",d:2,q:"Was gehört in den <code>&lt;head&gt;</code>?",o:["<code>&lt;title&gt;</code>","<code>&lt;h1&gt;</code>","<code>&lt;p&gt;</code>","<code>&lt;img&gt;</code>"],a:0,tipp:"Was im head steht, sieht man nicht direkt auf der Seite.",e:"In den head gehören Angaben über die Seite, zum Beispiel der <code>&lt;title&gt;</code>. Alles Sichtbare steht im body."},
+{g:"Grundlagen",t:"HTML-Datei & Aufbau",d:3,q:"Du speicherst deine Seite als <code>seite.txt</code>. Was zeigt der Browser?",o:["Den Code als Text","Die fertige Webseite","Eine Fehlermeldung","Eine leere Seite"],a:0,tipp:"Die Endung sagt dem Browser, wie er die Datei behandeln soll.",e:"Nur bei .html baut der Browser eine Seite daraus. Sonst zeigt er den Code einfach als Text an."},
+
+{g:"Grundlagen",t:"Tags & Elemente",d:1,q:"Wie sieht ein End-Tag aus?",o:["<code>&lt;/p&gt;</code>","<code>&lt;p/&gt;</code>","<code>&lt;\\p&gt;</code>","<code>&lt;end p&gt;</code>"],a:0,tipp:"Ein Zeichen kommt direkt nach der Klammer dazu.",e:"Der End-Tag hat einen Schrägstrich vor dem Namen: <code>&lt;/p&gt;</code>."},
+{g:"Grundlagen",t:"Tags & Elemente",d:1,q:"Welches Element braucht keinen End-Tag?",o:["<code>&lt;img&gt;</code>","<code>&lt;div&gt;</code>","<code>&lt;p&gt;</code>","<code>&lt;a&gt;</code>"],a:0,tipp:"Was kann keinen Inhalt zwischen zwei Tags haben?",e:"Ein Bild hat keinen Inhalt, den man umschließen könnte. Solche Elemente nennt man leere Elemente."},
+{g:"Grundlagen",t:"Tags & Elemente",d:2,typ:"luecke",q:"Schließe den Absatz richtig ab.",code:"<p>Hallo Welt▁▁▁",loesung:["</p>"],tipp:"Denk an den Schrägstrich.",e:"Jeder Absatz wird mit <code>&lt;/p&gt;</code> geschlossen."},
+{g:"Grundlagen",t:"Tags & Elemente",d:3,q:"Welche Zeile ist richtig geschrieben?",o:["<code>&lt;p&gt;Sehr &lt;b&gt;wichtig&lt;/b&gt;&lt;/p&gt;</code>","<code>&lt;p&gt;Sehr &lt;b&gt;wichtig&lt;/p&gt;&lt;/b&gt;</code>","<code>&lt;b&gt;&lt;p&gt;Sehr wichtig&lt;/b&gt;&lt;/p&gt;</code>","<code>&lt;p&gt;&lt;b&gt;Sehr wichtig&lt;/p&gt;</code>"],a:0,tipp:"Was zuletzt geöffnet wurde, wird zuerst geschlossen.",e:"Tags müssen sauber ineinander liegen — wie Schachteln, die man in umgekehrter Reihenfolge wieder zumacht."},
+
+{g:"Grundlagen",t:"Attribute",d:1,q:"In welcher Zeile steht das Attribut richtig?",o:["<code>&lt;a href=\"seite.html\"&gt;Link&lt;/a&gt;</code>","<code>&lt;a&gt;href=\"seite.html\"&lt;/a&gt;</code>","<code>&lt;a&gt;Link&lt;/a href=\"seite.html\"&gt;</code>","<code>&lt;a&gt;Link&lt;/a&gt; href=\"seite.html\"</code>"],a:0,tipp:"Es gehört in den Start-Tag, gleich hinter den Elementnamen.",e:"Attribute stehen im Start-Tag, direkt hinter dem Namen des Elements — nie im End-Tag und nie daneben."},
+{g:"Grundlagen",t:"Attribute",d:1,typ:"luecke",q:"Welches Attribut fehlt, damit das Bild angezeigt wird?",code:"<img ▁▁▁=\"katze.jpg\" alt=\"Eine Katze\">",loesung:["src"],tipp:"Drei Buchstaben, kurz für source.",e:"<code>src</code> sagt dem Browser, welche Datei er laden soll."},
+{g:"Grundlagen",t:"Attribute",d:2,q:"Was macht <code>lang=\"de\"</code> im html-Tag?",o:["Es nennt die Sprache der Seite","Es übersetzt die Seite","Es stellt die Browsersprache um","Es lädt deutsche Schriften"],a:0,tipp:"Es ist eine Information, keine Funktion.",e:"Die Sprachangabe hilft Vorleseprogrammen und Suchmaschinen. Übersetzt wird dadurch nichts."},
+{g:"Grundlagen",t:"Attribute",d:3,q:"Welche Schreibweise ist erlaubt?",o:["<code>&lt;input type=\"text\" required&gt;</code>","<code>&lt;input type=\"text\" required=\"yes\"&gt;</code>","<code>&lt;input type=text required=true&gt;</code>","<code>&lt;input {type: text}&gt;</code>"],a:0,tipp:"Manche Attribute brauchen gar keinen Wert.",e:"<code>required</code> wirkt schon dadurch, dass es dasteht. Solche Attribute nennt man boolesche Attribute."},
+
+/* ---------- Text ---------- */
+{g:"Text",t:"Überschriften",d:1,q:"Welche Überschrift ist die größte?",o:["<code>&lt;h1&gt;</code>","<code>&lt;h6&gt;</code>","<code>&lt;head&gt;</code>","<code>&lt;hr&gt;</code>"],a:0,tipp:"Kleinere Zahl heißt wichtiger.",e:"h1 ist die oberste Ebene, h6 die unterste."},
+{g:"Text",t:"Überschriften",d:1,typ:"luecke",q:"Setze den fehlenden Start-Tag ein.",code:"▁▁▁Willkommen</h1>",loesung:["<h1>"],tipp:"Der End-Tag steht schon da.",e:"Zu jedem <code>&lt;/h1&gt;</code> gehört ein <code>&lt;h1&gt;</code>."},
+{g:"Text",t:"Überschriften",d:2,q:"Wie viele Überschriften-Ebenen gibt es?",o:["6","3","4","8"],a:0,e:"Von h1 bis h6 — sechs Stück."},
+{g:"Text",t:"Überschriften",d:3,q:"Nach <code>&lt;h1&gt;</code> kommt gleich <code>&lt;h4&gt;</code>. Warum ist das ungünstig?",o:["Es werden Ebenen übersprungen","h4 ist zu klein","h4 darf nur einmal vorkommen","Nach h1 ist keine Überschrift mehr erlaubt"],a:0,tipp:"Denk an ein Inhaltsverzeichnis.",e:"Überschriften bilden eine Gliederung. Springt man von 1 auf 4, wird die Struktur unlogisch."},
+
+{g:"Text",t:"Absätze & Umbrüche",d:1,q:"Welches Element macht einen Absatz?",o:["<code>&lt;p&gt;</code>","<code>&lt;div&gt;</code>","<code>&lt;span&gt;</code>","<code>&lt;br&gt;</code>"],a:0,tipp:"p wie paragraph.",e:"<code>&lt;p&gt;</code> ist der Absatz. <code>&lt;div&gt;</code> ist nur ein Container ohne Bedeutung."},
+{g:"Text",t:"Absätze & Umbrüche",d:1,q:"Welches Element macht einen Zeilenumbruch?",o:["<code>&lt;br&gt;</code>","<code>&lt;hr&gt;</code>","<code>&lt;p&gt;</code>","<code>&lt;wbr&gt;</code>"],a:0,tipp:"br wie break.",e:"<code>&lt;br&gt;</code> bricht die Zeile um. <code>&lt;hr&gt;</code> zeichnet dagegen eine Trennlinie."},
+{g:"Text",t:"Absätze & Umbrüche",d:2,q:"Du schreibst zehn Leerzeichen hintereinander. Was zeigt der Browser?",o:["Ein Leerzeichen","Alle zehn","Gar keins","Eine Fehlermeldung"],a:0,tipp:"HTML geht sparsam mit Leerräumen um.",e:"Mehrere Leerzeichen und Zeilenumbrüche fasst der Browser zu einem einzigen Leerzeichen zusammen."},
+{g:"Text",t:"Absätze & Umbrüche",d:3,q:"Wo gehört <code>&lt;br&gt;</code> wirklich hin?",o:["<code>&lt;p&gt;Musterweg 3&lt;br&gt;12345 Berlin&lt;/p&gt;</code>","<code>&lt;p&gt;Text A&lt;/p&gt;&lt;br&gt;&lt;p&gt;Text B&lt;/p&gt;</code>","<code>&lt;div&gt;Box&lt;/div&gt;&lt;br&gt;&lt;br&gt;</code>","<code>&lt;h1&gt;Titel&lt;/h1&gt;&lt;br&gt;</code>"],a:0,tipp:"Gehört der Umbruch zum Text oder soll er nur Platz schaffen?",e:"Bei einer Adresse gehört der Umbruch zum Inhalt. Abstand dagegen macht man mit CSS."},
+
+{g:"Text",t:"Text hervorheben",d:1,q:"Welches Element macht Text fett und sagt zugleich: wichtig?",o:["<code>&lt;strong&gt;</code>","<code>&lt;b&gt;</code>","<code>&lt;big&gt;</code>","<code>&lt;mark&gt;</code>"],a:0,tipp:"Zwei Elemente sehen gleich aus, nur eines hat eine Bedeutung.",e:"<code>&lt;strong&gt;</code> heißt wichtig. <code>&lt;b&gt;</code> ist nur optisch fett."},
+{g:"Text",t:"Text hervorheben",d:1,q:"Welches Element malt Text gelb an wie ein Textmarker?",o:["<code>&lt;mark&gt;</code>","<code>&lt;em&gt;</code>","<code>&lt;u&gt;</code>","<code>&lt;small&gt;</code>"],a:0,e:"<code>&lt;mark&gt;</code> hebt Text hervor, so wie ein Marker auf Papier."},
+{g:"Text",t:"Text hervorheben",d:2,q:"Was ist der Unterschied zwischen <code>&lt;b&gt;</code> und <code>&lt;strong&gt;</code>?",o:["<code>&lt;strong&gt;</code> hat eine Bedeutung, <code>&lt;b&gt;</code> nur ein Aussehen","<code>&lt;b&gt;</code> ist dicker","<code>&lt;strong&gt;</code> ist veraltet","Es gibt keinen Unterschied"],a:0,tipp:"Denk an ein Vorleseprogramm für blinde Menschen.",e:"Beide sehen fett aus. Aber nur bei strong weiß ein Vorleseprogramm, dass der Inhalt wichtig ist."},
+{g:"Text",t:"Text hervorheben",d:3,q:"Welches Element betont Text so, dass sich der Sinn ändern kann?",o:["<code>&lt;em&gt;</code>","<code>&lt;i&gt;</code>","<code>&lt;cite&gt;</code>","<code>&lt;span&gt;</code>"],a:0,tipp:"Beide sehen kursiv aus, nur eines meint eine Betonung.",e:"<code>&lt;em&gt;</code> betont — „Ich habe das nicht gesagt“ klingt anders je nach betontem Wort. <code>&lt;i&gt;</code> ist nur schräge Schrift."},
+
+{g:"Text",t:"Kommentare",d:1,typ:"luecke",q:"Womit beginnt ein HTML-Kommentar?",code:"▁▁▁ Hier beginnt die Navigation -->",loesung:["<!--"],tipp:"Vier Zeichen — das Ende siehst du schon.",e:"Kommentare stehen zwischen <code>&lt;!--</code> und <code>--&gt;</code>."},
+{g:"Text",t:"Kommentare",d:1,q:"Wozu sind Kommentare da?",o:["Für Notizen im Code","Für Text auf der Seite","Für Fehlermeldungen","Für Überschriften"],a:0,e:"Kommentare werden nicht angezeigt. Sie helfen beim Verstehen des Codes."},
+{g:"Text",t:"Kommentare",d:2,q:"Kann ein Besucher deine Kommentare lesen?",o:["Ja, im Quelltext","Nein, nie","Nur Entwickler","Nur mit Passwort"],a:0,tipp:"Jeder kann sich den Quelltext einer Seite ansehen.",e:"Kommentare sind nicht sichtbar auf der Seite, stehen aber im Quelltext. Passwörter gehören dort nicht hinein."},
+{g:"Text",t:"Kommentare",d:3,q:"Was zeigt der Browser hier an?",code:"<!-- <p>Alt</p> -->\n<p>Neu</p>",o:["Nur „Neu“","Beides","Gar nichts","Nur „Alt“"],a:0,tipp:"Was zwischen den Kommentarzeichen steht, zählt nicht mehr.",e:"Der erste Absatz ist auskommentiert. So legt man Code kurz still, ohne ihn zu löschen."},
+
+/* ---------- Links & Bilder ---------- */
+{g:"Links & Bilder",t:"Links",d:1,q:"Welches Element macht einen Link?",o:["<code>&lt;a&gt;</code>","<code>&lt;link&gt;</code>","<code>&lt;href&gt;</code>","<code>&lt;url&gt;</code>"],a:0,tipp:"Zwei davon gibt es wirklich, aber nur eines ist ein klickbarer Link.",e:"<code>&lt;a&gt;</code> macht den klickbaren Link. <code>&lt;link&gt;</code> gibt es auch, das bindet aber CSS-Dateien ein."},
+{g:"Links & Bilder",t:"Links",d:1,typ:"luecke",q:"Ergänze das Attribut mit der Link-Adresse.",code:"<a ▁▁▁=\"kontakt.html\">Kontakt</a>",loesung:["href"],tipp:"Vier Buchstaben, hat nichts mit src zu tun.",e:"<code>href</code> enthält das Ziel des Links."},
+{g:"Links & Bilder",t:"Links",d:2,q:"Wohin führt <code>&lt;a href=\"#preise\"&gt;</code>?",o:["Zu einer Stelle auf derselben Seite","Zur Datei preise.html","Zur Startseite","Zu einer Suchmaschine"],a:0,tipp:"Die Raute macht den Unterschied.",e:"Mit # springt man zu einem Element mit <code>id=\"preise\"</code> auf derselben Seite."},
+{g:"Links & Bilder",t:"Links",d:3,q:"Was macht <code>target=\"_blank\"</code>?",o:["Der Link geht in einem neuen Tab auf","Der Link wird deaktiviert","Der Link öffnet sich langsamer","Der Link wird ohne Farbe angezeigt"],a:0,e:"Der Link öffnet sich in einem neuen Tab. Die aktuelle Seite bleibt dabei stehen."},
+
+{g:"Links & Bilder",t:"Bilder",d:1,q:"Welches Element zeigt ein Bild?",o:["<code>&lt;img&gt;</code>","<code>&lt;picture&gt;</code>","<code>&lt;figure&gt;</code>","<code>&lt;svg&gt;</code>"],a:0,tipp:"Alle vier gibt es, aber nur eines lädt direkt eine Bilddatei.",e:"<code>&lt;img&gt;</code> bindet ein Bild ein. Die anderen drei gibt es auch, sie haben aber andere Aufgaben."},
+{g:"Links & Bilder",t:"Bilder",d:1,q:"Wozu dient <code>alt</code> bei einem Bild?",o:["Für einen Text, falls das Bild nicht erscheint","Für die Bildgröße","Für die Bildunterschrift","Für einen Link"],a:0,tipp:"Denk an jemanden, der das Bild nicht sehen kann.",e:"Der alt-Text beschreibt das Bild. Vorleseprogramme lesen ihn vor, und er erscheint, wenn das Bild fehlt."},
+{g:"Links & Bilder",t:"Bilder",d:2,q:"Welches Attribut hat ein Bild, ein Link aber nicht?",o:["<code>src</code>","<code>title</code>","<code>id</code>","<code>class</code>"],a:0,tipp:"Ein Link zeigt wohin, ein Bild holt etwas her.",e:"Bilder holen eine Datei über <code>src</code>. Links zeigen mit <code>href</code> auf ein Ziel."},
+{g:"Links & Bilder",t:"Bilder",d:3,q:"Ein Bild ist nur Deko und sagt nichts aus. Was schreibt man ins alt?",o:["<code>alt=\"\"</code>","<code>alt=\"Bild\"</code>","<code>alt=\"Deko\"</code>","Gar kein alt"],a:0,tipp:"Was soll ein Vorleseprogramm hier sagen?",e:"Ein leeres alt bedeutet: hier gibt es nichts zu erzählen, bitte überspringen. Fehlt alt ganz, wird oft der Dateiname vorgelesen."},
+
+{g:"Links & Bilder",t:"Dateipfade",d:1,q:"Welcher Pfad zeigt auf <code>logo.png</code> im Ordner <code>bilder</code>?",o:["<code>bilder/logo.png</code>","<code>/logo.png</code>","<code>../logo.png</code>","<code>bilder.logo.png</code>"],a:0,tipp:"Ein Schrägstrich trennt Ordner und Datei.",e:"Ohne führenden Schrägstrich beginnt der Pfad im aktuellen Ordner und geht von dort in den Unterordner."},
+{g:"Links & Bilder",t:"Dateipfade",d:1,q:"Was bedeutet <code>../</code>?",o:["Eine Ebene nach oben","Der aktuelle Ordner","Der Hauptordner","Eine versteckte Datei"],a:0,tipp:"Zwei Punkte heißen: eine Stufe zurück.",e:"<code>../</code> geht in den übergeordneten Ordner. <code>./</code> wäre der aktuelle."},
+{g:"Links & Bilder",t:"Dateipfade",d:2,q:"Dein Bild wird nicht angezeigt. Was prüfst du zuerst?",o:["Ob Pfad und Dateiname genau stimmen","Ob das Bild zu groß ist","Ob der Browser aktuell ist","Ob CSS geladen wurde"],a:0,tipp:"Groß- und Kleinschreibung zählt auf vielen Servern.",e:"Meistens ist es ein Tippfehler im Pfad oder ein falsch geschriebener Dateiname."},
+{g:"Links & Bilder",t:"Dateipfade",d:3,q:"Was ist bei <code>/bilder/logo.png</code> anders?",o:["Mit Slash: immer ab dem Hauptordner der Website","Gar nichts, beides ist gleich","Die Datei wird heruntergeladen","Es ist ein Link ins Internet"],a:0,tipp:"Achte nur auf das erste Zeichen.",e:"Mit <code>/</code> startet der Pfad ganz oben im Website-Ordner. Ohne <code>/</code> startet er dort, wo die aktuelle Seite liegt."},
+
+{g:"Links & Bilder",t:"Seitentitel & Favicon",d:1,q:"Welches Element bestimmt den Text im Browser-Tab?",o:["<code>&lt;title&gt;</code>","<code>&lt;h1&gt;</code>","<code>&lt;header&gt;</code>","<code>&lt;caption&gt;</code>"],a:0,tipp:"Es steht im head, nicht im body.",e:"<code>&lt;title&gt;</code> erscheint im Tab, im Lesezeichen und bei Google."},
+{g:"Links & Bilder",t:"Seitentitel & Favicon",d:1,q:"Welcher Code bindet ein Favicon ein?",o:["<code>&lt;link rel=\"icon\" href=\"favicon.ico\"&gt;</code>","<code>&lt;img class=\"favicon\" src=\"favicon.ico\"&gt;</code>","<code>&lt;meta name=\"icon\" content=\"favicon.ico\"&gt;</code>","<code>&lt;favicon src=\"favicon.ico\"&gt;</code>"],a:0,tipp:"Dasselbe Element bindet auch CSS-Dateien ein.",e:"Das Favicon kommt über ein <code>&lt;link&gt;</code> mit <code>rel=\"icon\"</code> in den head."},
+{g:"Links & Bilder",t:"Seitentitel & Favicon",d:2,typ:"luecke",q:"Setze den Tag für den Seitentitel ein.",code:"<head>\n  <meta charset=\"UTF-8\">\n  ▁▁▁Meine Seite</title>\n</head>",loesung:["<title>"],tipp:"Der End-Tag steht schon da.",e:"<code>&lt;title&gt;</code> gehört in den head."},
+{g:"Links & Bilder",t:"Seitentitel & Favicon",d:3,q:"Wodurch unterscheiden sich <code>&lt;title&gt;</code> und <code>&lt;h1&gt;</code>?",o:["title steht im Tab, h1 auf der Seite","Sie zeigen immer dasselbe","h1 steht im head","title ist die ältere Form von h1"],a:0,tipp:"Wo siehst du das eine, wo das andere?",e:"Beide dürfen unterschiedlich sein: title für Tab und Suchergebnis, h1 als sichtbare Hauptüberschrift."},
+
+/* ---------- Struktur ---------- */
+{g:"Struktur",t:"Listen",d:1,q:"Welches Element macht eine Liste mit Punkten?",o:["<code>&lt;ul&gt;</code>","<code>&lt;ol&gt;</code>","<code>&lt;li&gt;</code>","<code>&lt;dl&gt;</code>"],a:0,tipp:"Das u steht für unordered.",e:"<code>&lt;ul&gt;</code> ergibt Punkte, <code>&lt;ol&gt;</code> ergibt Nummern."},
+{g:"Struktur",t:"Listen",d:1,typ:"luecke",q:"Ergänze den Tag für einen Listeneintrag.",code:"<ul>\n  ▁▁▁Kaffee</li>\n  <li>Tee</li>\n</ul>",loesung:["<li>"],tipp:"Schau in die Zeile darunter.",e:"<code>&lt;li&gt;</code> steht für list item, also einen Eintrag."},
+{g:"Struktur",t:"Listen",d:2,q:"Was darf direkt in einem <code>&lt;ul&gt;</code> stehen?",o:["Nur <code>&lt;li&gt;</code>","Beliebige Elemente","Nur Text","Nur <code>&lt;p&gt;</code>"],a:0,tipp:"Innerhalb eines Eintrags darf dann alles stehen.",e:"Direkt in ul oder ol gehören nur li-Elemente. Was in den Eintrag hineinkommt, ist frei."},
+{g:"Struktur",t:"Listen",d:3,q:"Wohin gehört eine Unterliste?",o:["In das <code>&lt;li&gt;</code> hinein","Zwischen zwei <code>&lt;li&gt;</code>","Nach dem <code>&lt;/ul&gt;</code>","In ein eigenes <code>&lt;div&gt;</code>"],a:0,tipp:"Die Unterliste gehört zu einem bestimmten Punkt.",e:"Die Unterliste steht im li des übergeordneten Punkts, noch vor dessen <code>&lt;/li&gt;</code>."},
+
+{g:"Struktur",t:"Tabellen",d:1,q:"Welches Element macht eine Tabellenzeile?",o:["<code>&lt;tr&gt;</code>","<code>&lt;td&gt;</code>","<code>&lt;th&gt;</code>","<code>&lt;table&gt;</code>"],a:0,tipp:"tr wie table row.",e:"<code>&lt;tr&gt;</code> ist die Zeile. Darin liegen die Zellen."},
+{g:"Struktur",t:"Tabellen",d:1,typ:"luecke",q:"Ergänze den Tag für eine normale Tabellenzelle.",code:"<tr>\n  ▁▁▁Anna</td>\n  <td>32</td>\n</tr>",loesung:["<td>"],tipp:"Schau in die Zeile darunter.",e:"<code>&lt;td&gt;</code> ist eine normale Datenzelle."},
+{g:"Struktur",t:"Tabellen",d:2,q:"Welche dieser Zellen ist eine Kopfzelle?",o:["<code>&lt;th&gt;Name&lt;/th&gt;</code>","<code>&lt;td&gt;Name&lt;/td&gt;</code>","<code>&lt;tr&gt;Name&lt;/tr&gt;</code>","<code>&lt;thead&gt;Name&lt;/thead&gt;</code>"],a:0,tipp:"h wie heading.",e:"<code>&lt;th&gt;</code> beschriftet eine Spalte oder Zeile. Vorleseprogramme nennen die Kopfzelle beim Vorlesen der Datenzellen mit."},
+{g:"Struktur",t:"Tabellen",d:3,q:"Wofür sollte man Tabellen nicht benutzen?",o:["Für das Seitenlayout","Für Preislisten","Für Stundenpläne","Für Messwerte"],a:0,tipp:"Wofür sind Tabellen ursprünglich gedacht?",e:"Tabellen sind für Daten. Fürs Layout nimmt man CSS, sonst wird die Seite für Vorleseprogramme unverständlich."},
+
+{g:"Struktur",t:"div & span",d:1,q:"Wofür ist <code>&lt;div&gt;</code> da?",o:["Als Container ohne eigene Bedeutung","Für Überschriften","Für Bilder","Für Links"],a:0,e:"<code>&lt;div&gt;</code> gruppiert Inhalte, sagt aber selbst nichts aus."},
+{g:"Struktur",t:"div & span",d:1,q:"Was ist der Unterschied zwischen <code>&lt;div&gt;</code> und <code>&lt;span&gt;</code>?",o:["div beginnt eine neue Zeile, span nicht","span ist nur für Bilder","div ist veraltet","Es gibt keinen Unterschied"],a:0,tipp:"Setz beide gedanklich mitten in einen Satz.",e:"<code>&lt;div&gt;</code> ist ein Block und beginnt neu. <code>&lt;span&gt;</code> läuft im Text mit."},
+{g:"Struktur",t:"div & span",d:2,q:"Welcher Code beschreibt eine Navigation am besten?",o:["<code>&lt;nav&gt;…&lt;/nav&gt;</code>","<code>&lt;div class=\"nav\"&gt;…&lt;/div&gt;</code>","<code>&lt;section id=\"nav\"&gt;…&lt;/section&gt;</code>","<code>&lt;span class=\"menu\"&gt;…&lt;/span&gt;</code>"],a:0,tipp:"Welches Element sagt schon durch seinen Namen, worum es geht?",e:"Gibt es ein passendes Element, nimmt man das. Den Klassennamen „nav“ versteht nur ein Mensch — <code>&lt;nav&gt;</code> versteht auch der Browser."},
+{g:"Struktur",t:"div & span",d:3,q:"Warum ist das hier falsch?",code:"<p>Ein Absatz mit <div>Box</div> mittendrin.</p>",o:["In einen Absatz gehört kein <code>&lt;div&gt;</code>","<code>&lt;div&gt;</code> braucht eine Klasse","Der Absatz ist zu lang","<code>&lt;div&gt;</code> muss leer sein"],a:0,tipp:"Das eine ist ein Block, das andere darf nur Text enthalten.",e:"In einen Absatz gehört nur Text und Inline-Inhalt. Der Browser beendet den Absatz sonst vorzeitig — das Ergebnis sieht anders aus als gedacht."},
+
+{g:"Struktur",t:"Klassen & IDs",d:1,typ:"luecke",q:"Ergänze das Attribut, mit dem man eine Klasse vergibt.",code:"<div ▁▁▁=\"karte\">Inhalt</div>",loesung:["class"],tipp:"Fünf Buchstaben.",e:"Über <code>class</code> bekommt ein Element eine Klasse, die man im CSS ansprechen kann."},
+{g:"Struktur",t:"Klassen & IDs",d:1,q:"Wie oft darf dieselbe id vorkommen?",o:["Einmal pro Seite","Beliebig oft","Zweimal","Nur in Formularen"],a:0,tipp:"Eine id soll genau ein Element eindeutig benennen.",e:"Eine id gehört zu genau einem Element. Für mehrere nimmt man Klassen."},
+{g:"Struktur",t:"Klassen & IDs",d:2,q:"Wie viele Klassen hat <code>class=\"karte gross aktiv\"</code>?",o:["Drei","Eine","Zwei","Keine"],a:0,tipp:"Achte auf die Leerzeichen.",e:"Leerzeichen trennen Klassennamen. Bindestriche würden dagegen zum Namen gehören."},
+{g:"Struktur",t:"Klassen & IDs",d:3,q:"Wofür braucht man eine id außer für CSS?",o:["Als Sprungziel für einen Link","Um Elemente zu zählen","Um die Reihenfolge zu ändern","Um Bilder zu laden"],a:0,tipp:"Denk an einen Link mit einer Raute.",e:"Mit <code>href=\"#name\"</code> springt man zu dem Element mit dieser id. Auch <code>&lt;label for&gt;</code> nutzt sie."},
+
+/* ---------- Aufbau der Seite ---------- */
+{g:"Aufbau der Seite",t:"Semantische Elemente",d:1,q:"Welches Element ist für die Navigation gedacht?",o:["<code>&lt;nav&gt;</code>","<code>&lt;menu&gt;</code>","<code>&lt;aside&gt;</code>","<code>&lt;header&gt;</code>"],a:0,tipp:"Alle vier gibt es wirklich — welches heißt wie Navigation?",e:"<code>&lt;nav&gt;</code> markiert einen Navigationsbereich."},
+{g:"Aufbau der Seite",t:"Semantische Elemente",d:1,q:"Welches Element umschließt den Hauptinhalt?",o:["<code>&lt;main&gt;</code>","<code>&lt;section&gt;</code>","<code>&lt;article&gt;</code>","<code>&lt;body&gt;</code>"],a:0,tipp:"Es kommt pro Seite nur einmal vor.",e:"<code>&lt;main&gt;</code> steht für den zentralen Inhalt der Seite."},
+{g:"Aufbau der Seite",t:"Semantische Elemente",d:2,q:"Warum sind semantische Elemente besser als lauter divs?",o:["Sie sagen, welche Rolle ein Bereich hat","Sie laden schneller","Sie brauchen kein CSS","Sie sind kürzer geschrieben"],a:0,tipp:"Wem hilft es, wenn der Code sich selbst erklärt?",e:"Vorleseprogramme und Suchmaschinen erkennen dadurch den Aufbau der Seite. Ein div sagt gar nichts."},
+{g:"Aufbau der Seite",t:"Semantische Elemente",d:3,q:"Wann passt <code>&lt;article&gt;</code> besser als <code>&lt;section&gt;</code>?",o:["Wenn der Inhalt für sich allein Sinn ergibt","Wenn der Inhalt lang ist","Wenn Bilder enthalten sind","Wenn er ganz oben steht"],a:0,tipp:"Könnte man den Inhalt woanders hinstellen und er wäre noch verständlich?",e:"Ein Blogbeitrag funktioniert auch einzeln — das ist ein article. Ein Abschnitt innerhalb eines Ganzen ist eine section."},
+
+{g:"Aufbau der Seite",t:"Block & Inline",d:1,q:"Was macht ein Block-Element?",o:["Es beginnt in einer neuen Zeile","Es bleibt immer unsichtbar","Es steht immer daneben","Es darf keinen Text enthalten"],a:0,e:"Block-Elemente fangen eine neue Zeile an und nehmen die volle Breite ein."},
+{g:"Aufbau der Seite",t:"Block & Inline",d:1,q:"Welches Element läuft im Text mit?",o:["<code>&lt;span&gt;</code>","<code>&lt;div&gt;</code>","<code>&lt;p&gt;</code>","<code>&lt;section&gt;</code>"],a:0,tipp:"Nur eines davon bricht die Zeile nicht um.",e:"<code>&lt;span&gt;</code> ist ein Inline-Element und fließt im Text mit."},
+{g:"Aufbau der Seite",t:"Block & Inline",d:2,q:"Welches dieser Elemente ist inline?",o:["<code>&lt;a&gt;</code>","<code>&lt;div&gt;</code>","<code>&lt;h2&gt;</code>","<code>&lt;ul&gt;</code>"],a:0,tipp:"Ein Link steht meistens mitten im Satz.",e:"Links laufen im Text mit, deshalb sind sie inline."},
+{g:"Aufbau der Seite",t:"Block & Inline",d:3,q:"Warum sieht man bei <code>&lt;span&gt;</code> oft keine Höhe wirken?",o:["Inline-Elemente nehmen keine Höhe an","Die Höhe ist immer null","span ist immer unsichtbar","Höhe gibt es nur im head"],a:0,tipp:"Was passiert, wenn man daraus ein inline-block macht?",e:"Bei Inline-Elementen wirken Höhe und senkrechte Abstände nicht. Mit <code>display: inline-block</code> geht es."},
+
+{g:"Aufbau der Seite",t:"HTML & CSS",d:1,q:"Womit bindet man eine CSS-Datei ein?",o:["<code>&lt;link&gt;</code>","<code>&lt;style&gt;</code>","<code>&lt;script&gt;</code>","<code>&lt;meta&gt;</code>"],a:0,tipp:"Zwei davon haben mit CSS zu tun — eines holt eine Datei.",e:"<code>&lt;link&gt;</code> lädt eine externe CSS-Datei. <code>&lt;style&gt;</code> nimmt CSS direkt im Dokument auf."},
+{g:"Aufbau der Seite",t:"HTML & CSS",d:1,q:"Mit welchem Attribut schreibt man CSS direkt an ein Element?",o:["<code>style</code>","<code>class</code>","<code>css</code>","<code>design</code>"],a:0,e:"Das <code>style</code>-Attribut nimmt CSS direkt am Element auf."},
+{g:"Aufbau der Seite",t:"HTML & CSS",d:2,q:"Warum nimmt man lieber eine CSS-Datei als viele style-Attribute?",o:["Eine Änderung wirkt dann überall","Die Seite wird bunter","HTML wird sonst ungültig","style ist verboten"],a:0,tipp:"Stell dir vor, du willst 50 Buttons umfärben.",e:"In einer Datei ändert man einmal und es wirkt auf allen Seiten. Bei style-Attributen müsste man jedes einzeln anfassen."},
+{g:"Aufbau der Seite",t:"HTML & CSS",d:3,q:"Welche Farbe hat der Absatz?",code:"<style>p { color: blue; }</style>\n<p style=\"color: red;\">Text</p>",o:["Rot","Blau","Schwarz","Beide abwechselnd"],a:0,tipp:"Was näher am Element steht, gewinnt meistens.",e:"Das style-Attribut steht direkt am Element und schlägt die Regel aus dem Stylesheet."},
+
+/* ---------- Formulare ---------- */
+{g:"Formulare",t:"Formulare",d:1,typ:"luecke",q:"Ergänze das Element, das ein Formular umschließt.",code:"<▁▁▁ action=\"/senden\" method=\"post\">\n  <input type=\"text\" name=\"vorname\">\n</form>",loesung:["form"],tipp:"Ohne spitze Klammern eintippen.",e:"<code>&lt;form&gt;</code> fasst alle Felder zusammen."},
+{g:"Formulare",t:"Formulare",d:1,q:"Welches Attribut sagt, wohin die Daten gesendet werden?",o:["<code>action</code>","<code>method</code>","<code>target</code>","<code>name</code>"],a:0,tipp:"Alle vier gibt es bei Formularen — welches nennt die Adresse?",e:"<code>action</code> enthält die Zieladresse. <code>method</code> legt nur fest, auf welchem Weg gesendet wird."},
+{g:"Formulare",t:"Formulare",d:2,q:"Welche Methode schickt die Daten sichtbar in der Adresszeile?",o:["<code>get</code>","<code>post</code>","<code>send</code>","<code>submit</code>"],a:0,tipp:"Denk an eine Suchmaschine — was steht dort in der URL?",e:"Bei <code>get</code> hängen die Daten an der URL. Für Passwörter nimmt man deshalb <code>post</code>."},
+{g:"Formulare",t:"Formulare",d:3,q:"Warum ist <code>method=\"get\"</code> beim Login schlecht?",o:["Das Passwort steht dann in der Adresszeile","get ist langsamer","get kann keine Formulare senden","get funktioniert nur mit Bildern"],a:0,tipp:"Wo landet die Adresszeile überall? Verlauf, Logdateien …",e:"Bei get landen die Daten in URL, Browserverlauf und Server-Logs. Sensible Daten gehören in den Request-Body, also per post."},
+
+{g:"Formulare",t:"Eingabefelder",d:1,q:"Welches Element macht ein einzeiliges Eingabefeld?",o:["<code>&lt;input&gt;</code>","<code>&lt;textarea&gt;</code>","<code>&lt;select&gt;</code>","<code>&lt;option&gt;</code>"],a:0,tipp:"Alle vier gehören in Formulare — welches ist einzeilig?",e:"<code>&lt;input&gt;</code> ist das universelle Eingabefeld. Der type bestimmt, welche Art."},
+{g:"Formulare",t:"Eingabefelder",d:1,typ:"luecke",q:"Ergänze den Typ für ein Ankreuzkästchen.",code:"<input type=\"▁▁▁\" name=\"agb\">",loesung:["checkbox"],tipp:"Englisch für Kästchen zum Abhaken.",e:"<code>type=\"checkbox\"</code> ergibt ein Kästchen zum An- und Abwählen."},
+{g:"Formulare",t:"Eingabefelder",d:2,q:"Was bringt <code>type=\"email\"</code> gegenüber <code>type=\"text\"</code>?",o:["Der Browser prüft die Schreibweise","Die Mail wird verschickt","Die Adresse wird geprüft, ob es sie gibt","Das Feld wird verschlüsselt"],a:0,tipp:"Der Browser kann nur die Form prüfen, nicht die Wirklichkeit.",e:"Der Browser achtet auf das @ und zeigt am Handy eine passende Tastatur. Ob die Adresse existiert, weiß nur der Server."},
+{g:"Formulare",t:"Eingabefelder",d:3,q:"Das Feld wird beim Senden nicht übertragen. Was fehlt?",code:"<input type=\"text\" id=\"vorname\">",o:["Das Attribut <code>name</code>","Das Attribut <code>value</code>","Das Attribut <code>class</code>","Ein <code>&lt;label&gt;</code>"],a:0,tipp:"Der Server bekommt Paare aus Bezeichnung und Wert.",e:"Formulardaten kommen als <code>name=wert</code> an. Ohne <code>name</code> wird das Feld ignoriert — die id reicht nicht."},
+
+{g:"Formulare",t:"Labels & Buttons",d:1,q:"Wozu ist <code>&lt;label&gt;</code> da?",o:["Es beschriftet ein Eingabefeld","Es sendet das Formular","Es macht Text fett","Es zeigt Fehler an"],a:0,e:"Das label sagt, was in ein Feld gehört."},
+{g:"Formulare",t:"Labels & Buttons",d:1,typ:"luecke",q:"Ergänze das Attribut, das Beschriftung und Feld verbindet.",code:"<label ▁▁▁=\"mail\">E-Mail</label>\n<input type=\"email\" id=\"mail\" name=\"mail\">",loesung:["for"],tipp:"Es zeigt auf die id des Feldes.",e:"<code>for</code> verweist auf die <code>id</code>. Dann springt ein Klick auf die Beschriftung ins Feld."},
+{g:"Formulare",t:"Labels & Buttons",d:2,q:"Warum reicht ein <code>placeholder</code> nicht als Beschriftung?",o:["Er verschwindet beim Tippen","Er ist immer zu klein","Er lässt sich nicht färben","Er funktioniert nicht am Handy"],a:0,tipp:"Was passiert, sobald man ins Feld schreibt?",e:"Der placeholder ist nur ein Beispieltext und verschwindet beim Tippen. Das label bleibt stehen."},
+{g:"Formulare",t:"Labels & Buttons",d:3,q:"Was passiert bei <code>&lt;button&gt;Klick&lt;/button&gt;</code> in einem Formular?",o:["Es sendet das Formular ab","Es passiert nichts","Es leert das Formular","Es entsteht ein Fehler"],a:0,tipp:"Welcher type gilt, wenn keiner dasteht?",e:"Ohne Angabe ist ein Button automatisch vom Typ submit. Wer das nicht will, schreibt <code>type=\"button\"</code>."},
+
+/* ---------- Medien & Feinheiten ---------- */
+{g:"Medien & Feinheiten",t:"Video & Audio",d:1,q:"Welches Element bindet ein Video ein?",o:["<code>&lt;video&gt;</code>","<code>&lt;source&gt;</code>","<code>&lt;embed&gt;</code>","<code>&lt;track&gt;</code>"],a:0,tipp:"Alle vier haben mit Medien zu tun — welches ist das Hauptelement?",e:"<code>&lt;video&gt;</code> bindet das Video ein. Die anderen ergänzen es nur."},
+{g:"Medien & Feinheiten",t:"Video & Audio",d:1,typ:"luecke",q:"Ergänze das Attribut für Play, Pause und Lautstärke.",code:"<video src=\"film.mp4\" ▁▁▁></video>",loesung:["controls"],tipp:"Englisch für Bedienelemente.",e:"Ohne <code>controls</code> sieht man nur das Bild, ohne jeden Knopf."},
+{g:"Medien & Feinheiten",t:"Video & Audio",d:2,q:"Wie bindet man ein YouTube-Video ein?",o:["Mit <code>&lt;iframe&gt;</code>","Mit <code>&lt;video&gt;</code>","Mit <code>&lt;img&gt;</code>","Mit <code>&lt;embed&gt;</code>"],a:0,tipp:"Man holt eine ganze fremde Seite herein.",e:"YouTube liefert einen fertigen iframe-Code zum Einbetten."},
+{g:"Medien & Feinheiten",t:"Video & Audio",d:3,q:"Das Video startet trotz <code>autoplay</code> nicht. Warum?",o:["Browser blockieren Ton beim Autostart","autoplay ist veraltet","Es fehlt controls","Videos starten nie automatisch"],a:0,tipp:"Mit welchem Attribut wird das Video still?",e:"Automatisch startende Videos mit Ton werden blockiert. Mit <code>muted</code> läuft es."},
+
+{g:"Medien & Feinheiten",t:"Sonderzeichen & Umlaute",d:1,typ:"luecke",q:"Ergänze das Zeichen, das 10 und kg zusammenhält.",code:"<p>Das Paket wiegt 10▁▁▁kg.</p>",loesung:["&nbsp;"],tipp:"Beginnt mit & und endet mit einem Semikolon.",e:"<code>&amp;nbsp;</code> ist ein geschütztes Leerzeichen und verhindert den Umbruch."},
+{g:"Medien & Feinheiten",t:"Sonderzeichen & Umlaute",d:1,q:"Welche Angabe sorgt dafür, dass Umlaute richtig erscheinen?",o:["<code>&lt;meta charset=\"UTF-8\"&gt;</code>","<code>&lt;html lang=\"de\"&gt;</code>","<code>&lt;meta name=\"umlaute\"&gt;</code>","<code>&lt;style&gt;</code>"],a:0,tipp:"Es geht um den Zeichensatz, nicht um die Sprache.",e:"<code>charset</code> legt die Zeichenkodierung fest. <code>lang</code> nennt nur die Sprache."},
+{g:"Medien & Feinheiten",t:"Sonderzeichen & Umlaute",d:2,q:"Warum schreibt man <code>&amp;lt;</code> statt einer spitzen Klammer?",o:["Sonst hält der Browser es für einen Tag","Weil Klammern verboten sind","Weil UTF-8 sie nicht kennt","Nur aus Gewohnheit"],a:0,tipp:"Womit fängt jeder Tag an?",e:"Die spitze Klammer leitet Tags ein. Als <code>&amp;lt;</code> geschrieben bleibt sie sichtbarer Text."},
+{g:"Medien & Feinheiten",t:"Sonderzeichen & Umlaute",d:3,q:"Statt „Häuser“ steht da „HÃ¤user“. Woran liegt das?",o:["Die Zeichenkodierung passt nicht","Die Schriftart fehlt","Die Sprache ist falsch gesetzt","Die Datei ist kaputt"],a:0,tipp:"Datei und Angabe im head müssen zusammenpassen.",e:"Die Datei ist als UTF-8 gespeichert, wird aber anders gelesen. Deshalb gehört <code>&lt;meta charset=\"UTF-8\"&gt;</code> ganz nach oben."},
+
+{g:"Medien & Feinheiten",t:"Barrierefreiheit",d:1,q:"Welcher Link ist besser?",o:["<code>&lt;a href=\"preise.pdf\"&gt;Preisliste 2025 als PDF&lt;/a&gt;</code>","<code>&lt;a href=\"preise.pdf\"&gt;Hier klicken&lt;/a&gt;</code>","<code>&lt;a href=\"preise.pdf\"&gt;Mehr&lt;/a&gt;</code>","<code>&lt;a href=\"preise.pdf\"&gt;&amp;gt;&amp;gt;&lt;/a&gt;</code>"],a:0,tipp:"Vorleseprogramme lesen Links auch einzeln vor, ohne den Satz drumherum.",e:"Ein sprechender Linktext funktioniert auch allein. „Hier klicken“ sagt für sich genommen nichts."},
+{g:"Medien & Feinheiten",t:"Barrierefreiheit",d:1,q:"Welches Element nimmt man für einen Knopf?",o:["<code>&lt;button&gt;</code>","<code>&lt;div&gt;</code>","<code>&lt;span&gt;</code>","<code>&lt;p&gt;</code>"],a:0,tipp:"Nur eines lässt sich mit der Tastatur bedienen.",e:"Ein echter button ist mit Tab erreichbar und mit Enter bedienbar. Ein div müsste man das alles mühsam nachbauen."},
+{g:"Medien & Feinheiten",t:"Barrierefreiheit",d:2,q:"Wem hilft der <code>alt</code>-Text am meisten?",o:["Menschen, die einen Screenreader nutzen","Menschen mit langsamem Internet","Suchmaschinen","Dem Webdesigner"],a:0,e:"Screenreader lesen den alt-Text vor. Er ersetzt das Bild für alle, die es nicht sehen."},
+{g:"Medien & Feinheiten",t:"Barrierefreiheit",d:3,q:"Warum ist die Reihenfolge der Überschriften wichtig?",o:["Screenreader springen darüber durch die Seite","Sonst stimmen die Schriftgrößen nicht","Sonst lädt die Seite langsamer","Sonst funktioniert CSS nicht"],a:0,tipp:"Wie findet man sich ohne Bildschirm auf einer Seite zurecht?",e:"Screenreader können alle Überschriften auflisten und gezielt anspringen. Eine saubere Reihenfolge ist dann wie ein Inhaltsverzeichnis."}
+];
+
+/* =========================================================
+   Logik
+   ========================================================= */
+/* Lernmaterial je Thema: Suchbegriff für ein Video + passende Referenzseite */
+const LERNSTOFF = {
+ "Was ist HTML": {
+  "doc": "html/html_intro.asp",
+  "yt": "HTML Grundlagen erklärt"
+ },
+ "HTML-Datei & Aufbau": {
+  "doc": "html/html_basic.asp",
+  "yt": "HTML Grundgerüst doctype head body"
+ },
+ "Tags & Elemente": {
+  "doc": "html/html_elements.asp",
+  "yt": "HTML Tags und Elemente"
+ },
+ "Attribute": {
+  "doc": "html/html_attributes.asp",
+  "yt": "HTML Attribute"
+ },
+ "Überschriften": {
+  "doc": "html/html_headings.asp",
+  "yt": "HTML Überschriften h1 h6"
+ },
+ "Absätze & Umbrüche": {
+  "doc": "html/html_paragraphs.asp",
+  "yt": "HTML Absätze und Zeilenumbruch"
+ },
+ "Text hervorheben": {
+  "doc": "html/html_formatting.asp",
+  "yt": "HTML Text formatieren strong em"
+ },
+ "Kommentare": {
+  "doc": "html/html_comments.asp",
+  "yt": "HTML Kommentare"
+ },
+ "Links": {
+  "doc": "html/html_links.asp",
+  "yt": "HTML Links a href"
+ },
+ "Bilder": {
+  "doc": "html/html_images.asp",
+  "yt": "HTML Bilder img src alt"
+ },
+ "Dateipfade": {
+  "doc": "html/html_filepaths.asp",
+  "yt": "HTML Dateipfade relativ absolut"
+ },
+ "Seitentitel & Favicon": {
+  "doc": "html/html_favicon.asp",
+  "yt": "HTML title und favicon"
+ },
+ "Listen": {
+  "doc": "html/html_lists.asp",
+  "yt": "HTML Listen ul ol li"
+ },
+ "Tabellen": {
+  "doc": "html/html_tables.asp",
+  "yt": "HTML Tabellen"
+ },
+ "div & span": {
+  "doc": "html/html_div.asp",
+  "yt": "HTML div und span"
+ },
+ "Klassen & IDs": {
+  "doc": "html/html_classes.asp",
+  "yt": "HTML class und id"
+ },
+ "Semantische Elemente": {
+  "doc": "html/html5_semantic_elements.asp",
+  "yt": "semantisches HTML nav main article"
+ },
+ "Block & Inline": {
+  "doc": "html/html_blocks.asp",
+  "yt": "HTML Block und Inline Elemente"
+ },
+ "HTML & CSS": {
+  "doc": "html/html_css.asp",
+  "yt": "CSS in HTML einbinden"
+ },
+ "Formulare": {
+  "doc": "html/html_forms.asp",
+  "yt": "HTML Formulare"
+ },
+ "Eingabefelder": {
+  "doc": "html/html_form_input_types.asp",
+  "yt": "HTML input Typen"
+ },
+ "Labels & Buttons": {
+  "doc": "html/html_form_elements.asp",
+  "yt": "HTML label und button"
+ },
+ "Video & Audio": {
+  "doc": "html/html5_video.asp",
+  "yt": "HTML Video und Audio einbinden"
+ },
+ "Sonderzeichen & Umlaute": {
+  "doc": "html/html_entities.asp",
+  "yt": "HTML Entities Sonderzeichen UTF-8"
+ },
+ "Barrierefreiheit": {
+  "doc": "html/html_accessibility.asp",
+  "yt": "barrierefreies HTML"
+ }
+};
+const KURSE = [
+  {t:"Martin Lexow · HTML für Anfänger", id:"05VH42GWu28"},
+  {t:"PanjuTorials · Erste Homepage", id:"RP-DZ2WmKWM"}
+];
+
+const $ = id => document.getElementById(id);
+
+/* Erzeugt die Linkzeile zu einem Thema */
+function lernLinks(thema, klein){
+  const l = LERNSTOFF[thema] || {};
+  const box = document.createElement("div");
+  box.className = klein ? "review__links" : "plan__links";
+  const a = (href, text, cls) => {
+    const el = document.createElement("a");
+    el.className = "lnk" + (cls ? " " + cls : "");
+    el.href = href; el.target = "_blank"; el.rel = "noopener";
+    el.textContent = text;
+    return el;
+  };
+  box.appendChild(a(
+    "https://www.youtube.com/results?search_query=" +
+      encodeURIComponent((l.yt || thema) + " Tutorial deutsch"),
+    "\u25B6 Lernvideo", "lnk--video"));
+  if (l.doc) box.appendChild(a("https://www.w3schools.com/" + l.doc, "Nachlesen"));
+  return box;
+}
+
+/* Baut Text mit erlaubter Auszeichnung (<code>, <em>) auf.
+   Falls rohes Markup vom Browser verschluckt wuerde und nichts uebrig bleibt,
+   wird der Text stattdessen unveraendert angezeigt statt einer leeren Zeile. */
+function rich(txt, cls){
+  const el = document.createElement("span");
+  if (cls) el.className = cls;
+  el.innerHTML = txt;
+  if (!el.textContent.trim()) el.textContent = txt;
+  return el;
+}
+const DIFF = {1:{name:"Leicht",cls:"d1"},2:{name:"Mittel",cls:"d2"},3:{name:"Knifflig",cls:"d3"}};
+
+let selTopics = new Set();
+let selDiffs  = new Set([1,2,3]);
+let size      = 24;                       /* 0 = alle */
+let deck = [], idx = 0, score = 0, wrong = 0, answers = [], orders = [], log = [];
+
+/* ----- Zeitmessung & Fensterwechsel ----- */
+let running = false;          /* laeuft gerade ein Test? */
+let tStart = 0, tTotal = 0;   /* Startzeitpunkt, Gesamtdauer in ms */
+let ticker = null;
+let awayNow = false, awaySince = 0, awayCount = 0, awayTotal = 0;
+let tippBenutzt = [];        /* je Frage: wurde der Tipp aufgedeckt? */
+let tippVorrat = 3;          /* Startguthaben */
+let tippVergeben = [];       /* je Frage: wurde hier schon nachgelegt? */
+
+function fmt(ms){
+  const sec = Math.max(0, Math.round(ms/1000));
+  const h = Math.floor(sec/3600), m = Math.floor(sec%3600/60), s = sec%60;
+  const pad = n => String(n).padStart(2,"0");
+  return h ? h + ":" + pad(m) + ":" + pad(s) : pad(m) + ":" + pad(s);
+}
+function fmtLong(ms){
+  const sec = Math.max(0, Math.round(ms/1000));
+  if (sec < 60) return sec + " Sek.";
+  const m = Math.floor(sec/60), s = sec%60;
+  return m + " Min. " + s + " Sek.";
+}
+function paintClock(){
+  $("clock").textContent = fmt(Date.now() - tStart);
+  const b = $("awayBadge");
+  if (awayCount){
+    b.classList.remove("hidden");
+    b.textContent = "\u26A0 " + awayCount + "\u00D7 weg";
+  } else b.classList.add("hidden");
+  const t = $("tippBadge");
+  const n = tippBenutzt.filter(Boolean).length;
+  if (running){
+    t.classList.remove("hidden");
+    t.textContent = "\u{1F4A1} " + tippVorrat + " übrig" + (n ? " · " + n + " genutzt" : "");
+  } else t.classList.add("hidden");
+}
+function timerStart(){
+  running = true;
+  tStart = Date.now(); tTotal = 0;
+  awayNow = false; awaySince = 0; awayCount = 0; awayTotal = 0;
+  tippBenutzt = []; tippVorrat = 3; tippVergeben = [];
+  paintClock();
+  clearInterval(ticker);
+  ticker = setInterval(paintClock, 1000);
+}
+function timerStop(){
+  if (!running) return;
+  if (awayNow){ awayTotal += Date.now() - awaySince; awayNow = false; }
+  tTotal = Date.now() - tStart;
+  running = false;
+  clearInterval(ticker); ticker = null;
+}
+
+/* Zaehlt jedes Verlassen des Fensters: Tabwechsel, anderes Programm, minimiert */
+function leave(){
+  if (!running || awayNow) return;
+  awayNow = true; awaySince = Date.now(); awayCount++;
+  paintClock();
+}
+function comeBack(){
+  if (!running || !awayNow) return;
+  awayTotal += Date.now() - awaySince;
+  awayNow = false;
+  paintClock();
+}
+document.addEventListener("visibilitychange", () => document.hidden ? leave() : comeBack());
+window.addEventListener("blur",  leave);
+window.addEventListener("focus", comeBack);
+
+/* ----- Themen sammeln ----- */
+const topics = [];
+QUESTIONS.forEach(q => {
+  let t = topics.find(x => x.t === q.t);
+  if (!t) topics.push({ t:q.t, g:q.g, n:1 }); else t.n++;
+});
+const groups = [...new Set(topics.map(t => t.g))];
+$("count").textContent =
+  QUESTIONS.length + " Fragen · " + topics.length + " Themen · von leicht bis knifflig gestaffelt";
+
+/* ----- Schwierigkeits-Chips ----- */
+[1,2,3].forEach(d => {
+  const n = QUESTIONS.filter(q => q.d === d).length;
+  const b = document.createElement("button");
+  b.className = "chip chip--" + DIFF[d].cls;
+  b.type = "button";
+  b.setAttribute("aria-pressed","true");
+  b.innerHTML = DIFF[d].name + ' <span class="chip__n">' + n + '</span>';
+  b.onclick = () => {
+    if (selDiffs.has(d)) { if (selDiffs.size === 1) return; selDiffs.delete(d); b.setAttribute("aria-pressed","false"); }
+    else { selDiffs.add(d); b.setAttribute("aria-pressed","true"); }
+    updateGo();
+  };
+  $("diffs").appendChild(b);
+});
+
+/* ----- Umfang-Chips ----- */
+[{v:12,l:"Kurz · 12 Fragen"},{v:24,l:"Standard · 24 Fragen"},{v:40,l:"Ausführlich · 40 Fragen"},{v:0,l:"Alles"}].forEach(o => {
+  const b = document.createElement("button");
+  b.className = "chip"; b.type = "button"; b.textContent = o.l;
+  b.setAttribute("aria-pressed", String(o.v === size));
+  b.onclick = () => {
+    size = o.v;
+    [...$("sizes").children].forEach(c => c.setAttribute("aria-pressed","false"));
+    b.setAttribute("aria-pressed","true");
+    updateGo();
+  };
+  $("sizes").appendChild(b);
+});
+
+/* ----- Themen-Chips ----- */
+groups.forEach(g => {
+  const box = document.createElement("div");
+  box.className = "group";
+  const h = document.createElement("p");
+  h.className = "group__h"; h.textContent = g;
+  const row = document.createElement("div");
+  row.className = "chips";
+  topics.filter(t => t.g === g).forEach(t => {
+    const b = document.createElement("button");
+    b.className = "chip"; b.type = "button";
+    b.innerHTML = t.t + ' <span class="chip__n">' + t.n + '</span>';
+    b.setAttribute("aria-pressed","false");
+    b.onclick = () => {
+      if (selTopics.has(t.t)) { selTopics.delete(t.t); b.setAttribute("aria-pressed","false"); }
+      else { selTopics.add(t.t); b.setAttribute("aria-pressed","true"); }
+      updateGo();
+    };
+    row.appendChild(b);
+  });
+  box.append(h,row);
+  $("topics").appendChild(box);
+});
+
+$("topicToggle").onclick = () => {
+  const open = $("topicsBox").classList.toggle("open");
+  $("topicToggle").setAttribute("aria-expanded", String(open));
+};
+
+$("all").onclick = () => {
+  const on = selTopics.size !== topics.length;
+  selTopics = on ? new Set(topics.map(t => t.t)) : new Set();
+  document.querySelectorAll("#topics .chip").forEach(c => c.setAttribute("aria-pressed", String(on)));
+  updateGo();
+};
+
+function matching(){
+  return QUESTIONS.filter(q =>
+    selDiffs.has(q.d) && (selTopics.size === 0 || selTopics.has(q.t))
+  );
+}
+function updateGo(){
+  const n = matching().length;
+  const take = size === 0 ? n : Math.min(size, n);
+  $("go").disabled = n === 0;
+  $("go").textContent = n === 0 ? "Keine Fragen im Filter" : "Test starten · " + take + " Fragen";
+  $("topicSummary").textContent = selTopics.size === 0
+    ? "Themen eingrenzen — aktuell alle"
+    : "Themen eingrenzen — " + selTopics.size + " von " + topics.length + " gewählt";
+}
+updateGo();
+
+/* Selbsttest: meldet in der Konsole, falls ein Text beim Rendern leer bliebe */
+(function pruefe(){
+  const leer = [];
+  QUESTIONS.forEach((q,i) => {
+    const test = t => {
+      const d = document.createElement("span"); d.innerHTML = t;
+      const sichtbar = d.textContent.replace(/\\u00A0/g, " ").trim();
+      return !sichtbar || sichtbar.length < String(t).replace(/<[^>]*>/g, "").trim().length / 3;
+    };
+    if (test(q.q)) leer.push("Frage " + i + " (" + q.t + "): Fragetext");
+    if (q.typ === "luecke"){
+      if (!q.code || q.code.indexOf("\u2581\u2581\u2581") < 0)
+        leer.push("Frage " + i + " (" + q.t + "): keine Lücke im Code");
+      if (!Array.isArray(q.loesung) || !q.loesung.length || !String(q.loesung[0]).trim())
+        leer.push("Frage " + i + " (" + q.t + "): keine Lösung hinterlegt");
+    } else {
+      if (!Array.isArray(q.o) || q.o.length !== 4)
+        leer.push("Frage " + i + " (" + q.t + "): Antworten fehlen");
+      else q.o.forEach((o,j) => { if (test(o)) leer.push("Frage " + i + " (" + q.t + "): Antwort " + "ABCD"[j]); });
+    }
+    if (test(q.e)) leer.push("Frage " + i + " (" + q.t + "): Erklaerung");
+  });
+  if (leer.length) console.warn("Leer gerenderte Texte:\\n" + leer.join("\\n"));
+})();
+
+/* Statusanzeige oben rechts */
+function zeigeStats(q){
+  $("stats").innerHTML =
+    '<span class="badge badge--' + DIFF[q.d].cls + '">' + DIFF[q.d].name + '</span>' +
+    '<span class="tally tally--ok">&#10003; ' + score + '</span>' +
+    '<span class="tally tally--bad">&#10007; ' + wrong + '</span>';
+}
+
+/* Codeblock ausgeben; bei Lueckenfragen wird die Luecke hervorgehoben.
+   Alles ueber Textknoten, damit Markup niemals interpretiert wird. */
+const LUECKE = "\u2581\u2581\u2581";
+function zeigeCode(text, zustand, ersatz){
+  const pre = $("code");
+  pre.textContent = "";
+  const teile = String(text).split(LUECKE);
+  teile.forEach((t, i) => {
+    pre.appendChild(document.createTextNode(t));
+    if (i < teile.length - 1){
+      const m = document.createElement("span");
+      m.className = "gapmark" + (zustand ? " gapmark--" + zustand : "");
+      m.textContent = ersatz || LUECKE;
+      pre.appendChild(m);
+    }
+  });
+  pre.classList.remove("hidden");
+}
+
+/* Vergleich grosszuegig: Gross-/Kleinschreibung, Mehrfach-Leerzeichen
+   und die Anfuehrungszeichenart sind egal. */
+function normAntwort(t){
+  return String(t).trim().toLowerCase()
+    .replace(/\s+/g, " ")
+    .replace(/[\u2018\u2019\u201A\u201C\u201D\u201E']/g, '"');
+}
+
+function lueckeSperren(q, eingabe, ok){
+  $("gapInput").value = eingabe;
+  $("gapInput").disabled = true;
+  $("gapCheck").disabled = true;
+  zeigeCode(q.code, ok ? "ok" : "bad", ok ? q.loesung[0] : eingabe);
+  $("gapTipp").textContent = "";
+
+  const ex = $("explain");
+  ex.className = "explain " + (ok ? "explain--ok" : "explain--bad");
+  ex.textContent = "";
+  const titel = document.createElement("strong");
+  titel.textContent = ok ? "Richtig" : "Leider falsch";
+  ex.appendChild(titel);
+  if (!ok){
+    const zeile = document.createElement("p");
+    zeile.style.margin = "0 0 7px";
+    zeile.appendChild(document.createTextNode("Richtig wäre: "));
+    const l = document.createElement("span");
+    l.className = "loesung";
+    l.textContent = q.loesung[0];
+    zeile.appendChild(l);
+    ex.appendChild(zeile);
+  }
+  ex.insertAdjacentHTML("beforeend", q.e);
+}
+
+function lueckePruefen(){
+  const q = deck[idx];
+  if (!q || q.typ !== "luecke" || answers[idx] !== undefined) return;
+  const eingabe = $("gapInput").value;
+  if (!eingabe.trim()){ $("gapInput").focus(); return; }
+  const ok = q.loesung.some(l => normAntwort(l) === normAntwort(eingabe));
+  answers[idx] = eingabe;
+  ok ? score++ : wrong++;
+  log[idx] = { q, chosen: eingabe, ok, tipp: !!tippBenutzt[idx] };
+  lueckeSperren(q, eingabe, ok);
+  $("tipprow").classList.add("hidden");
+  zeigeStats(q);
+  $("next").disabled = false;
+  $("next").focus();
+}
+
+const shuffle = a => a.map(v => [Math.random(), v]).sort((x,y) => x[0]-y[0]).map(p => p[1]);
+
+/* Zieht eine Auswahl, die die gewählten Schwierigkeiten möglichst gleichmäßig abbildet */
+function buildDeck(){
+  const pool = matching();
+  if (size === 0 || size >= pool.length) return pool.slice();
+  const levels = [...selDiffs].sort();
+  const buckets = levels.map(d => shuffle(pool.filter(q => q.d === d)));
+  const out = [];
+  let i = 0;
+  while (out.length < size) {
+    const b = buckets[i % buckets.length];
+    if (b.length) out.push(b.pop());
+    else if (buckets.every(x => x.length === 0)) break;
+    i++;
+  }
+  return shuffle(out);
+}
+
+/* ----- Ablauf ----- */
+function start(pool){
+  deck = pool; idx = 0; score = 0; wrong = 0; answers = []; orders = []; log = [];
+  timerStart();
+  $("start").classList.add("hidden");
+  $("result").classList.add("hidden");
+  $("quiz").classList.remove("hidden");
+  render();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+$("go").onclick = () => start(buildDeck());
+
+function render(){
+  const q = deck[idx];
+  $("pos").textContent = "Frage " + (idx+1) + " von " + deck.length;
+  $("stats").innerHTML =
+    '<span class="badge badge--' + DIFF[q.d].cls + '">' + DIFF[q.d].name + '</span>' +
+    '<span class="tally tally--ok">&#10003; ' + score + '</span>' +
+    '<span class="tally tally--bad">&#10007; ' + wrong + '</span>';
+  $("fill").style.width = (idx / deck.length * 100) + "%";
+  $("topicline").textContent = q.g + " · " + q.t;
+  $("q").replaceChildren(rich(q.q));
+
+  const istLuecke = q.typ === "luecke";
+  $("opts").classList.toggle("hidden", istLuecke);
+  $("gapbox").classList.toggle("hidden", !istLuecke);
+  $("keyhint").innerHTML = istLuecke
+    ? 'Antwort eintippen · <kbd>Enter</kbd> prüfen, dann <kbd>Enter</kbd> weiter'
+    : '<kbd>A</kbd>\u2013<kbd>D</kbd> antworten · <kbd>Enter</kbd> weiter · <kbd>\u2190</kbd> <kbd>\u2192</kbd> blättern';
+
+  if (q.code){
+    if (istLuecke) zeigeCode(q.code);
+    else { $("code").textContent = q.code; $("code").classList.remove("hidden"); }
+  } else $("code").classList.add("hidden");
+
+  $("prev").disabled = idx === 0;
+  $("next").textContent = idx+1 === deck.length ? "Auswerten" : "Weiter";
+
+  const opts = $("opts");
+  opts.innerHTML = "";
+  if (!istLuecke){
+  if (!orders[idx]) orders[idx] = shuffle(q.o.map((text,i) => ({text,i})));
+  orders[idx].forEach((o,n) => {
+    const b = document.createElement("button");
+    b.className = "opt"; b.type = "button";
+    const key = document.createElement("span");
+    key.className = "opt__key"; key.textContent = "ABCD"[n];
+    const mark = document.createElement("span");
+    mark.className = "opt__mark";
+    b.append(key, rich(o.text, "opt__txt"), mark);
+    b.onclick = () => answer(o.i, q, opts);
+    opts.appendChild(b);
+  });
+  }
+
+  /* Ab jeder 10. Frage kommt ein Tipp dazu – pro Frage nur einmal */
+  let neuerTipp = false;
+  if ((idx + 1) % 10 === 0 && !tippVergeben[idx]){
+    tippVergeben[idx] = true;
+    tippVorrat++;
+    neuerTipp = true;
+  }
+  if (running) paintClock();   /* Anzeige oben sofort nachziehen, nicht erst beim nächsten Takt */
+
+  /* Tipp gibt es auf Knopfdruck – er nennt nie die Lösung selbst */
+  const hatTipp = !!q.tipp && answers[idx] === undefined;
+  $("tipprow").classList.toggle("hidden", !hatTipp);
+  $("tippNeu").classList.toggle("hidden", !(neuerTipp && hatTipp));
+  /* Knopfbeschriftung immer aktuell halten, auch wenn die Zeile gerade versteckt ist */
+  $("tippBtn").disabled = tippVorrat < 1;
+  $("tippBtn").textContent = tippVorrat > 0
+    ? "\u{1F4A1} Tipp anzeigen (" + tippVorrat + " übrig)"
+    : "\u{1F4A1} Keine Tipps mehr übrig";
+
+  if (hatTipp){
+    $("tippText").textContent = q.tipp;
+    if (tippBenutzt[idx]){
+      /* schon aufgedeckt: Text zeigen, nicht erneut abbuchen */
+      $("tippBtn").classList.add("hidden");
+      $("tippText").classList.remove("hidden");
+    } else {
+      $("tippBtn").classList.remove("hidden");
+      $("tippText").classList.add("hidden");
+    }
+  }
+
+  if (answers[idx] === undefined){
+    $("explain").classList.add("hidden");
+    $("next").disabled = true;
+    if (istLuecke){
+      $("gapInput").value = "";
+      $("gapInput").disabled = false;
+      $("gapCheck").disabled = false;
+      setTimeout(() => $("gapInput").focus(), 0);
+    }
+  } else {
+    if (istLuecke) lueckeSperren(q, answers[idx], log[idx] && log[idx].ok);
+    else lock(opts, q, answers[idx]);
+    $("next").disabled = false;
+  }
+}
+
+function lock(opts, q, chosen){
+  const ok = chosen === q.a;
+  [...opts.children].forEach((b,n) => {
+    b.disabled = true;
+    const i = orders[idx][n].i;
+    const mark = b.querySelector(".opt__mark");
+    if (i === q.a){ b.classList.add("opt--right"); mark.textContent = "✓"; }
+    else if (i === chosen){ b.classList.add("opt--wrong"); mark.textContent = "✗"; }
+    else b.classList.add("opt--dim");
+  });
+  const ex = $("explain");
+  ex.className = "explain " + (ok ? "explain--ok" : "explain--bad");
+  ex.innerHTML = "<strong>" + (ok ? "Richtig" : "Leider falsch") + "</strong>" + q.e;
+}
+
+function answer(chosen, q, opts){
+  if (answers[idx] !== undefined) return;
+  answers[idx] = chosen;
+  const ok = chosen === q.a;
+  ok ? score++ : wrong++;
+  log[idx] = { q, chosen, ok, tipp: !!tippBenutzt[idx] };
+  lock(opts, q, chosen);
+  $("tipprow").classList.add("hidden");
+  zeigeStats(q);
+  $("next").disabled = false;
+  $("next").focus();
+}
+
+$("tippBtn").onclick = () => {
+  if (tippVorrat < 1 || tippBenutzt[idx]) return;
+  tippVorrat--;
+  tippBenutzt[idx] = true;
+  $("tippBtn").classList.add("hidden");
+  $("tippNeu").classList.add("hidden");
+  $("tippText").classList.remove("hidden");
+  paintClock();
+};
+$("gapCheck").onclick = lueckePruefen;
+$("prev").onclick = () => { if (idx > 0){ idx--; render(); } };
+$("next").onclick = () => { idx++; idx < deck.length ? render() : (timerStop(), finish(false)); };
+$("quit").onclick = () => {
+  const beantwortet = log.filter(Boolean).length;
+  timerStop();
+  if (!beantwortet){                                  /* nichts beantwortet: nur zurueck */
+    $("quiz").classList.add("hidden");
+    $("start").classList.remove("hidden");
+    return;
+  }
+  finish(true);                                       /* sonst Auswertung des Bearbeiteten */
+};
+$("again").onclick = () => { $("result").classList.add("hidden"); $("start").classList.remove("hidden"); };
+$("wrongOnly").onclick = () => start(log.filter(l => l && !l.ok).map(l => l.q));
+
+/* ----- Auswertung ----- */
+function finish(aborted){
+  timerStop();
+  $("quiz").classList.add("hidden");
+  $("result").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+
+  const total = log.filter(Boolean).length;           /* bei Abbruch nur das Bearbeitete */
+  $("resultLabel").textContent = aborted ? "Auswertung · abgebrochen" : "Auswertung";
+  const note = $("abortNote");
+  if (aborted){
+    note.classList.remove("hidden");
+    note.textContent = "Test vorzeitig beendet — ausgewertet sind die " + total +
+      " von " + deck.length + " bearbeiteten Fragen.";
+  } else note.classList.add("hidden");
+
+  const pct = Math.round(score / total * 100);
+  $("ring").style.setProperty("--p", pct);
+  $("ringNum").innerHTML = pct + '<span>%</span>';
+
+  /* Trefferquote je Schwierigkeit */
+  const per = {};
+  [1,2,3].forEach(d => {
+    const all = log.filter(l => l && l.q.d === d);
+    if (all.length) per[d] = { n:all.length, ok:all.filter(l => l.ok).length };
+  });
+  const rate = d => per[d] ? Math.round(per[d].ok / per[d].n * 100) : null;
+
+  /* Niveau */
+  let name, desc;
+  if (pct >= 92)      { name = "Sehr sicher";            desc = "Nahezu alles sitzt — auch die kniffligen Details."; }
+  else if (pct >= 78) { name = "Fortgeschritten";        desc = "Gutes, belastbares Verständnis. Es fehlen nur einzelne Feinheiten."; }
+  else if (pct >= 62) { name = "Solide Grundlagen";      desc = "Die wichtigsten Bausteine sind da, bei Details wird es stellenweise unsicher."; }
+  else if (pct >= 45) { name = "Grundlagen im Aufbau";   desc = "Vieles ist bekannt, aber noch nicht gefestigt. Wiederholung lohnt sich."; }
+  else                { name = "Einsteiger";             desc = "Die Basis ist noch dünn — am besten Schritt für Schritt von vorn."; }
+
+  const r1 = rate(1), r3 = rate(3);
+  if (r1 !== null && r3 !== null){
+    if (r1 >= 80 && r3 < 45) desc += " Auffällig: Die Grundlagen sitzen, bei den kniffligen Fragen wird es deutlich dünner — es fehlt noch das Verständnis hinter den Regeln.";
+    else if (r1 < 60 && r3 >= 70) desc += " Interessant: Die schweren Fragen laufen besser als die leichten — hier fehlen eher Begriffe als Verständnis.";
+    else if (r3 >= 75) desc += " Auch die kniffligen Fragen sitzen — das spricht für echtes Verständnis, nicht nur Auswendiggelerntes.";
+  }
+  $("levelName").textContent = name;
+  $("levelDesc").textContent = score + " von " + total + " richtig. " + desc;
+
+  /* Tipps: wo wurde geholfen? */
+  const beantwortet = log.filter(Boolean);
+  const mitTipp = beantwortet.filter(l => l.tipp);
+  const tippMoeglich = beantwortet.filter(l => l.q.tipp).length;
+  const tippVerfuegbar = 3 + Math.floor(beantwortet.length / 10);   /* Start plus Nachschub */
+
+  /* Zeit & Fensterwechsel */
+  const facts = $("facts");
+  facts.innerHTML = "";
+  const proFrage = total ? tTotal / total : 0;
+  const fact = (k,v,sub,cls) =>
+    '<div class="fact ' + (cls||"") + '"><p class="fact__k">' + k + '</p>' +
+    '<p class="fact__v">' + v + '</p>' +
+    (sub ? '<p class="fact__s">' + sub + '</p>' : '') + '</div>';
+
+  facts.innerHTML =
+    fact("Benötigte Zeit", fmt(tTotal), total + " Fragen bearbeitet") +
+    fact("Pro Frage", Math.round(proFrage/1000) + " Sek.",
+         proFrage < 12000 ? "zügig — sehr schnell entschieden"
+         : proFrage > 45000 ? "gründlich — lange überlegt"
+         : "in normalem Tempo") +
+    fact("Fenster verlassen", awayCount + "\u00D7",
+         awayCount === 0 ? "durchgehend im Test geblieben"
+         : "insgesamt " + fmtLong(awayTotal) + " außerhalb",
+         awayCount === 0 ? "fact--ok" : "fact--warn") +
+    fact("Tipps genutzt", mitTipp.length + " von " + tippVerfuegbar,
+         mitTipp.length === 0 ? "ohne Hilfe durchgekommen"
+         : "noch " + Math.max(0, tippVerfuegbar - mitTipp.length) + " übrig · " +
+           tippMoeglich + " Fragen boten einen Tipp an",
+         mitTipp.length === 0 ? "fact--ok" : "");
+
+  /* Balken je Schwierigkeit */
+  const bars = $("bars");
+  bars.innerHTML = '<p class="label">Nach Schwierigkeit</p>';
+  [1,2,3].forEach(d => {
+    if (!per[d]) return;
+    const p = rate(d);
+    const el = document.createElement("div");
+    el.innerHTML =
+      '<div class="bar__head"><span class="bar__name">' + DIFF[d].name + '</span>' +
+      '<span class="bar__val">' + per[d].ok + '/' + per[d].n + ' · ' + p + '%</span></div>' +
+      '<div class="bar__track"><div class="bar__fill bar__fill--' + DIFF[d].cls + '" style="width:' + p + '%"></div></div>';
+    bars.appendChild(el);
+  });
+
+  /* Welche Fragen brauchten einen Tipp? */
+  const tl = $("tippliste");
+  if (mitTipp.length){
+    tl.classList.remove("hidden");
+    tl.innerHTML = '<p class="label">Tipp geholt bei diesen Fragen (' + mitTipp.length + ')</p>';
+    const liste = document.createElement("div");
+    liste.className = "tippliste__list";
+    mitTipp.forEach(l => {
+      const zeile = document.createElement("div");
+      zeile.className = "tippitem " + (l.ok ? "tippitem--ok" : "tippitem--bad");
+      const mark = document.createElement("span");
+      mark.className = "tippitem__mark";
+      mark.textContent = l.ok ? "\u2713" : "\u2717";
+      const txt = document.createElement("span");
+      txt.className = "tippitem__txt";
+      const thema = document.createElement("span");
+      thema.className = "tippitem__thema";
+      thema.textContent = l.q.t + " · " + DIFF[l.q.d].name +
+        (l.ok ? " · danach richtig" : " · danach trotzdem falsch");
+      txt.append(thema, rich(l.q.q));
+      zeile.append(mark, txt);
+      liste.appendChild(zeile);
+    });
+    tl.appendChild(liste);
+  } else tl.classList.add("hidden");
+
+  /* Schwache Themen */
+  const bad = {};
+  log.forEach(l => { if (l && !l.ok) bad[l.q.t] = (bad[l.q.t] || 0) + 1; });
+  const badList = Object.keys(bad).sort((a,b) => bad[b] - bad[a]);
+  const gaps = $("gaps");
+  if (badList.length){
+    gaps.classList.remove("hidden");
+    gaps.innerHTML = '<p class="label">Lernplan — diese Themen nochmal ansehen</p>';
+    const liste = document.createElement("div");
+    liste.className = "plan__list";
+    badList.forEach(t => {
+      const zeile = document.createElement("div");
+      zeile.className = "plan__item";
+      const name = document.createElement("span");
+      name.className = "plan__name";
+      name.textContent = t;
+      const n = document.createElement("span");
+      n.className = "plan__n";
+      n.textContent = bad[t] + (bad[t] === 1 ? " Fehler" : " Fehler");
+      name.appendChild(n);
+      zeile.append(name, lernLinks(t, false));
+      liste.appendChild(zeile);
+    });
+    gaps.appendChild(liste);
+
+    const kurse = document.createElement("div");
+    kurse.className = "kurse";
+    kurse.innerHTML = '<p class="label" style="margin:0">Oder von vorn: komplette Kurse</p>';
+    const kl = document.createElement("div");
+    kl.className = "kurse__list";
+    KURSE.forEach(k => {
+      const a = document.createElement("a");
+      a.className = "lnk"; a.target = "_blank"; a.rel = "noopener";
+      a.href = "https://www.youtube.com/watch?v=" + k.id;
+      a.textContent = "\u25B6 " + k.t;
+      kl.appendChild(a);
+    });
+    kurse.appendChild(kl);
+    const q = document.createElement("p");
+    q.className = "quelle";
+    q.textContent = "Videolinks führen zur YouTube-Suche zum jeweiligen Thema, „Nachlesen“ zu W3Schools.";
+    kurse.appendChild(q);
+    gaps.appendChild(kurse);
+  } else gaps.classList.add("hidden");
+
+  /* Fehler im Detail */
+  const wrongs = log.filter(l => l && !l.ok);
+  $("wrongOnly").disabled = wrongs.length === 0;
+  const rev = $("review");
+  rev.innerHTML = "";
+  if (!wrongs.length){
+    rev.innerHTML = '<p class="review__empty">Keine Fehler — nichts zu wiederholen.</p>';
+    return;
+  }
+  const head = document.createElement("p");
+  head.className = "label"; head.style.marginTop = "22px";
+  head.textContent = "Falsch beantwortet (" + wrongs.length + ")";
+  rev.appendChild(head);
+  wrongs.forEach(l => {
+    const d = document.createElement("div");
+    d.className = "review__item";
+    d.innerHTML =
+      '<div class="review__top">' +
+        '<span class="badge badge--' + DIFF[l.q.d].cls + '">' + DIFF[l.q.d].name + '</span>' +
+        '<span class="review__topic">' + l.q.t + '</span>' +
+        (l.tipp ? '<span class="badge badge--tipp">Tipp benutzt</span>' : '') +
+      '</div>' +
+      '<p class="review__q">' + l.q.q + '</p>' +
+      '<div class="review__a"></div>' +
+      '<p class="review__e">' + l.q.e + '</p>';
+    const box = d.querySelector(".review__a");
+    const zeile = (titel, text, cls) => {
+      const s = document.createElement("span");
+      s.className = cls;
+      s.innerHTML = "<b>" + titel + "</b> ";
+      s.appendChild(rich(text));
+      return s;
+    };
+    if (l.q.typ === "luecke"){
+      const nur = (titel, text, cls) => {
+        const s = document.createElement("span");
+        s.className = cls;
+        s.innerHTML = "<b>" + titel + "</b> ";
+        const c = document.createElement("code");
+        c.textContent = text;
+        s.appendChild(c);
+        return s;
+      };
+      box.append(
+        nur("Deine Antwort:", l.chosen,        "review__mine"),
+        nur("Richtig:",       l.q.loesung[0],  "review__right")
+      );
+    } else {
+      box.append(
+        zeile("Deine Antwort:", l.q.o[l.chosen], "review__mine"),
+        zeile("Richtig:",       l.q.o[l.q.a],    "review__right")
+      );
+    }
+    d.appendChild(lernLinks(l.q.t, true));
+    rev.appendChild(d);
+  });
+}
+
+/* ----- Tastatur ----- */
+document.addEventListener("keydown", e => {
+  if ($("quiz").classList.contains("hidden")) return;
+  /* Waehrend des Tippens keine Buchstaben-Kuerzel abfangen */
+  if (document.activeElement && document.activeElement.tagName === "INPUT"){
+    if (e.key === "Enter"){
+      e.preventDefault();
+      if (!$("gapCheck").disabled) $("gapCheck").click();
+      else if (!$("next").disabled) $("next").click();
+    }
+    return;
+  }
+  const map = {a:0,b:1,c:2,d:3,"1":0,"2":1,"3":2,"4":3};
+  const k = e.key.toLowerCase();
+  const onBtn = ["BUTTON"].includes(document.activeElement && document.activeElement.tagName);
+  if (k in map){ const b = $("opts").children[map[k]]; if (b && !b.disabled){ e.preventDefault(); b.click(); } }
+  /* Enter nicht doppelt ausloesen, wenn bereits ein Button den Fokus hat */
+  if (e.key === "Enter" && !onBtn && !$("next").disabled) $("next").click();
+  if (e.key === "ArrowLeft"  && !$("prev").disabled) $("prev").click();
+  if (e.key === "ArrowRight" && !$("next").disabled) $("next").click();
+});
+</script>
+</body>
+</html>
