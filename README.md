@@ -1,6 +1,6 @@
 # Web-Quiz
 
-Zwei Selbsttests, um den Wissensstand in HTML und CSS einzuschätzen — gedacht zum Abfragen von Lernenden.
+Drei Selbsttests, um den Wissensstand in HTML, CSS und Bootstrap einzuschätzen — gedacht zum Abfragen von Lernenden.
 
 **→ [Zu den Tests](https://ahsumasearch-afk.github.io/web-quiz/)**
 
@@ -10,8 +10,9 @@ Zwei Selbsttests, um den Wissensstand in HTML und CSS einzuschätzen — gedacht
 |---|---|---|---|
 | [HTML](html-quiz.html) | 100 | 25 | 15 |
 | [CSS](css-quiz.html) | 100 | 20 | 31 |
+| [Bootstrap 5.3](bootstrap-quiz.html) | 80 | 10 | 19 |
 
-Die Fragen sind nach Schwierigkeit gestaffelt (leicht / mittel / knifflig). Neben klassischen Auswahlfragen gibt es Lückenaufgaben, bei denen der fehlende Tag, das fehlende Attribut oder das fehlende Zeichen selbst eingetippt wird.
+Die Fragen sind nach Schwierigkeit gestaffelt (leicht / mittel / knifflig) und werden bei jedem Start neu gemischt. Neben Auswahlfragen gibt es Lückenaufgaben, bei denen der fehlende Tag, das fehlende Attribut, die fehlende Eigenschaft oder die fehlende Klasse selbst eingetippt wird.
 
 ## Auswertung
 
@@ -23,8 +24,8 @@ Die Fragen sind nach Schwierigkeit gestaffelt (leicht / mittel / knifflig). Nebe
 
 ## Tipps
 
-Jeder Test startet mit drei Tipps. Ab jeder zehnten Frage kommt einer dazu. Ein Tipp schubst in die richtige Richtung, nennt aber nie die Lösung.
+Jeder Test startet mit drei Tipps. Ab jeder zehnten Frage kommt einer dazu. Ein Tipp führt in die richtige Richtung, nennt aber nie die Lösung.
 
 ## Technik
 
-Drei eigenständige HTML-Dateien ohne Abhängigkeiten, ohne Build-Schritt und ohne externe Bibliotheken. Alles läuft im Browser, es werden keine Daten gespeichert oder gesendet. Die Dateien lassen sich auch ohne Server per Doppelklick öffnen.
+Eigenständige HTML-Dateien ohne Abhängigkeiten, ohne Build-Schritt und ohne externe Bibliotheken. Alles läuft im Browser, es werden keine Daten gespeichert oder gesendet. Die Dateien lassen sich auch ohne Server per Doppelklick öffnen.

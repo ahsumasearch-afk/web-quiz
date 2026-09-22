@@ -15,13 +15,14 @@
   --line-strong:#cdd2e0;
   --html:#cf3a1e;
   --css:#1d4ed8;
+  --bs:#6f42c1;
   --shadow:0 1px 2px rgba(16,19,34,.05), 0 12px 32px -12px rgba(16,19,34,.18);
   --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
 }
 @media (prefers-color-scheme:dark){
   :root{
     --bg:#0c0e18;--card:#151827;--card-2:#1c2032;--text:#eef0f7;--muted:#98a0bb;
-    --line:#262b40;--line-strong:#39405c;--html:#ff7a4d;--css:#7fa8ff;
+    --line:#262b40;--line-strong:#39405c;--html:#ff7a4d;--css:#7fa8ff;--bs:#b39ae8;
     --shadow:0 1px 2px rgba(0,0,0,.3), 0 16px 40px -16px rgba(0,0,0,.7);
   }
 }
@@ -48,7 +49,7 @@ h1{margin:0;font-size:clamp(32px,7vw,50px);font-weight:800;letter-spacing:-.035e
 .sub{margin:12px 0 0;color:var(--muted);font-size:16px;max-width:56ch}
 
 .karten{display:grid;gap:16px;margin-top:34px}
-@media (min-width:620px){.karten{grid-template-columns:1fr 1fr}}
+@media (min-width:640px){.karten{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}}
 .karte{
   display:block;text-decoration:none;color:inherit;
   background:var(--card);border:1px solid var(--line);border-radius:16px;
@@ -58,11 +59,13 @@ h1{margin:0;font-size:clamp(32px,7vw,50px);font-weight:800;letter-spacing:-.035e
 .karte:hover{transform:translateY(-3px)}
 .karte--html:hover{border-color:var(--html)}
 .karte--css:hover{border-color:var(--css)}
+.karte--bs:hover{border-color:var(--bs)}
 .karte__tag{
   font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
 }
 .karte--html .karte__tag{color:var(--html)}
 .karte--css .karte__tag{color:var(--css)}
+.karte--bs .karte__tag{color:var(--bs)}
 .karte__titel{font-size:25px;font-weight:750;letter-spacing:-.02em;margin:8px 0 6px}
 .karte__text{color:var(--muted);font-size:14.5px;margin:0 0 16px}
 .karte__zahlen{display:flex;flex-wrap:wrap;gap:7px}
@@ -73,6 +76,7 @@ h1{margin:0;font-size:clamp(32px,7vw,50px);font-weight:800;letter-spacing:-.035e
 .karte__los{margin:18px 0 0;font-weight:650;font-size:15px}
 .karte--html .karte__los{color:var(--html)}
 .karte--css .karte__los{color:var(--css)}
+.karte--bs .karte__los{color:var(--bs)}
 
 .info{
   margin-top:34px;background:var(--card);border:1px solid var(--line);
@@ -91,7 +95,7 @@ h1{margin:0;font-size:clamp(32px,7vw,50px);font-weight:800;letter-spacing:-.035e
 
   <span class="brand">Wissenscheck</span>
   <h1>Web-Quiz</h1>
-  <p class="sub">Zwei Tests, um den Stand in HTML und CSS einzuschätzen — von leichten Grundlagen bis zu kniffligen Details, mit Lücken zum Selbsteintippen.</p>
+  <p class="sub">Drei Tests, um den Stand in HTML, CSS und Bootstrap einzuschätzen — von leichten Grundlagen bis zu kniffligen Details, mit Lücken zum Selbsteintippen.</p>
 
   <div class="karten">
     <a class="karte karte--html" href="html-quiz.html">
@@ -117,6 +121,18 @@ h1{margin:0;font-size:clamp(32px,7vw,50px);font-weight:800;letter-spacing:-.035e
       </div>
       <p class="karte__los">Test starten →</p>
     </a>
+
+    <a class="karte karte--bs" href="bootstrap-quiz.html">
+      <span class="karte__tag">Bootstrap</span>
+      <p class="karte__titel">Bootstrap — wo stehst du?</p>
+      <p class="karte__text">Grid, Abstände, Komponenten, Formulare, Sass und der Umstieg von 4.</p>
+      <div class="karte__zahlen">
+        <span class="zahl">80 Fragen</span>
+        <span class="zahl">10 Themen</span>
+        <span class="zahl">19 Lücken</span>
+      </div>
+      <p class="karte__los">Test starten →</p>
+    </a>
   </div>
 
   <div class="info">
@@ -130,7 +146,7 @@ h1{margin:0;font-size:clamp(32px,7vw,50px);font-weight:800;letter-spacing:-.035e
     </ul>
   </div>
 
-  <p class="fuss">Beide Tests laufen komplett im Browser. Es werden keine Daten gespeichert oder gesendet.</p>
+  <p class="fuss">Alle Tests laufen komplett im Browser. Es werden keine Daten gespeichert oder gesendet.</p>
 
 </div>
 </body>
