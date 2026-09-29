@@ -10,7 +10,7 @@ Drei Selbsttests, um den Wissensstand in HTML, CSS und Bootstrap einzuschätzen 
 |---|---|---|---|
 | [HTML](html-quiz.html) | 100 | 25 | 15 |
 | [CSS](css-quiz.html) | 100 | 20 | 31 |
-| [Bootstrap 5.3](bootstrap-quiz.html) | 80 | 10 | 19 |
+| [Bootstrap 5.3](bootstrap-quiz.html) | 100 | 33 | 25 |
 
 Die Fragen sind nach Schwierigkeit gestaffelt (leicht / mittel / knifflig) und werden bei jedem Start neu gemischt. Neben Auswahlfragen gibt es Lückenaufgaben, bei denen der fehlende Tag, das fehlende Attribut, die fehlende Eigenschaft oder die fehlende Klasse selbst eingetippt wird.
 
