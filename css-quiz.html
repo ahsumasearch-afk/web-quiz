@@ -412,6 +412,22 @@ pre{
 .review__a b{font-weight:600}
 .review__mine{color:var(--bad)}
 .review__right{color:var(--ok)}
+.review__opts{display:grid;gap:5px;margin-top:6px}
+.review__opt{
+  display:flex;gap:10px;align-items:flex-start;
+  font-size:13.5px;padding:7px 11px;border-radius:9px;
+  border:1px solid var(--line);background:var(--card-2);
+}
+.review__opt__m{flex:none;width:14px;font-weight:700;text-align:center;line-height:1.5}
+.review__opt__t{flex:1}
+.review__opt__tag{
+  flex:none;font-family:var(--mono);font-size:10px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;
+  padding:2px 7px;border-radius:999px;border:1px solid currentColor;white-space:nowrap;
+}
+.review__opt--right{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+.review__opt--wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
+.review__opt--rest{color:var(--muted)}
 .review__e{margin-top:7px;font-size:13.5px;color:var(--muted)}
 .review__empty{padding:16px 0;color:var(--muted)}
 
@@ -1440,10 +1456,29 @@ function finish(aborted){
         nur("Richtig:",       l.q.loesung[0],  "review__right")
       );
     } else {
-      box.append(
-        zeile("Deine Antwort:", l.q.o[l.chosen], "review__mine"),
-        zeile("Richtig:",       l.q.o[l.q.a],    "review__right")
-      );
+      /* Alle Antwortmöglichkeiten zeigen – mit Markierung, was gewählt
+         war und was gestimmt hätte. */
+      const liste = document.createElement("div");
+      liste.className = "review__opts";
+      l.q.o.forEach((text, n) => {
+        const richtig  = n === l.q.a;
+        const gewaehlt = n === l.chosen;
+        const el = document.createElement("div");
+        el.className = "review__opt " +
+          (richtig ? "review__opt--right" : gewaehlt ? "review__opt--wrong" : "review__opt--rest");
+        const m = document.createElement("span");
+        m.className = "review__opt__m";
+        m.textContent = richtig ? "\u2713" : gewaehlt ? "\u2717" : "\u00B7";
+        el.append(m, rich(text, "review__opt__t"));
+        if (richtig || gewaehlt){
+          const tag = document.createElement("span");
+          tag.className = "review__opt__tag";
+          tag.textContent = richtig ? "richtig" : "deine Wahl";
+          el.appendChild(tag);
+        }
+        liste.appendChild(el);
+      });
+      box.appendChild(liste);
     }
     d.appendChild(lernLinks(l.q.t, true));
     rev.appendChild(d);
