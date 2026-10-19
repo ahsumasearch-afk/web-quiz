@@ -614,7 +614,7 @@ const QUESTIONS = [
 
 {g:"Grundlagen",t:"HTML-Datei & Aufbau",d:1,q:"Wie heißt die Startseite einer Website meistens?",o:["<code>index.html</code>","<code>start.html</code>","<code>home.html</code>","<code>main.html</code>"],a:0,tipp:"Der Webserver sucht immer nach demselben Namen.",e:"<code>index.html</code> wird automatisch geladen, wenn jemand nur die Adresse eingibt."},
 {g:"Grundlagen",t:"HTML-Datei & Aufbau",d:1,typ:"luecke",q:"Ergänze die Zeile, mit der ein HTML5-Dokument beginnt.",code:"▁▁▁\n<html lang=\"de\">\n  <head></head>\n  <body></body>\n</html>",loesung:["<!DOCTYPE html>"],tipp:"Sie steht vor dem html-Element und beginnt mit einer spitzen Klammer und einem Ausrufezeichen.",e:"<code>&lt;!DOCTYPE html&gt;</code> sagt dem Browser: Das ist HTML5."},
-{g:"Grundlagen",t:"HTML-Datei & Aufbau",d:2,q:"Was gehört in den <code>&lt;head&gt;</code>?",o:["<code>&lt;title&gt;</code>","<code>&lt;h1&gt;</code>","<code>&lt;p&gt;</code>","<code>&lt;img&gt;</code>"],a:0,tipp:"Was im head steht, sieht man nicht direkt auf der Seite.",e:"In den head gehören Angaben über die Seite, zum Beispiel der <code>&lt;title&gt;</code>. Alles Sichtbare steht im body."},
+{g:"Grundlagen",t:"HTML-Datei & Aufbau",d:2,q:"In welchem Bereich steht, was man auf der Seite sieht?",o:["<code>&lt;body&gt;</code>","<code>&lt;head&gt;</code>","<code>&lt;html&gt;</code>","<code>&lt;title&gt;</code>"],a:0,tipp:"Der andere Bereich enthält nur Angaben <em>über</em> die Seite.",e:"In den <code>&lt;head&gt;</code> gehören Titel, Zeichensatz und Verweise auf CSS. Alles Sichtbare steht im <code>&lt;body&gt;</code>."},
 {g:"Grundlagen",t:"HTML-Datei & Aufbau",d:3,q:"Eine Seite heißt <code>seite.txt</code>. Was zeigt der Browser?",o:["Den Code als Text","Die fertige Webseite","Eine Fehlermeldung","Eine leere Seite"],a:0,tipp:"Die Endung sagt dem Browser, wie er die Datei behandeln soll.",e:"Nur bei .html baut der Browser eine Seite daraus. Sonst zeigt er den Code einfach als Text an."},
 
 {g:"Grundlagen",t:"Tags & Elemente",d:1,q:"Wie sieht ein End-Tag aus?",o:["<code>&lt;/p&gt;</code>","<code>&lt;p/&gt;</code>","<code>&lt;\\p&gt;</code>","<code>&lt;end p&gt;</code>"],a:0,tipp:"Ein Zeichen kommt direkt nach der Klammer dazu.",e:"Der End-Tag hat einen Schrägstrich vor dem Namen: <code>&lt;/p&gt;</code>."},
@@ -693,7 +693,7 @@ const QUESTIONS = [
 /* ---------- Aufbau der Seite ---------- */
 {g:"Aufbau der Seite",t:"Semantische Elemente",d:1,q:"Welches Element ist für die Navigation gedacht?",o:["<code>&lt;nav&gt;</code>","<code>&lt;menu&gt;</code>","<code>&lt;aside&gt;</code>","<code>&lt;header&gt;</code>"],a:0,tipp:"Alle vier gibt es wirklich — welches heißt wie Navigation?",e:"<code>&lt;nav&gt;</code> markiert einen Navigationsbereich."},
 {g:"Aufbau der Seite",t:"Semantische Elemente",d:1,q:"Welches Element umschließt den Hauptinhalt?",o:["<code>&lt;main&gt;</code>","<code>&lt;section&gt;</code>","<code>&lt;article&gt;</code>","<code>&lt;body&gt;</code>"],a:0,tipp:"Es kommt pro Seite nur einmal vor.",e:"<code>&lt;main&gt;</code> steht für den zentralen Inhalt der Seite."},
-{g:"Aufbau der Seite",t:"Semantische Elemente",d:2,q:"Was sagt <code>&lt;nav&gt;</code> im Gegensatz zu <code>&lt;div&gt;</code>?",o:["Dass hier die Navigation steht", "Dass es blau wird", "Dass es oben steht", "Nichts"],a:0,tipp:"Wem hilft es, wenn der Code sich selbst erklärt?",e:"Vorleseprogramme und Suchmaschinen erkennen dadurch den Aufbau der Seite. Ein div sagt gar nichts."},
+{g:"Aufbau der Seite",t:"Semantische Elemente",d:2,q:"Welches Element gehört ans Ende der Seite?",o:["<code>&lt;footer&gt;</code>","<code>&lt;aside&gt;</code>","<code>&lt;end&gt;</code>","<code>&lt;bottom&gt;</code>"],a:0,tipp:"Das englische Wort für Fußzeile. Zwei der Antworten gibt es gar nicht.",e:"In den <code>&lt;footer&gt;</code> kommen Impressum, Kontakt und Copyright. <code>&lt;aside&gt;</code> ist für Inhalte am Rand."},
 {g:"Aufbau der Seite",t:"Semantische Elemente",d:3,q:"Wann passt <code>&lt;article&gt;</code> besser als <code>&lt;section&gt;</code>?",o:["Wenn er allein Sinn ergibt", "Wenn der Inhalt lang ist", "Wenn Bilder drin sind", "Wenn er ganz oben steht"],a:0,tipp:"Könnte man den Inhalt woanders hinstellen und er wäre noch verständlich?",e:"Ein Blogbeitrag funktioniert auch einzeln — das ist ein article. Ein Abschnitt innerhalb eines Ganzen ist eine section."},
 
 {g:"Aufbau der Seite",t:"Block & Inline",d:1,q:"Was macht ein Block-Element?",o:["Es beginnt in einer neuen Zeile","Es bleibt immer unsichtbar","Es steht immer daneben","Es darf keinen Text enthalten"],a:0,tipp:"Überleg, ob das Element neben dem Nachbarn bleibt oder eine neue Zeile beginnt.",e:"Block-Elemente fangen eine neue Zeile an und nehmen die volle Breite ein."},
@@ -710,7 +710,7 @@ const QUESTIONS = [
 {g:"Formulare",t:"Formulare",d:1,typ:"luecke",q:"Ergänze den Elementnamen, der zum vorhandenen End-Tag passt.",code:"<▁▁▁ action=\"/senden\" method=\"post\">\n  <input type=\"text\" name=\"vorname\">\n</form>",loesung:["form"],tipp:"Nur der Name, ohne spitze Klammern. Der End-Tag unten verrät ihn.",e:"<code>&lt;form&gt;</code> fasst alle Felder zusammen."},
 {g:"Formulare",t:"Formulare",d:1,q:"Welches Attribut sagt, wohin die Daten gesendet werden?",o:["<code>action</code>","<code>method</code>","<code>target</code>","<code>name</code>"],a:0,tipp:"Alle vier gibt es bei Formularen — welches nennt die Adresse?",e:"<code>action</code> enthält die Zieladresse. <code>method</code> legt nur fest, auf welchem Weg gesendet wird."},
 {g:"Formulare",t:"Formulare",d:2,q:"Welche Methode zeigt die Daten in der Adresszeile?",o:["<code>get</code>","<code>post</code>","<code>send</code>","<code>submit</code>"],a:0,tipp:"Denk an eine Suchmaschine — was steht dort in der URL?",e:"Bei <code>get</code> hängen die Daten an der URL. Für Passwörter nimmt man deshalb <code>post</code>."},
-{g:"Formulare",t:"Formulare",d:3,q:"Wo landen die Daten bei <code>method=\"get\"</code>?",o:["In der Adresszeile", "Im Request-Body", "In einem Cookie", "Nirgends"],a:0,tipp:"Wo landet die Adresszeile überall? Verlauf, Logdateien …",e:"Bei get landen die Daten in URL, Browserverlauf und Server-Logs. Sensible Daten gehören in den Request-Body, also per post."},
+{g:"Formulare",t:"Formulare",d:3,q:"Welches Element fasst zusammengehörige Felder zusammen?",o:["<code>&lt;fieldset&gt;</code>","<code>&lt;group&gt;</code>","<code>&lt;formgroup&gt;</code>","<code>&lt;block&gt;</code>"],a:0,tipp:"Zwei englische Wörter in einem: Feld und Satz. Nur eine der vier Antworten gibt es wirklich.",e:"<code>&lt;fieldset&gt;</code> rahmt die Gruppe ein, <code>&lt;legend&gt;</code> gibt ihr eine Überschrift. Screenreader lesen die Überschrift bei jedem Feld der Gruppe mit vor."},
 
 {g:"Formulare",t:"Eingabefelder",d:1,q:"Welches Element macht ein einzeiliges Eingabefeld?",o:["<code>&lt;input&gt;</code>","<code>&lt;textarea&gt;</code>","<code>&lt;select&gt;</code>","<code>&lt;option&gt;</code>"],a:0,tipp:"Alle vier gehören in Formulare — welches ist einzeilig?",e:"<code>&lt;input&gt;</code> ist das universelle Eingabefeld. Der type bestimmt, welche Art."},
 {g:"Formulare",t:"Eingabefelder",d:1,typ:"luecke",q:"Ergänze den Wert für type, der ein Ankreuzkästchen erzeugt.",code:"<input type=\"▁▁▁\" name=\"agb\">",loesung:["checkbox"],tipp:"Ein englisches Wort für ein Kästchen zum Abhaken.",e:"<code>type=\"checkbox\"</code> ergibt ein Kästchen zum An- und Abwählen."},
@@ -1108,7 +1108,9 @@ function zeigeCode(text, zustand, ersatz){
 function normAntwort(t){
   return String(t).trim().toLowerCase()
     .replace(/\s+/g, " ")
-    .replace(/[\u2018\u2019\u201A\u201C\u201D\u201E']/g, '"');
+    .replace(/[\u2018\u2019\u201A\u201C\u201D\u201E']/g, '"')
+    .replace(/\s*:\s*/g, ":")
+    .replace(/;+$/, "");
 }
 
 function lueckeSperren(q, eingabe, ok){
@@ -1248,7 +1250,8 @@ function render(){
     : "\u{1F4A1} Keine Tipps mehr übrig";
 
   if (hatTipp){
-    $("tippText").textContent = q.tipp;
+    $("tippText").textContent = "";
+    $("tippText").appendChild(rich(q.tipp));
     if (tippBenutzt[idx]){
       /* schon aufgedeckt: Text zeigen, nicht erneut abbuchen */
       $("tippBtn").classList.add("hidden");

@@ -633,7 +633,7 @@ const QUESTIONS = [
 {g:"Selektoren & Kaskade",t:"Pseudo-Klassen & -Elemente",d:3,q:"Der erste Buchstabe soll riesig werden.",o:["<code>p::first-letter</code>","<code>p:first-letter()</code>","<code>p.first-letter</code>","<code>p::initial</code>"],a:0,tipp:"Teilbereiche bekommen einen Doppelpunkt mehr als Zustände.",e:"Pseudo-Elemente schreibt man mit zwei Doppelpunkten, Pseudo-Klassen mit einem."},
 
 {g:"Selektoren & Kaskade",t:"Spezifität & Vererbung",d:1,q:"Vier Regeln, ein Element. Welche gewinnt?",o:["<code>#box { color: red; }</code>","<code>.box { color: blue; }</code>","<code>div { color: green; }</code>","<code>* { color: black; }</code>"],a:0,tipp:"Je genauer der Selektor, desto stärker.",e:"Rangfolge: Inline-Style, dann ID, dann Klasse, dann Elementtyp, zuletzt der Universalselektor."},
-{g:"Selektoren & Kaskade",t:"Spezifität & Vererbung",d:2,q:"Zwei gleich starke Regeln, zwei Farben. Was siehst du?",code:".text { color: blue; }\n.text { color: green; }",o:["<code>green</code>","<code>blue</code>","<code>black</code>","einen Fehler in der Konsole"],a:0,tipp:"Bei Gleichstand zählt die Reihenfolge.",e:"Die zuletzt notierte Regel gewinnt."},
+{g:"Selektoren & Kaskade",t:"Spezifität & Vererbung",d:2,q:"Zwei gleich starke Regeln, zwei Farben. Was siehst du?",code:".text { color: blue; }\n.text { color: orange; }",o:["<code>orange</code>","<code>blue</code>","<code>black</code>","einen Fehler in der Konsole"],a:0,tipp:"Bei Gleichstand zählt die Reihenfolge.",e:"Beide Selektoren sind gleich stark. Dann gewinnt die Regel, die weiter unten steht."},
 {g:"Selektoren & Kaskade",t:"Spezifität & Vererbung",d:2,q:"Welche Eigenschaft erben Kinder automatisch?",o:["<code>color</code>","<code>margin</code>","<code>border</code>","<code>width</code>"],a:0,tipp:"Textbezogenes wird weitergereicht, Maße nicht.",e:"Vererbt werden unter anderem <code>color</code> und <code>font-family</code> — Abstände, Rahmen und Größen nicht."},
 {g:"Selektoren & Kaskade",t:"Spezifität & Vererbung",d:2,typ:"luecke",q:"Ergänze den Wert, der die Farbe vom Elternteil nimmt.",code:".kind {\n  color: ▁▁▁;\n}",loesung:["inherit"],tipp:"Das englische Wort für erben, sieben Buchstaben.",e:"<code>inherit</code> erzwingt die Übernahme, auch bei Eigenschaften, die sonst nicht vererbt werden."},
 {g:"Selektoren & Kaskade",t:"Spezifität & Vererbung",d:3,q:"Drei Anweisungen, eine Farbe. Welche gewinnt?",code:"<p id=\"intro\" class=\"text\" style=\"color: green;\">Hallo</p>\n\n#intro { color: red; }\n.text  { color: blue; }",o:["<code>green</code>","<code>red</code>","<code>blue</code>","<code>black</code>"],a:0,tipp:"Was direkt am Element klebt, ist am stärksten.",e:"Ein Inline-Style schlägt jeden normalen Selektor. Nur <code>!important</code> käme noch darüber."},
@@ -644,7 +644,7 @@ const QUESTIONS = [
 {g:"Box & Größen",t:"Box-Modell",d:2,q:"Was zählt bei <code>width</code> standardmäßig mit?",code:"div {\n  width: 200px;\n  padding: 20px;\n  border: 5px solid black;\n}",o:["Nur der Inhalt", "Inhalt und Innenabstand", "Inhalt, Innenabstand, Rahmen", "Alles inklusive Außenabstand"],a:0,tipp:"Polsterung und Rahmen zählen links und rechts.",e:"200 + 2×20 + 2×5 = 250px. Ohne <code>border-box</code> meint <code>width</code> nur den Inhalt."},
 {g:"Box & Größen",t:"Box-Modell",d:2,typ:"luecke",q:"Ergänze die Eigenschaft für Abstand nach innen.",code:".karte {\n  ▁▁▁: 16px;\n  border: 1px solid gray;\n}",loesung:["padding"],tipp:"Das englische Wort für Polsterung. Der Abstand nach außen hieße margin.",e:"<code>padding</code> schafft Luft nach innen, <code>margin</code> nach außen."},
 {g:"Box & Größen",t:"Box-Modell",d:3,q:"Bis wohin reicht die Hintergrundfarbe eines Elements?",o:["Bis zum Rahmen, Polster mitgefärbt", "Nur bis zum Text", "Bis zum Ende des Außenabstands", "Nur der Rahmen"],a:0,tipp:"Einer der beiden Abstände bleibt immer durchsichtig.",e:"Der Hintergrund deckt Inhalt und Innenabstand ab. Der Außenabstand bleibt transparent — daran erkennt man beide gut auseinander."},
-{g:"Box & Größen",t:"Box-Modell",d:3,q:"Welche Linie verschiebt das Layout nicht?",o:["<code>outline: 2px solid red;</code>","<code>border: 2px solid red;</code>","<code>padding: 2px;</code>","<code>margin: 2px;</code>"],a:0,tipp:"Eine davon liegt über dem Element statt daneben.",e:"<code>outline</code> nimmt keinen Platz ein. Genau deshalb nutzen Browser sie für den Fokusrahmen."},
+{g:"Box & Größen",t:"Box-Modell",d:3,q:"Welche dieser Angaben verschiebt die Nachbarn nicht?",o:["<code>outline: 2px solid red;</code>","<code>border: 2px solid red;</code>","<code>padding: 2px;</code>","<code>margin: 2px;</code>"],a:0,tipp:"Eine davon wird über das Element gezeichnet statt daneben gelegt.",e:"<code>outline</code> nimmt keinen Platz im Layout ein. Genau deshalb nutzen Browser sie für den Fokusrahmen."},
 
 {g:"Box & Größen",t:"margin & padding",d:1,q:"Was löst <code>margin: 10px 20px;</code> aus?",o:["Oben/unten 10px, seitlich 20px", "Oben 10px, sonst 20px", "Links 10px, rechts 20px", "Rundherum 30px"],a:0,tipp:"Erst senkrecht, dann waagerecht.",e:"Bei zwei Werten: der erste für oben und unten, der zweite für die Seiten."},
 {g:"Box & Größen",t:"margin & padding",d:1,typ:"luecke",q:"Ergänze den Wert, der den Platz gleich verteilt.",code:".inhalt {\n  max-width: 800px;\n  margin: 0 ▁▁▁;\n}",loesung:["auto"],tipp:"Vier Buchstaben — der Browser soll selbst rechnen.",e:"<code>auto</code> links und rechts verteilt den freien Platz gleichmäßig."},
@@ -675,7 +675,7 @@ const QUESTIONS = [
 {g:"Farben, Text & Werte",t:"Schrift & Text",d:1,q:"Was schaltet die Unterstriche bei Links ab?",o:["<code>text-decoration: none;</code>","<code>border-bottom: none;</code>","<code>underline: off;</code>","<code>font-style: normal;</code>"],a:0,tipp:"Die Unterstreichung zählt als Dekoration.",e:"<code>text-decoration</code> steuert Unter-, Über- und Durchstreichung."},
 {g:"Farben, Text & Werte",t:"Schrift & Text",d:2,q:"Was passiert, wenn die erste Schrift fehlt?",code:"body {\n  font-family: Inter, Arial, sans-serif;\n}",o:["Die nächste wird genommen", "Es erscheint keine Schrift", "Die Seite lädt neu", "Alle werden gemischt"],a:0,tipp:"Der Browser arbeitet die Liste von links nach rechts ab.",e:"Fehlt eine Schrift, rutscht der Browser zur nächsten. Am Ende steht sinnvollerweise eine Gattung wie <code>sans-serif</code>."},
 {g:"Farben, Text & Werte",t:"Schrift & Text",d:2,q:"Der Text soll fett werden. Welche Zeile stimmt?",o:["<code>font-weight: bold;</code>","<code>font-style: bold;</code>","<code>text-weight: bold;</code>","<code>font-bold: true;</code>"],a:0,tipp:"Achte darauf, welcher Wert zu welcher Eigenschaft gehört.",e:"<code>font-weight</code> regelt die Stärke, <code>font-style</code> dagegen kursiv."},
-{g:"Farben, Text & Werte",t:"Schrift & Text",d:3,q:"Welche Angabe für den Zeilenabstand ist am sichersten?",o:["<code>line-height: 1.5;</code>","<code>line-height: 150%;</code>","<code>line-height: 24px;</code>","<code>line-height: 1.5em;</code>"],a:0,tipp:"Was wird vererbt: die Rechenregel oder das fertige Ergebnis?",e:"Ohne Einheit wird der Faktor vererbt und pro Element neu gerechnet. Sonst erbt das Kind den fertigen Pixelwert — und der passt dann oft nicht."},
+{g:"Farben, Text & Werte",t:"Schrift & Text",d:3,q:"Welcher Zeilenabstand passt sich der Schriftgröße der Kinder an?",o:["<code>line-height: 1.5;</code>","<code>line-height: 150%;</code>","<code>line-height: 24px;</code>","<code>line-height: 1.5em;</code>"],a:0,tipp:"Eine Angabe wird als Rechenregel vererbt, die anderen drei als fertiges Ergebnis.",e:"Ohne Einheit erbt das Kind den Faktor und rechnet mit seiner eigenen Schriftgröße. Bei den anderen drei erbt es den fertigen Pixelwert — der passt dann oft nicht."},
 
 {g:"Farben, Text & Werte",t:"Einheiten",d:1,q:"Welche dieser Einheiten ist eine feste Länge?",o:["<code>px</code>","<code>em</code>","<code>%</code>","<code>vh</code>"],a:0,tipp:"Drei davon hängen von etwas anderem ab.",e:"<code>px</code> ist absolut. Die anderen beziehen sich auf Schriftgröße, Elternelement oder Fenster."},
 {g:"Farben, Text & Werte",t:"Einheiten",d:2,q:"Worauf bezieht sich <code>rem</code>?",o:["Auf die Schriftgröße von <code>html</code>", "Auf die des Elternelements", "Auf die Fensterbreite", "Auf die Containerbreite"],a:0,tipp:"Das r steht für root, also das Wurzelelement html — nicht für das Elternelement.",e:"<code>em</code> nimmt das Elternelement und kann sich aufschaukeln. <code>rem</code> bleibt im ganzen Dokument gleich."},
@@ -1082,7 +1082,9 @@ function zeigeCode(text, zustand, ersatz){
 function normAntwort(t){
   return String(t).trim().toLowerCase()
     .replace(/\s+/g, " ")
-    .replace(/[\u2018\u2019\u201A\u201C\u201D\u201E']/g, '"');
+    .replace(/[\u2018\u2019\u201A\u201C\u201D\u201E']/g, '"')
+    .replace(/\s*:\s*/g, ":")
+    .replace(/;+$/, "");
 }
 
 function lueckeSperren(q, eingabe, ok){
@@ -1222,7 +1224,8 @@ function render(){
     : "\u{1F4A1} Keine Tipps mehr übrig";
 
   if (hatTipp){
-    $("tippText").textContent = q.tipp;
+    $("tippText").textContent = "";
+    $("tippText").appendChild(rich(q.tipp));
     if (tippBenutzt[idx]){
       /* schon aufgedeckt: Text zeigen, nicht erneut abbuchen */
       $("tippBtn").classList.add("hidden");
