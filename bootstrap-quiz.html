@@ -431,6 +431,43 @@ pre{
 .review__e{margin-top:7px;font-size:13.5px;color:var(--muted)}
 .review__empty{padding:16px 0;color:var(--muted)}
 
+/* --- Fehler-Dialog --- */
+.dialog{
+  position:fixed;inset:0;z-index:50;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  background:rgba(8,10,18,.72);
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+  animation:einblenden .18s ease;
+}
+@keyframes einblenden{from{opacity:0}to{opacity:1}}
+.dialog__box{
+  width:min(760px,100%);max-height:86vh;display:flex;flex-direction:column;
+  background:var(--card);border:1px solid var(--line-strong);
+  border-radius:16px;box-shadow:0 24px 60px -20px rgba(0,0,0,.6);
+  animation:hochfahren .22s cubic-bezier(.3,1.1,.5,1);
+}
+@keyframes hochfahren{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
+.dialog__kopf{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:18px 20px;border-bottom:1px solid var(--line);
+}
+.dialog__titel{
+  margin:0;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);font-weight:700;
+}
+.dialog__zu{
+  flex:none;width:32px;height:32px;border-radius:9px;cursor:pointer;
+  border:1px solid var(--line-strong);background:transparent;color:var(--muted);
+  font-size:19px;line-height:1;display:grid;place-items:center;
+  transition:border-color .15s ease,color .15s ease;
+}
+.dialog__zu:hover{border-color:var(--bad);color:var(--bad)}
+.dialog__zu:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.dialog__inhalt{overflow:auto;padding:4px 20px 20px}
+.dialog__inhalt .review__item:first-child{border-top:0}
+body.dialog-offen{overflow:hidden}
+
 .hidden{display:none}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -538,11 +575,21 @@ pre{
 
     <div class="row">
       <button class="btn" id="again">Neuer Test</button>
+      <button class="btn btn--ghost" id="fehlerBtn">Fehler anzeigen</button>
       <button class="btn btn--ghost" id="wrongOnly">Nur Fehler wiederholen</button>
     </div>
-
-    <div class="review" id="review"></div>
   </section>
+
+  <!-- Fehler im Detail, erst auf Knopfdruck -->
+  <div class="dialog hidden" id="fehlerDialog" role="dialog" aria-modal="true" aria-labelledby="fehlerTitel">
+    <div class="dialog__box">
+      <div class="dialog__kopf">
+        <p class="dialog__titel" id="fehlerTitel">Falsch beantwortet</p>
+        <button class="dialog__zu" id="fehlerZu" type="button" aria-label="Schließen">&times;</button>
+      </div>
+      <div class="dialog__inhalt review" id="review"></div>
+    </div>
+  </div>
 
 </div>
 
@@ -1273,6 +1320,28 @@ $("quit").onclick = () => {
   finish(true);                                       /* sonst Auswertung des Bearbeiteten */
 };
 $("again").onclick = () => { $("result").classList.add("hidden"); $("start").classList.remove("hidden"); };
+
+/* ----- Fehler-Dialog ----- */
+let dialogAusloeser = null;
+function dialogAuf(){
+  if ($("fehlerBtn").disabled) return;
+  dialogAusloeser = $("fehlerBtn");
+  $("fehlerDialog").classList.remove("hidden");
+  document.body.classList.add("dialog-offen");
+  $("fehlerZu").focus();
+}
+function dialogZu(){
+  $("fehlerDialog").classList.add("hidden");
+  document.body.classList.remove("dialog-offen");
+  if (dialogAusloeser) dialogAusloeser.focus();
+}
+$("fehlerBtn").onclick = dialogAuf;
+$("fehlerZu").onclick  = dialogZu;
+/* Klick auf die Fläche daneben schließt ebenfalls */
+$("fehlerDialog").addEventListener("click", e => { if (e.target === $("fehlerDialog")) dialogZu(); });
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !$("fehlerDialog").classList.contains("hidden")) dialogZu();
+});
 $("wrongOnly").onclick = () => start(log.filter(l => l && !l.ok).map(l => l.q));
 
 /* ----- Auswertung ----- */
@@ -1439,16 +1508,14 @@ function finish(aborted){
   /* Fehler im Detail */
   const wrongs = log.filter(l => l && !l.ok);
   $("wrongOnly").disabled = wrongs.length === 0;
+  $("fehlerBtn").disabled = wrongs.length === 0;
+  $("fehlerBtn").textContent = wrongs.length
+    ? "Fehler anzeigen (" + wrongs.length + ")"
+    : "Keine Fehler";
+  $("fehlerTitel").textContent = "Falsch beantwortet (" + wrongs.length + ")";
   const rev = $("review");
   rev.innerHTML = "";
-  if (!wrongs.length){
-    rev.innerHTML = '<p class="review__empty">Keine Fehler — nichts zu wiederholen.</p>';
-    return;
-  }
-  const head = document.createElement("p");
-  head.className = "label"; head.style.marginTop = "22px";
-  head.textContent = "Falsch beantwortet (" + wrongs.length + ")";
-  rev.appendChild(head);
+  if (!wrongs.length) return;
   wrongs.forEach(l => {
     const d = document.createElement("div");
     d.className = "review__item";
