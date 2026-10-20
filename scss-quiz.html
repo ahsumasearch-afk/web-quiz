@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SCSS Check — Wissensstand testen</title>
+<style>
+:root{
+  --bg:#f6f7fb;
+  --bg-glow-1:rgba(171,31,120,.14);
+  --bg-glow-2:rgba(20,184,166,.08);
+  --card:#ffffff;
+  --card-2:#f1f3f9;
+  --text:#101322;
+  --muted:#646b83;
+  --line:#e2e5ee;
+  --line-strong:#cdd2e0;
+  --accent:#ab1f78;
+  --accent-soft:rgba(171,31,120,.10);
+  --ok:#0f9d58;
+  --ok-soft:rgba(15,157,88,.12);
+  --bad:#d93b47;
+  --bad-soft:rgba(217,59,71,.10);
+  --warn:#c8860d;
+  --warn-soft:rgba(200,134,13,.14);
+  --code-bg:#161a2b;
+  --code-text:#e7eaf3;
+  --shadow:0 1px 2px rgba(16,19,34,.05), 0 12px 32px -12px rgba(16,19,34,.18);
+  --radius:16px;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0c0e18;
+    --bg-glow-1:rgba(29,78,216,.20);
+    --bg-glow-2:rgba(20,184,166,.08);
+    --card:#151827;
+    --card-2:#1c2032;
+    --text:#eef0f7;
+    --muted:#98a0bb;
+    --line:#262b40;
+    --line-strong:#39405c;
+    --accent:#f78fd0;
+    --accent-soft:rgba(247,143,208,.14);
+    --ok:#3ecf8e;
+    --ok-soft:rgba(62,207,142,.14);
+    --bad:#ff6b76;
+    --bad-soft:rgba(255,107,118,.14);
+    --warn:#e8b13c;
+    --warn-soft:rgba(232,177,60,.16);
+    --code-bg:#0a0d18;
+    --code-text:#e7eaf3;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 16px 40px -16px rgba(0,0,0,.7);
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);
+  background-image:
+    radial-gradient(900px 500px at 12% -8%, var(--bg-glow-1), transparent 60%),
+    radial-gradient(760px 460px at 92% 4%, var(--bg-glow-2), transparent 62%);
+  background-attachment:fixed;
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  padding:32px 18px 80px;
+}
+.wrap{max-width:820px;margin:0 auto}
+
+/* ---------- Kopf ---------- */
+.masthead{margin-bottom:22px}
+.brand{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-soft);
+  border:1px solid var(--line);border-radius:999px;padding:5px 12px;margin-bottom:14px;
+}
+.brand__dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+h1{
+  margin:0;font-size:clamp(30px,6.4vw,46px);font-weight:800;letter-spacing:-.035em;line-height:1.08;
+}
+.sub{margin:9px 0 0;color:var(--muted);font-size:15px;max-width:56ch}
+
+/* ---------- Karten ---------- */
+.panel{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:22px;
+  margin-top:18px;
+}
+@media (min-width:640px){.panel{padding:26px 28px}}
+.label{
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 12px;font-weight:600;
+}
+.hint{color:var(--muted);font-size:13.5px;margin:-4px 0 14px}
+
+/* ---------- Chips ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  font:inherit;font-size:14px;font-weight:500;
+  padding:8px 14px;background:transparent;color:var(--text);
+  border:1px solid var(--line-strong);border-radius:999px;cursor:pointer;
+  transition:background .15s ease,border-color .15s ease,color .15s ease,transform .1s ease;
+}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip:active{transform:scale(.97)}
+.chip[aria-pressed="true"]{
+  background:var(--accent);border-color:var(--accent);color:#fff;
+}
+.chip--d1[aria-pressed="true"]{background:var(--ok);border-color:var(--ok)}
+.chip--d2[aria-pressed="true"]{background:var(--warn);border-color:var(--warn);color:#1a1300}
+.chip--d3[aria-pressed="true"]{background:var(--bad);border-color:var(--bad)}
+.chip__n{font-family:var(--mono);font-size:11px;opacity:.6;margin-right:5px}
+
+.fieldset{margin-bottom:20px}
+.fieldset:last-of-type{margin-bottom:0}
+
+/* Themenliste */
+.topics{
+  margin-top:8px;max-height:0;overflow:hidden;
+  transition:max-height .3s ease;
+}
+.topics.open{max-height:1400px;overflow:auto}
+.topics__inner{
+  border:1px solid var(--line);border-radius:12px;background:var(--card-2);
+  padding:14px 16px;
+}
+.group{margin-bottom:16px}
+.group:last-child{margin-bottom:0}
+.group__h{
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);font-weight:700;margin:0 0 8px;
+}
+.disclosure{
+  font:inherit;font-size:14px;font-weight:600;color:var(--accent);
+  background:none;border:0;padding:0;cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+}
+.disclosure__caret{transition:transform .25s ease;display:inline-block}
+.disclosure[aria-expanded="true"] .disclosure__caret{transform:rotate(90deg)}
+
+/* ---------- Buttons ---------- */
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px}
+.btn{
+  font:inherit;font-weight:650;font-size:15px;
+  padding:13px 24px;border-radius:11px;cursor:pointer;
+  border:1px solid var(--accent);background:var(--accent);color:#fff;
+  transition:filter .15s ease,transform .1s ease,background .15s ease;
+}
+.btn:hover{filter:brightness(1.08)}
+.btn:active{transform:translateY(1px)}
+.btn--ghost{background:transparent;color:var(--text);border-color:var(--line-strong)}
+.btn--ghost:hover{border-color:var(--accent);color:var(--accent);filter:none}
+.btn--quiet{background:transparent;border-color:transparent;color:var(--muted);padding:13px 12px}
+.btn--quiet:hover{color:var(--bad);filter:none}
+.btn:disabled{opacity:.4;cursor:not-allowed;filter:none;transform:none}
+.btn:focus-visible,.chip:focus-visible,.opt:focus-visible,.disclosure:focus-visible{
+  outline:3px solid var(--accent);outline-offset:2px;
+}
+
+/* ---------- Quiz ---------- */
+.meta{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.meta__left{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-family:var(--mono);font-size:12.5px;color:var(--muted);font-weight:600}
+.clock{
+  font-family:var(--mono);font-size:12.5px;font-weight:700;
+  padding:4px 10px;border-radius:999px;
+  background:var(--card-2);border:1px solid var(--line);color:var(--text);
+  font-variant-numeric:tabular-nums;
+}
+.awaybadge{
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  padding:4px 9px;border-radius:999px;
+  background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn);
+}
+.meta__right{display:flex;align-items:center;gap:7px}
+.badge{
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:4px 10px;border-radius:999px;border:1px solid transparent;
+}
+.badge--d1{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}
+.badge--d2{background:var(--warn-soft);color:var(--warn);border-color:var(--warn)}
+.badge--d3{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.tally{font-family:var(--mono);font-size:12px;font-weight:700;padding:4px 9px;border-radius:999px}
+.tally--ok{background:var(--ok-soft);color:var(--ok)}
+.tally--bad{background:var(--bad-soft);color:var(--bad)}
+
+.meter{height:7px;border-radius:999px;background:var(--card-2);border:1px solid var(--line);overflow:hidden;margin-bottom:22px}
+.meter__fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--ok));transition:width .35s cubic-bezier(.4,0,.2,1)}
+
+.topicline{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:600}
+.question{font-size:clamp(20px,3.2vw,25px);font-weight:700;letter-spacing:-.015em;line-height:1.35;margin:0 0 18px}
+.question code,.explain code,.review code{
+  font-family:var(--mono);font-size:.86em;background:var(--card-2);
+  border:1px solid var(--line);padding:1px 6px;border-radius:6px;white-space:nowrap;
+}
+pre{
+  font-family:var(--mono);font-size:13px;line-height:1.6;
+  background:var(--code-bg);color:var(--code-text);
+  padding:16px 18px;border-radius:12px;overflow:auto;margin:0 0 18px;
+  border:1px solid var(--line);
+}
+
+.opts{display:grid;gap:9px}
+.opt{
+  font:inherit;font-size:15.5px;text-align:left;
+  padding:14px 16px;border-radius:12px;
+  border:1px solid var(--line-strong);background:var(--card);color:var(--text);
+  cursor:pointer;display:flex;gap:13px;align-items:flex-start;
+  transition:border-color .15s ease,background .15s ease,transform .1s ease;
+}
+.opt:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}
+.opt:active:not(:disabled){transform:scale(.995)}
+.opt__key{
+  flex:none;width:24px;height:24px;border-radius:7px;
+  display:grid;place-items:center;
+  font-family:var(--mono);font-size:12px;font-weight:700;
+  background:var(--card-2);border:1px solid var(--line);color:var(--muted);
+  margin-top:1px;
+}
+.opt__txt{flex:1}
+.opt__mark{flex:none;font-weight:700;font-size:16px;opacity:0;transition:opacity .2s ease}
+.opt--right{background:var(--ok-soft);border-color:var(--ok)}
+.opt--right .opt__key{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt--right .opt__mark{opacity:1;color:var(--ok)}
+.opt--wrong{background:var(--bad-soft);border-color:var(--bad)}
+.opt--wrong .opt__key{background:var(--bad);border-color:var(--bad);color:#fff}
+.opt--wrong .opt__mark{opacity:1;color:var(--bad)}
+.opt:disabled{cursor:default}
+.opt--dim{opacity:.5}
+
+.explain{
+  margin-top:18px;padding:15px 17px;border-radius:12px;
+  background:var(--card-2);border:1px solid var(--line);
+  border-left:3px solid var(--accent);font-size:15px;
+  animation:rise .25s ease;
+}
+.explain--ok{border-left-color:var(--ok)}
+.explain--bad{border-left-color:var(--bad)}
+.explain strong{
+  display:block;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  margin-bottom:5px;color:var(--muted);
+}
+.explain--ok strong{color:var(--ok)}
+.explain--bad strong{color:var(--bad)}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.keyhint{margin-top:14px;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.gapmark{
+  background:var(--warn-soft);color:var(--warn);
+  border:1px dashed var(--warn);border-radius:5px;
+  padding:0 7px;font-weight:700;
+}
+.gapmark--ok{background:var(--ok-soft);color:var(--ok);border-color:var(--ok);border-style:solid}
+.gapmark--bad{background:var(--bad-soft);color:var(--bad);border-color:var(--bad);border-style:solid}
+.gapbox{display:grid;gap:10px}
+.gapbox__row{display:flex;gap:9px;flex-wrap:wrap}
+.gapbox__input{
+  flex:1;min-width:210px;
+  font-family:var(--mono);font-size:15.5px;
+  padding:13px 15px;border-radius:11px;
+  border:1px solid var(--line-strong);
+  background:var(--card-2);color:var(--text);
+}
+.gapbox__input::placeholder{color:var(--muted);font-family:inherit}
+.gapbox__input:focus{outline:3px solid var(--accent);outline-offset:2px;border-color:var(--accent)}
+.gapbox__input:disabled{opacity:.75}
+.gapbox__tipp{margin:0;font-size:13.5px;color:var(--muted)}
+.tipprow{margin:0 0 16px}
+.tipprow__head{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.tippbtn:disabled{opacity:.45;cursor:not-allowed;border-style:solid}
+.tippbtn:disabled:hover{border-color:var(--line-strong);color:var(--muted)}
+.tippneu{
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  padding:4px 9px;border-radius:999px;
+  background:var(--ok-soft);color:var(--ok);border:1px solid var(--ok);
+  animation:rise .25s ease;
+}
+.vorrat{
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+  color:var(--muted);margin:10px 0 0;
+}
+.tippbtn{
+  font:inherit;font-size:13px;font-weight:600;cursor:pointer;
+  padding:7px 13px;border-radius:9px;
+  border:1px dashed var(--line-strong);background:transparent;color:var(--muted);
+  display:inline-flex;align-items:center;gap:6px;
+  transition:border-color .15s ease,color .15s ease;
+}
+.tippbtn:hover{border-color:var(--warn);color:var(--warn)}
+.tipptext{
+  margin:10px 0 0;padding:11px 14px;border-radius:10px;font-size:14px;
+  background:var(--warn-soft);border:1px solid var(--warn);color:var(--text);
+  animation:rise .2s ease;
+}
+.tipptext b{color:var(--warn);font-weight:700}
+.tippbadge{
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  padding:4px 9px;border-radius:999px;
+  background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent);
+}
+.badge--tipp{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+.tippliste{margin-top:24px}
+.tippliste__list{display:grid;gap:8px;margin-top:6px}
+.tippitem{
+  display:flex;gap:11px;align-items:flex-start;
+  background:var(--card-2);border:1px solid var(--line);
+  border-radius:11px;padding:11px 14px;font-size:14.5px;
+}
+.tippitem__mark{flex:none;font-weight:700;font-size:15px;line-height:1.5}
+.tippitem--ok .tippitem__mark{color:var(--ok)}
+.tippitem--bad .tippitem__mark{color:var(--bad)}
+.tippitem__txt{flex:1}
+.tippitem__thema{
+  display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:2px;
+}
+.loesung{
+  font-family:var(--mono);font-size:14px;
+  background:var(--card);border:1px solid var(--line-strong);
+  border-radius:7px;padding:2px 9px;display:inline-block;
+}
+.keyhint kbd{
+  font-family:var(--mono);font-size:11px;border:1px solid var(--line-strong);
+  border-bottom-width:2px;border-radius:5px;padding:1px 5px;background:var(--card-2);
+}
+
+/* ---------- Ergebnis ---------- */
+.scorewrap{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.facts{margin-top:24px;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(148px,1fr))}
+.fact{background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+.fact__k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 5px}
+.fact__v{font-size:21px;font-weight:750;letter-spacing:-.02em;margin:0;font-variant-numeric:tabular-nums}
+.fact__s{font-size:12.5px;color:var(--muted);margin:3px 0 0;line-height:1.4}
+.fact--warn{border-color:var(--warn);background:var(--warn-soft)}
+.fact--warn .fact__v{color:var(--warn)}
+.fact--ok{border-color:var(--ok)}
+.aborted{
+  margin:14px 0 0;padding:11px 14px;border-radius:11px;font-size:14px;
+  background:var(--warn-soft);border:1px solid var(--warn);color:var(--warn);
+}
+.ring{
+  --p:0;
+  flex:none;width:132px;height:132px;border-radius:50%;
+  background:conic-gradient(var(--accent) calc(var(--p)*1%), var(--card-2) 0);
+  display:grid;place-items:center;position:relative;
+  transition:--p .8s ease;
+}
+.ring::after{
+  content:"";position:absolute;inset:9px;border-radius:50%;background:var(--card);
+}
+.ring__num{position:relative;z-index:1;font-size:31px;font-weight:800;letter-spacing:-.03em}
+.ring__num span{font-size:15px;font-weight:600;color:var(--muted)}
+.scoretext{flex:1;min-width:220px}
+.level{font-size:clamp(21px,3.4vw,27px);font-weight:800;letter-spacing:-.02em;margin:0 0 6px}
+.leveldesc{margin:0;color:var(--muted);font-size:15px}
+
+.bars{margin-top:24px;display:grid;gap:13px}
+.bar__head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px}
+.bar__name{font-weight:600}
+.bar__val{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.bar__track{height:8px;border-radius:999px;background:var(--card-2);border:1px solid var(--line);overflow:hidden}
+.bar__fill{height:100%;border-radius:999px;transition:width .6s ease}
+.bar__fill--d1{background:var(--ok)}
+.bar__fill--d2{background:var(--warn)}
+.bar__fill--d3{background:var(--bad)}
+
+.gaps{margin-top:24px}
+.gaps__list{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+.gap{
+  font-size:13px;font-weight:500;padding:5px 11px;border-radius:999px;
+  background:var(--bad-soft);color:var(--bad);border:1px solid var(--bad);
+}
+.gap__n{font-family:var(--mono);font-size:11px;opacity:.75;margin-left:4px}
+.plan__list{display:grid;gap:10px;margin-top:6px}
+.plan__item{
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+  background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+}
+.plan__name{font-weight:650;font-size:15px}
+.plan__n{
+  font-family:var(--mono);font-size:11px;font-weight:700;margin-left:8px;
+  color:var(--bad);background:var(--bad-soft);border:1px solid var(--bad);
+  padding:2px 8px;border-radius:999px;
+}
+.plan__links,.review__links{display:flex;gap:8px;flex-wrap:wrap}
+.review__links{margin-top:11px}
+.lnk{
+  font:inherit;font-size:13px;font-weight:600;text-decoration:none;
+  padding:7px 13px;border-radius:9px;
+  border:1px solid var(--line-strong);color:var(--text);
+  display:inline-flex;align-items:center;gap:6px;white-space:nowrap;
+  transition:border-color .15s ease,color .15s ease;
+}
+.lnk:hover{border-color:var(--accent);color:var(--accent)}
+.lnk--video{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.lnk--video:hover{border-color:var(--bad);color:var(--bad);filter:brightness(1.12)}
+.kurse{margin-top:14px;padding:13px 15px;border:1px solid var(--line);border-radius:12px;background:var(--card-2)}
+.kurse__list{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.quelle{margin:10px 0 0;font-size:12px;color:var(--muted)}
+
+.review{margin-top:26px;border-top:1px solid var(--line);padding-top:6px}
+.review__item{border-bottom:1px solid var(--line);padding:14px 0}
+.review__top{display:flex;gap:9px;align-items:baseline;flex-wrap:wrap;margin-bottom:5px}
+.review__topic{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.review__q{font-weight:650;font-size:15px;margin:0 0 8px}
+.review__a{font-size:13.5px;display:grid;gap:3px}
+.review__a b{font-weight:600}
+.review__mine{color:var(--bad)}
+.review__right{color:var(--ok)}
+.review__opts{display:grid;gap:5px;margin-top:6px}
+.review__opt{
+  display:flex;gap:10px;align-items:flex-start;
+  font-size:13.5px;padding:7px 11px;border-radius:9px;
+  border:1px solid var(--line);background:var(--card-2);
+}
+.review__opt__m{flex:none;width:14px;font-weight:700;text-align:center;line-height:1.5}
+.review__opt__t{flex:1}
+.review__opt__tag{
+  flex:none;font-family:var(--mono);font-size:10px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;
+  padding:2px 7px;border-radius:999px;border:1px solid currentColor;white-space:nowrap;
+}
+.review__opt--right{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+.review__opt--wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
+.review__opt--rest{color:var(--muted)}
+.review__e{margin-top:7px;font-size:13.5px;color:var(--muted)}
+.review__code{
+  font-family:var(--mono);font-size:12.5px;line-height:1.6;
+  background:var(--code-bg);color:var(--code-text);
+  padding:12px 14px;border-radius:10px;overflow:auto;
+  margin:8px 0 2px;border:1px solid var(--line);
+}
+.review__empty{padding:16px 0;color:var(--muted)}
+
+/* --- Fehler-Dialog --- */
+.dialog{
+  position:fixed;inset:0;z-index:50;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  background:rgba(8,10,18,.72);
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+  animation:einblenden .18s ease;
+}
+@keyframes einblenden{from{opacity:0}to{opacity:1}}
+.dialog__box{
+  width:min(760px,100%);max-height:86vh;display:flex;flex-direction:column;
+  background:var(--card);border:1px solid var(--line-strong);
+  border-radius:16px;box-shadow:0 24px 60px -20px rgba(0,0,0,.6);
+  animation:hochfahren .22s cubic-bezier(.3,1.1,.5,1);
+}
+@keyframes hochfahren{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
+.dialog__kopf{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:18px 20px;border-bottom:1px solid var(--line);
+}
+.dialog__titel{
+  margin:0;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);font-weight:700;
+}
+.dialog__zu{
+  flex:none;width:32px;height:32px;border-radius:9px;cursor:pointer;
+  border:1px solid var(--line-strong);background:transparent;color:var(--muted);
+  font-size:19px;line-height:1;display:grid;place-items:center;
+  transition:border-color .15s ease,color .15s ease;
+}
+.dialog__zu:hover{border-color:var(--bad);color:var(--bad)}
+.dialog__zu:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.dialog__inhalt{overflow:auto;padding:4px 20px 20px}
+.dialog__inhalt .review__item:first-child{border-top:0}
+body.dialog-offen{overflow:hidden}
+
+.hidden{display:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <span class="brand"><span class="brand__dot"></span>Wissenscheck</span>
+    <h1>SCSS — wo stehst du?</h1>
+    <p class="sub" id="count">Fragen werden geladen …</p>
+  </header>
+
+  <!-- ===== Start ===== -->
+  <section class="panel" id="start">
+
+    <div class="fieldset">
+      <p class="label">Schwierigkeit</p>
+      <p class="hint">Ein guter Test mischt: leichte Fragen zeigen, ob die Basis sitzt, knifflige zeigen das echte Verständnis.</p>
+      <div class="chips" id="diffs"></div>
+    </div>
+
+    <div class="fieldset">
+      <p class="label">Umfang</p>
+      <div class="chips" id="sizes"></div>
+      <p class="vorrat">&#128161; Du startest mit 3 Tipps · ab jeder 10. Frage kommt einer dazu</p>
+    </div>
+
+    <div class="fieldset">
+      <button class="disclosure" id="topicToggle" aria-expanded="false">
+        <span class="disclosure__caret">&#9656;</span>
+        <span id="topicSummary">Themen eingrenzen — aktuell alle</span>
+      </button>
+      <div class="topics" id="topicsBox">
+        <div class="topics__inner" id="topics"></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <button class="btn" id="go">Test starten</button>
+      <button class="btn btn--ghost" id="all">Alle Themen an/aus</button>
+    </div>
+  </section>
+
+  <!-- ===== Quiz ===== -->
+  <section class="panel hidden" id="quiz">
+    <div class="meta">
+      <span class="meta__left">
+        <span id="pos"></span>
+        <span class="clock" id="clock">00:00</span>
+        <span class="awaybadge hidden" id="awayBadge"></span>
+        <span class="tippbadge hidden" id="tippBadge"></span>
+      </span>
+      <span class="meta__right" id="stats"></span>
+    </div>
+    <div class="meter"><div class="meter__fill" id="fill"></div></div>
+    <p class="topicline" id="topicline"></p>
+    <h2 class="question" id="q"></h2>
+    <pre id="code" class="hidden"></pre>
+
+    <div class="tipprow hidden" id="tipprow">
+      <div class="tipprow__head">
+        <button class="tippbtn" id="tippBtn" type="button">&#128161; Tipp anzeigen</button>
+        <span class="tippneu hidden" id="tippNeu">+1 Tipp freigeschaltet</span>
+      </div>
+      <p class="tipptext hidden" id="tippText"></p>
+    </div>
+
+    <div class="gapbox hidden" id="gapbox">
+      <div class="gapbox__row">
+        <input class="gapbox__input" id="gapInput" type="text" autocomplete="off"
+               autocapitalize="none" autocorrect="off" spellcheck="false"
+               placeholder="Fehlendes Stück hier eintippen …">
+        <button class="btn" id="gapCheck" type="button">Prüfen</button>
+      </div>
+      <p class="gapbox__tipp" id="gapTipp"></p>
+    </div>
+
+    <div class="opts" id="opts"></div>
+    <div class="explain hidden" id="explain"></div>
+    <div class="row">
+      <button class="btn btn--ghost" id="prev" disabled>Zurück</button>
+      <button class="btn" id="next" disabled>Weiter</button>
+      <button class="btn btn--quiet" id="quit">Abbrechen</button>
+    </div>
+    <p class="keyhint" id="keyhint"><kbd>A</kbd>–<kbd>D</kbd> antworten · <kbd>Enter</kbd> weiter · <kbd>&larr;</kbd> <kbd>&rarr;</kbd> blättern</p>
+  </section>
+
+  <!-- ===== Ergebnis ===== -->
+  <section class="panel hidden" id="result">
+    <p class="label" id="resultLabel">Auswertung</p>
+    <div class="scorewrap">
+      <div class="ring" id="ring"><span class="ring__num" id="ringNum"></span></div>
+      <div class="scoretext">
+        <p class="level" id="levelName"></p>
+        <p class="leveldesc" id="levelDesc"></p>
+      </div>
+    </div>
+
+    <p class="aborted hidden" id="abortNote"></p>
+    <div class="facts" id="facts"></div>
+    <div class="bars" id="bars"></div>
+    <div class="tippliste hidden" id="tippliste"></div>
+    <div class="gaps hidden" id="gaps"></div>
+
+    <div class="row">
+      <button class="btn" id="again">Neuer Test</button>
+      <button class="btn btn--ghost" id="fehlerBtn">Fehler anzeigen</button>
+      <button class="btn btn--ghost" id="wrongOnly">Nur Fehler wiederholen</button>
+    </div>
+  </section>
+
+  <!-- Fehler im Detail, erst auf Knopfdruck -->
+  <div class="dialog hidden" id="fehlerDialog" role="dialog" aria-modal="true" aria-labelledby="fehlerTitel">
+    <div class="dialog__box">
+      <div class="dialog__kopf">
+        <p class="dialog__titel" id="fehlerTitel">Falsch beantwortet</p>
+        <button class="dialog__zu" id="fehlerZu" type="button" aria-label="Schließen">&times;</button>
+      </div>
+      <div class="dialog__inhalt review" id="review"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* =========================================================
+   Fragenkatalog
+   d = Schwierigkeit: 1 leicht · 2 mittel · 3 knifflig
+   a = Index der richtigen Antwort (immer 0, Optionen werden gemischt)
+   ========================================================= */
+const QUESTIONS = [
+/* ---------- Was ist Sass? ---------- */
+{g:"Grundlagen",t:"Was ist Sass?",d:1,q:"Was ist Sass?",o:["Ein Aufsatz für CSS, ein Präprozessor", "Eine Auszeichnungssprache wie HTML", "Eine JavaScript-Bibliothek", "Ein Browser-Plugin"],a:0,tipp:"Es läuft vor dem Browser, nicht im Browser.",e:"Sass erweitert CSS um Variablen, Verschachtelung und Bausteine. Daraus entsteht am Ende ganz normales CSS."},
+{g:"Grundlagen",t:"Was ist Sass?",d:1,q:"Was macht der Browser mit einer .scss-Datei?",o:["Nichts – sie muss erst zu CSS werden", "Er liest sie wie CSS", "Er lädt sie schneller", "Er wandelt sie selbst um"],a:0,tipp:"Browser kennen nur CSS.",e:"Kein Browser versteht SCSS. Die Datei wird vorher übersetzt, und nur das Ergebnis landet auf der Seite."},
+{g:"Grundlagen",t:"Was ist Sass?",d:2,q:"Ist gültiges CSS auch gültiges SCSS?",o:["Ja, jede CSS-Datei ist gültiges SCSS", "Nein, SCSS hat eine ganz eigene Schreibweise", "Nur ohne Kommentare", "Nur ohne Media Queries"],a:0,tipp:"Deshalb kann man eine fertige Datei einfach umbenennen und loslegen.",e:"SCSS ist eine Erweiterung von CSS. Du kannst deine vorhandene Datei umbenennen und Stück für Stück Sass-Funktionen einbauen."},
+{g:"Grundlagen",t:"Was ist Sass?",d:3,q:"Was unterscheidet .sass von .scss?",o:[".scss nutzt Klammern und Semikolons", ".sass ist die neuere Schreibweise", ".scss kennt keine Variablen", "Es gibt keinen Unterschied"],a:0,tipp:"Eine der beiden Schreibweisen sieht genau aus wie CSS.",e:"Die ältere .sass-Schreibweise arbeitet mit Einrückungen statt Klammern. .scss sieht aus wie CSS und ist heute üblich."},
+/* ---------- Dateien & Kompilieren ---------- */
+{g:"Grundlagen",t:"Dateien & Kompilieren",d:1,q:"Welche Datei bindest du im HTML ein?",o:["<code>style.css</code>", "<code>style.scss</code>", "<code>style.sass</code>", "Beide zusammen"],a:0,tipp:"Die, die der Browser lesen kann.",e:"Im HTML steht immer die fertige CSS-Datei. Die SCSS-Datei bleibt beim Entwickeln."},
+{g:"Grundlagen",t:"Dateien & Kompilieren",d:1,typ:"luecke",q:"Ergänze die Endung einer SCSS-Datei.",code:"style.▁▁▁",loesung:["scss", ".scss"],tipp:"Vier Buchstaben.",e:"Dateien mit der Endung <code>.scss</code> werden von Sass übersetzt. Heraus kommt eine <code>.css</code>-Datei."},
+{g:"Grundlagen",t:"Dateien & Kompilieren",d:2,q:"Was passiert beim Kompilieren?",o:["Aus SCSS wird normales CSS", "Aus CSS wird SCSS", "Die Seite lädt schneller", "Der Browser startet neu"],a:0,tipp:"Es ist eine Übersetzung in eine Sprache, die der Browser kennt.",e:"Der Sass-Übersetzer löst Variablen, Verschachtelung und Bausteine auf und schreibt reines CSS in die Zieldatei."},
+{g:"Grundlagen",t:"Dateien & Kompilieren",d:3,q:"Welcher Ausgabestil liefert die kleinste Datei?",o:["<code>compressed</code>", "<code>expanded</code>", "<code>nested</code>", "<code>compact</code>"],a:0,tipp:"Der Name sagt, dass nichts Überflüssiges übrig bleibt.",e:"<code>compressed</code> wirft Zeilenumbrüche und Leerzeichen weg. <code>expanded</code> ist die gut lesbare Fassung zum Entwickeln."},
+/* ---------- Kommentare ---------- */
+{g:"Grundlagen",t:"Kommentare",d:1,typ:"luecke",q:"Ergänze die Zeichen für eine Notiz, die nicht im CSS landet.",code:"▁▁▁ Diese Zeile sieht nur ich\n.btn { color: red; }",loesung:["//"],tipp:"Zweimal dasselbe Zeichen, wie in JavaScript.",e:"<code>//</code> leitet einen Kommentar ein, den Sass beim Übersetzen wegwirft."},
+{g:"Grundlagen",t:"Kommentare",d:1,q:"Welcher Kommentar steht später auch im CSS?",o:["<code>/* Hinweis */</code>", "<code>// Hinweis</code>", "<code>&lt;!-- Hinweis --&gt;</code>", "<code># Hinweis</code>"],a:0,tipp:"Der, den CSS selbst auch kennt.",e:"CSS kennt nur <code>/* … */</code>. Diese Kommentare übernimmt Sass in die Ausgabe."},
+{g:"Grundlagen",t:"Kommentare",d:2,q:"Was steht nach dem Kompilieren in der CSS-Datei?",code:"// Farben für Buttons\n/* Buttons */\n.btn { color: red; }",o:["Nur der Stern-Kommentar und die Regel", "Beide Kommentare und die Regel", "Nur die Regel", "Nur die beiden Kommentare"],a:0,tipp:"Einen der beiden behält Sass, den anderen nicht.",e:"<code>//</code> verschwindet beim Übersetzen, <code>/* … */</code> bleibt stehen."},
+{g:"Grundlagen",t:"Kommentare",d:3,q:"Welcher Kommentar überlebt auch den Ausgabestil compressed?",o:["<code>/*! wichtig */</code>", "<code>/* wichtig */</code>", "<code>// wichtig</code>", "Keiner"],a:0,tipp:"Ein Ausrufezeichen direkt nach dem Stern macht ihn unantastbar.",e:"Mit <code>/*!</code> bleibt der Kommentar auch in der gepackten Datei stehen. So überlebt zum Beispiel ein Lizenzhinweis."},
+/* ---------- Variablen ---------- */
+{g:"Grundlagen",t:"Variablen",d:1,typ:"luecke",q:"Ergänze das Zeichen, mit dem eine Variable beginnt.",code:"▁▁▁hauptfarbe: #c0392b;",loesung:["$"],tipp:"Ein einzelnes Zeichen – in reinem CSS wären es zwei Striche.",e:"Sass-Variablen beginnen mit <code>$</code>. Die CSS-Variante <code>--name</code> ist etwas anderes und bleibt im Browser erhalten."},
+{g:"Grundlagen",t:"Variablen",d:1,typ:"luecke",q:"Setze die Variable als Wert ein.",code:"$hauptfarbe: #c0392b;\n\n.btn {\n  background: ▁▁▁;\n}",loesung:["$hauptfarbe"],tipp:"Genau so geschrieben wie oben bei der Zuweisung.",e:"Beim Übersetzen ersetzt Sass die Variable durch ihren Wert. Im CSS steht dann <code>background: #c0392b;</code>."},
+{g:"Grundlagen",t:"Variablen",d:2,q:"Wo gilt die Variable $rand?",code:".karte {\n  $rand: 8px;\n  padding: $rand;\n}\n\n.box {\n  padding: $rand;\n}",o:["Nur im Block – unten gibt es einen Fehler", "Überall in der Datei", "Nur in der nächsten Regel", "Überall, auch in anderen Dateien"],a:0,tipp:"Geschweifte Klammern grenzen nicht nur Regeln ab.",e:"Eine Variable in einem Block gilt nur dort. Für die ganze Datei schreibt man sie außerhalb jeder Regel."},
+{g:"Grundlagen",t:"Variablen",d:3,q:"Welche Farbe kommt heraus?",code:"$farbe: blue;\n$farbe: green;\n\n.a { color: $farbe; }",o:["<code>green</code>", "<code>blue</code>", "Beide abwechselnd", "Ein Fehler"],a:0,tipp:"Die zweite Zuweisung überschreibt die erste.",e:"Sass arbeitet die Datei von oben nach unten ab. Beim Erreichen der Regel steht in <code>$farbe</code> der zuletzt gesetzte Wert."},
+/* ---------- Verschachtelung ---------- */
+{g:"Struktur & Verschachtelung",t:"Verschachtelung",d:1,typ:"luecke",q:"Schreibe die Regel für den Absatz in die Karte hinein.",code:".karte {\n  padding: 16px;\n\n  ▁▁▁ {\n    margin: 0;\n  }\n}",loesung:["p"],tipp:"Nur der Elementname, genau wie in CSS.",e:"Daraus wird <code>.karte p { margin: 0; }</code>. Die Verschachtelung spart das Wiederholen des äußeren Selektors."},
+{g:"Struktur & Verschachtelung",t:"Verschachtelung",d:1,q:"Welches CSS entsteht daraus?",code:".karte {\n  p { margin: 0; }\n}",o:["<code>.karte p { margin: 0; }</code>", "<code>.karte, p { margin: 0; }</code>", "<code>.karte &gt; p { margin: 0; }</code>", "<code>p .karte { margin: 0; }</code>"],a:0,tipp:"Ein Leerzeichen zwischen beiden heißt: irgendwo darin.",e:"Sass setzt den äußeren Selektor davor und trennt mit einem Leerzeichen."},
+{g:"Struktur & Verschachtelung",t:"Verschachtelung",d:2,q:"Welche Selektoren entstehen hier?",code:"nav {\n  ul { margin: 0; }\n  a  { color: red; }\n}",o:["<code>nav ul</code> und <code>nav a</code>", "<code>nav ul a</code>", "<code>ul a</code>", "<code>nav, ul, a</code>"],a:0,tipp:"Jede innere Regel bekommt den äußeren Selektor davor.",e:"Geschwister bleiben Geschwister: aus zwei inneren Regeln werden zwei eigene Selektoren."},
+{g:"Struktur & Verschachtelung",t:"Verschachtelung",d:3,q:"Warum ist tiefe Verschachtelung ein Problem?",o:["Die Selektoren werden lang und schwer zu überschreiben", "Sass erlaubt nur drei Ebenen", "Der Browser lädt langsamer", "Die Datei wird ungültig"],a:0,tipp:"Denk daran, was im fertigen CSS herauskommt.",e:"Aus vier Ebenen wird ein Selektor wie <code>.a .b .c .d</code>. Der ist so stark, dass man ihn später kaum noch übersteuern kann. Zwei bis drei Ebenen reichen meist."},
+/* ---------- Das &-Zeichen ---------- */
+{g:"Struktur & Verschachtelung",t:"Das &-Zeichen",d:1,typ:"luecke",q:"Ergänze das Zeichen, das für den Selektor darüber steht.",code:".btn {\n  ▁▁▁:hover {\n    background: #333;\n  }\n}",loesung:["&"],tipp:"Ein einzelnes Zeichen, das man auch „und“ liest.",e:"<code>&amp;</code> steht für den Selektor der äußeren Regel. Daraus wird <code>.btn:hover</code>."},
+{g:"Struktur & Verschachtelung",t:"Das &-Zeichen",d:1,q:"Welches CSS entsteht?",code:".btn {\n  &:hover { color: red; }\n}",o:["<code>.btn:hover { color: red; }</code>", "<code>.btn :hover { color: red; }</code>", "<code>.btn &amp;:hover { color: red; }</code>", "<code>:hover .btn { color: red; }</code>"],a:0,tipp:"Das Zeichen wird eins zu eins ersetzt – ohne Leerzeichen dazwischen.",e:"Ohne <code>&amp;</code> käme <code>.btn :hover</code> heraus, also ein Kind statt desselben Elements."},
+{g:"Struktur & Verschachtelung",t:"Das &-Zeichen",d:2,q:"Was ist der Unterschied zwischen den beiden Zeilen?",code:".karte {\n  &.aktiv { … }\n  .aktiv  { … }\n}",o:["Oben dasselbe Element, unten ein Kind davon", "Kein Unterschied", "Oben ein Kind, unten dasselbe Element", "Die obere Zeile ist ungültig"],a:0,tipp:"Ohne Leerzeichen klebt es am Selektor, mit Leerzeichen geht es eine Ebene tiefer.",e:"<code>&amp;.aktiv</code> wird zu <code>.karte.aktiv</code>, also ein Element mit beiden Klassen. <code>.aktiv</code> wird zu <code>.karte .aktiv</code>."},
+{g:"Struktur & Verschachtelung",t:"Das &-Zeichen",d:3,typ:"luecke",q:"Die Regel soll am Ende für .dunkel .karte gelten. Ergänze den Selektor.",code:".karte {\n  ▁▁▁ & {\n    background: #222;\n  }\n}",loesung:[".dunkel"],tipp:"Die Klasse mit Punkt, dann ein Leerzeichen vor dem Eltern-Zeichen.",e:"Das Eltern-Zeichen darf auch hinten stehen. So schreibt man Abweichungen für einen Umschalter weiter oben im HTML."},
+/* ---------- BEM mit & ---------- */
+{g:"Struktur & Verschachtelung",t:"BEM mit &",d:1,typ:"luecke",q:"Ergänze den Teil, aus dem .karte__titel wird.",code:".karte {\n  &▁▁▁ {\n    font-weight: 700;\n  }\n}",loesung:["__titel"],tipp:"Zwei Unterstriche, dann der Name des Bauteils.",e:"Das Eltern-Zeichen trägt den Namen <code>.karte</code> bei, der Rest wird angehängt."},
+{g:"Struktur & Verschachtelung",t:"BEM mit &",d:1,typ:"luecke",q:"Ergänze den Teil, aus dem .btn--gross wird.",code:".btn {\n  &▁▁▁ {\n    padding: 16px 32px;\n  }\n}",loesung:["--gross"],tipp:"Zwei Striche, dann der Name der Variante.",e:"In BEM steht der doppelte Strich für einen Modifier, also eine Abwandlung desselben Bausteins."},
+{g:"Struktur & Verschachtelung",t:"BEM mit &",d:2,q:"Welche Klasse entsteht ganz innen?",code:".menu {\n  &__item {\n    &--aktiv { color: red; }\n  }\n}",o:["<code>.menu__item--aktiv</code>", "<code>.menu__item .aktiv</code>", "<code>.menu--aktiv__item</code>", "<code>.menu .item .aktiv</code>"],a:0,tipp:"Jede Ebene hängt ihr Stück hinten an.",e:"Das Eltern-Zeichen nimmt jeweils den vollen Selektor der Ebene darüber. So wächst der Name Schritt für Schritt."},
+{g:"Struktur & Verschachtelung",t:"BEM mit &",d:3,q:"Warum findet die Suche nach .karte__titel im SCSS nichts?",o:["Der Name wird erst beim Übersetzen zusammengesetzt", "Weil BEM in Sass verboten ist", "Weil Sass Klassen umbenennt", "Weil Unterstriche nicht erlaubt sind"],a:0,tipp:"Im SCSS steht nur das hintere Teilstück.",e:"Das ist der Preis der Schreibweise: im Quelltext steht nur <code>&amp;__titel</code>. Wer den ganzen Namen sucht, findet ihn erst im fertigen CSS."},
+/* ---------- Verschachtelte Eigenschaften ---------- */
+{g:"Struktur & Verschachtelung",t:"Verschachtelte Eigenschaften",d:1,q:"Welche Eigenschaften entstehen daraus?",code:".text {\n  font: {\n    size: 16px;\n    weight: 700;\n  }\n}",o:["<code>font-size</code> und <code>font-weight</code>", "<code>font: size weight</code>", "Nur <code>font</code>", "Ein Fehler"],a:0,tipp:"Der Name vor dem Doppelpunkt wird jeder inneren Zeile vorangestellt.",e:"Sass setzt den Stamm und den inneren Namen mit einem Bindestrich zusammen."},
+{g:"Struktur & Verschachtelung",t:"Verschachtelte Eigenschaften",d:1,typ:"luecke",q:"Ergänze das Zeichen hinter dem Namensstamm.",code:".box {\n  margin▁▁▁ {\n    top: 8px;\n    bottom: 8px;\n  }\n}",loesung:[":"],tipp:"Dasselbe Zeichen wie sonst zwischen Eigenschaft und Wert.",e:"Hinter dem Stamm steht ein Doppelpunkt, dann folgt der Block. Heraus kommen <code>margin-top</code> und <code>margin-bottom</code>."},
+{g:"Struktur & Verschachtelung",t:"Verschachtelte Eigenschaften",d:2,q:"Welche Eigenschaften entstehen hier?",code:".box {\n  border: 1px solid #ccc {\n    radius: 8px;\n  }\n}",o:["<code>border</code> und <code>border-radius</code>", "Nur <code>border-radius</code>", "Nur <code>border</code>", "Ein Fehler"],a:0,tipp:"Vor der geschweiften Klammer darf schon ein Wert stehen.",e:"Der Wert hinter dem Doppelpunkt wird als <code>border</code> ausgegeben, der Block ergänzt <code>border-radius</code>."},
+{g:"Struktur & Verschachtelung",t:"Verschachtelte Eigenschaften",d:3,typ:"luecke",q:"Ergänze den Stamm, aus dem background-color und background-image werden.",code:".held {\n  ▁▁▁: {\n    color: #000;\n    image: url(\"bild.jpg\");\n  }\n}",loesung:["background"],tipp:"Der gemeinsame vordere Teil beider Eigenschaften.",e:"Der Stamm steht einmal vorn, die inneren Zeilen nennen nur noch den Rest des Namens."},
+/* ---------- Partials ---------- */
+{g:"Dateien aufteilen",t:"Partials",d:1,typ:"luecke",q:"Ergänze das Zeichen am Anfang eines Partial-Namens.",code:"scss/\n  ▁▁▁buttons.scss\n  style.scss",loesung:["_"],tipp:"Ein einzelnes Zeichen: ein liegender Strich.",e:"Der Unterstrich sagt dem Übersetzer: Aus dieser Datei soll keine eigene CSS-Datei werden."},
+{g:"Dateien aufteilen",t:"Partials",d:1,q:"Was passiert beim Kompilieren mit _buttons.scss?",o:["Es entsteht keine eigene CSS-Datei", "Es entsteht buttons.css", "Die Datei wird übersprungen", "Die Datei wird gelöscht"],a:0,tipp:"Die Datei ist nur ein Baustein für eine andere.",e:"Partials werden erst dort eingebaut, wo sie geladen werden. Am Ende steht alles zusammen in einer CSS-Datei."},
+{g:"Dateien aufteilen",t:"Partials",d:2,typ:"luecke",q:"Lade das Partial _farben.scss.",code:"@use \"▁▁▁\";\n\n.btn { color: farben.$primaer; }",loesung:["farben", "./farben"],tipp:"Ohne den Strich am Anfang und ohne Endung.",e:"Beim Laden lässt man Unterstrich und Endung weg. Sass findet die Datei trotzdem."},
+{g:"Dateien aufteilen",t:"Partials",d:3,q:"Wozu teilt man SCSS in Partials auf?",o:["Damit jedes Thema seine eigene Datei bekommt", "Damit die Seite schneller lädt", "Weil Dateien nur 100 Zeilen haben dürfen", "Damit der Browser weniger herunterlädt"],a:0,tipp:"Am Ende entsteht trotzdem nur eine einzige CSS-Datei.",e:"Für den Browser ändert sich nichts. Der Gewinn liegt beim Arbeiten: Buttons, Formulare und Farben stehen jeweils an ihrer eigenen Stelle."},
+/* ---------- @use ---------- */
+{g:"Dateien aufteilen",t:"@use",d:1,typ:"luecke",q:"Ergänze die Regel, die eine andere Datei lädt.",code:"▁▁▁ \"farben\";\n\n.btn { color: farben.$primaer; }",loesung:["@use"],tipp:"Ein Klammeraffe, dann das englische Wort für benutzen.",e:"<code>@use</code> lädt eine Datei als Modul. Jede Datei wird dabei nur einmal eingebunden, auch wenn mehrere sie laden."},
+{g:"Dateien aufteilen",t:"@use",d:1,q:"Wie sprichst du die Variable aus dem Modul an?",code:"// _farben.scss\n$primaer: #c0392b;\n\n// style.scss\n@use \"farben\";",o:["<code>farben.$primaer</code>", "<code>$primaer</code>", "<code>$farben.primaer</code>", "<code>farben-$primaer</code>"],a:0,tipp:"Der Dateiname steht als Namensraum davor.",e:"Der Namensraum verhindert, dass sich gleich benannte Variablen aus verschiedenen Dateien in die Quere kommen."},
+{g:"Dateien aufteilen",t:"@use",d:2,typ:"luecke",q:"Gib dem Modul den kurzen Namen f.",code:"@use \"farben\" ▁▁▁ f;\n\n.btn { color: f.$primaer; }",loesung:["as"],tipp:"Ein kurzes englisches Wort für „als“.",e:"Das hilft bei langen Dateinamen oder wenn zwei Dateien gleich heißen."},
+{g:"Dateien aufteilen",t:"@use",d:3,q:"Was bewirkt der Stern?",code:"@use \"farben\" as *;\n\n.btn { color: $primaer; }",o:["Die Namen gelten ohne Namensraum davor", "Alle Dateien im Ordner werden geladen", "Die Datei wird zweimal geladen", "Nichts, das ist ein Fehler"],a:0,tipp:"Der Namensraum fällt weg.",e:"Dann schreibst du <code>$primaer</code> statt <code>farben.$primaer</code>. Sinnvoll nur bei eigenen Dateien – sonst drohen Namenskollisionen."},
+/* ---------- @forward ---------- */
+{g:"Dateien aufteilen",t:"@forward",d:1,typ:"luecke",q:"Ergänze die Regel, die ein Partial an andere weiterreicht.",code:"// _index.scss\n▁▁▁ \"farben\";\n▁▁▁ \"abstaende\";",loesung:["@forward"],tipp:"Ein Klammeraffe, dann das englische Wort für weiterleiten.",e:"Eine Sammeldatei reicht mehrere Partials weiter. Andere Dateien laden dann nur noch diese eine."},
+{g:"Dateien aufteilen",t:"@forward",d:1,q:"Was ist der Unterschied zwischen @use und @forward?",o:["@use nutzt selbst, @forward gibt nur weiter", "Es gibt keinen Unterschied", "@forward ist die veraltete Fassung", "@use lädt nur Variablen"],a:0,tipp:"Nur eins der beiden macht die Inhalte für die nächste Datei sichtbar.",e:"Mit <code>@use</code> kannst du die Inhalte in dieser Datei verwenden. Mit <code>@forward</code> gibst du sie an jeden weiter, der deine Datei lädt."},
+{g:"Dateien aufteilen",t:"@forward",d:2,q:"Was holt diese Zeile?",code:"// scss/_index.scss reicht alle Partials weiter\n@use \"scss\";",o:["Alles, was _index.scss im Ordner weiterreicht", "Nur eine Datei namens scss.scss", "Gar nichts", "Jede einzelne Datei im Ordner"],a:0,tipp:"Ein Ordnername findet die Datei _index.scss darin.",e:"Deshalb legt man in jedem Ordner eine <code>_index.scss</code> an, die alle Partials des Ordners weiterreicht."},
+{g:"Dateien aufteilen",t:"@forward",d:3,typ:"luecke",q:"Reiche alle Namen mit der Vorsilbe farb- weiter.",code:"@forward \"farben\" as farb-▁▁▁;",loesung:["*"],tipp:"Ein einzelnes Zeichen, das für alle Namen steht.",e:"Aus <code>$primaer</code> wird so <code>$farb-primaer</code>. Das hält die Namen auseinander, auch ohne Namensraum."},
+/* ---------- !default & Konfiguration ---------- */
+{g:"Dateien aufteilen",t:"!default & Konfiguration",d:1,typ:"luecke",q:"Mach die Variable von außen überschreibbar.",code:"// _basis.scss\n$radius: 4px ▁▁▁;",loesung:["!default"],tipp:"Ein Ausrufezeichen, dann das englische Wort für Vorgabe.",e:"Nur so markierte Werte darf eine andere Datei beim Laden ersetzen."},
+{g:"Dateien aufteilen",t:"!default & Konfiguration",d:1,q:"Was bedeutet !default hinter einem Wert?",o:["Der Wert gilt nur, wenn noch keiner gesetzt ist", "Der Wert gilt in jedem Fall", "Der Wert gilt nur im Block", "Der Wert wird zurückgesetzt"],a:0,tipp:"Es ist ein Rückfallwert, keine feste Zuweisung.",e:"Steht die Variable schon mit einem Wert da, bleibt dieser stehen. Sonst greift die Vorgabe."},
+{g:"Dateien aufteilen",t:"!default & Konfiguration",d:2,typ:"luecke",q:"Setze beim Laden einen eigenen Radius.",code:"@use \"basis\" ▁▁▁ (\n  $radius: 12px\n);",loesung:["with"],tipp:"Ein kurzes englisches Wort für „mit“.",e:"So konfigurierst du ein Modul von außen. Das klappt nur beim ersten Laden des Moduls."},
+{g:"Dateien aufteilen",t:"!default & Konfiguration",d:3,q:"Warum braucht die Variable im Modul überhaupt !default?",o:["Ohne die Markierung lässt sie sich beim Laden nicht ersetzen", "Sonst ist sie gar nicht sichtbar", "Sonst gilt sie nur einmal", "Sonst bricht das Kompilieren ab"],a:0,tipp:"Das Modul entscheidet selbst, was von außen einstellbar ist.",e:"Eine Variable ohne <code>!default</code> ist fest. Der Versuch, sie mit <code>with</code> zu setzen, endet mit einem Fehler."},
+/* ---------- Mixins ---------- */
+{g:"Wiederverwenden",t:"Mixins",d:1,typ:"luecke",q:"Ergänze die Regel, die einen wiederverwendbaren Block anlegt.",code:"▁▁▁ mitte {\n  display: flex;\n  align-items: center;\n}",loesung:["@mixin"],tipp:"Ein Klammeraffe, dann das englische Wort für Mischung.",e:"Ein Mixin ist ein Bündel Zeilen mit einem Namen. Von allein landet es nicht im CSS."},
+{g:"Wiederverwenden",t:"Mixins",d:1,typ:"luecke",q:"Hol den Block in die Regel hinein.",code:"@mixin mitte {\n  display: flex;\n}\n\n.karte {\n  ▁▁▁ mitte;\n}",loesung:["@include"],tipp:"Ein Klammeraffe, dann das englische Wort für einbinden.",e:"<code>@include</code> kopiert die Zeilen des Mixins an diese Stelle."},
+{g:"Wiederverwenden",t:"Mixins",d:2,q:"Was steht danach im CSS?",code:"@mixin mitte {\n  display: flex;\n}\n\n.a { @include mitte; }\n.b { @include mitte; }",o:["Beide Regeln bekommen <code>display: flex</code>", "Nur <code>.a</code> bekommt es", "Es entsteht <code>.a, .b</code>", "Das Mixin wird eine eigene Regel"],a:0,tipp:"Ein Mixin kopiert seine Zeilen an jede Aufrufstelle.",e:"Genau das ist der Unterschied zu <code>@extend</code>: dort würden die Selektoren zusammengefasst, hier wird der Block kopiert."},
+{g:"Wiederverwenden",t:"Mixins",d:3,q:"Wann nimmst du ein Mixin statt @extend?",o:["Wenn der Block Werte von außen bekommen soll", "Wenn der Block sehr kurz ist", "Wenn du Variablen verwendest", "In jedem Fall"],a:0,tipp:"Nur eins der beiden lässt sich von außen steuern.",e:"Mixins nehmen Parameter entgegen, <code>@extend</code> nicht. Dafür erzeugt <code>@extend</code> weniger doppelte Zeilen."},
+/* ---------- Mixin-Parameter ---------- */
+{g:"Wiederverwenden",t:"Mixin-Parameter",d:1,typ:"luecke",q:"Gib dem Mixin den Parameter, den der Block schon benutzt.",code:"@mixin rand(▁▁▁) {\n  border-radius: $r;\n}",loesung:["$r"],tipp:"Ein Variablenname – genau der aus der Zeile darunter.",e:"Parameter stehen in den Klammern hinter dem Namen und sind im Block ganz normale Variablen."},
+{g:"Wiederverwenden",t:"Mixin-Parameter",d:1,typ:"luecke",q:"Übergib den Wert 8px.",code:"@mixin rand($r) {\n  border-radius: $r;\n}\n\n.karte {\n  @include rand(▁▁▁);\n}",loesung:["8px"],tipp:"Der Wert kommt in die Klammern hinter den Namen.",e:"Beim Übersetzen steht in <code>$r</code> der übergebene Wert. Heraus kommt <code>border-radius: 8px;</code>."},
+{g:"Wiederverwenden",t:"Mixin-Parameter",d:2,typ:"luecke",q:"Gib dem Parameter den Vorgabewert 4px.",code:"@mixin rand($r▁▁▁) {\n  border-radius: $r;\n}",loesung:[": 4px", ":4px"],tipp:"Wie bei einer Eigenschaft: Doppelpunkt, dann der Wert.",e:"Mit einem Vorgabewert wird der Parameter freiwillig. <code>@include rand;</code> nimmt dann 4px."},
+{g:"Wiederverwenden",t:"Mixin-Parameter",d:3,q:"Wie übergibst du nur den zweiten Wert?",code:"@mixin knopf($farbe: blue, $rand: 4px) {\n  background: $farbe;\n  border-radius: $rand;\n}",o:["<code>@include knopf($rand: 8px)</code>", "<code>@include knopf(, 8px)</code>", "<code>@include knopf(8px)</code>", "<code>@include knopf[rand: 8px]</code>"],a:0,tipp:"Man darf den Namen des Parameters mitschreiben.",e:"Benannte Argumente lassen die Reihenfolge außer Acht. Alles, was du nicht nennst, behält seinen Vorgabewert."},
+/* ---------- @content ---------- */
+{g:"Wiederverwenden",t:"@content",d:1,typ:"luecke",q:"Ergänze die Stelle, an der der übergebene Block landet.",code:"@mixin ab-tablet {\n  @media (min-width: 768px) {\n    ▁▁▁;\n  }\n}",loesung:["@content"],tipp:"Ein Klammeraffe, dann das englische Wort für Inhalt.",e:"An dieser Stelle setzt Sass den Block ein, den der Aufruf mitgibt."},
+{g:"Wiederverwenden",t:"@content",d:1,q:"Was macht diese Schreibweise?",code:".karte {\n  @include ab-tablet {\n    padding: 32px;\n  }\n}",o:["Sie gibt dem Mixin einen Block mit", "Sie überschreibt das Mixin", "Sie legt ein neues Mixin an", "Nichts, das ist ein Fehler"],a:0,tipp:"Die geschweiften Klammern direkt hinter dem Aufruf sind kein Zufall.",e:"Der Block wandert in das Mixin und landet dort, wo <code>@content</code> steht."},
+{g:"Wiederverwenden",t:"@content",d:2,q:"Wo landet padding: 32px im fertigen CSS?",code:"@mixin ab-tablet {\n  @media (min-width: 768px) { @content; }\n}\n\n.karte {\n  @include ab-tablet { padding: 32px; }\n}",o:["In der Media Query, innerhalb von <code>.karte</code>", "Direkt in <code>.karte</code>, ohne Media Query", "Im Mixin selbst", "Nirgends"],a:0,tipp:"Verfolge den Weg des Blocks bis zur Stelle mit @content.",e:"Heraus kommt <code>@media (min-width: 768px) { .karte { padding: 32px; } }</code>."},
+{g:"Wiederverwenden",t:"@content",d:3,q:"Wofür nutzt man @content am häufigsten?",o:["Für Media Queries mit festen Breakpoints", "Für Farben", "Für Schleifen", "Für Kommentare"],a:0,tipp:"Man schreibt eine Breite einmal auf und nutzt sie überall.",e:"So steht die Zahl 768 nur an einer Stelle. Ändert sie sich, ändert sie sich für das ganze Projekt."},
+/* ---------- @extend ---------- */
+{g:"Wiederverwenden",t:"@extend",d:1,typ:"luecke",q:"Übernimm die Stile von .knopf.",code:".knopf {\n  padding: 8px 16px;\n}\n\n.knopf-rot {\n  ▁▁▁ .knopf;\n  background: red;\n}",loesung:["@extend"],tipp:"Ein Klammeraffe, dann das englische Wort für erweitern.",e:"<code>@extend</code> hängt den eigenen Selektor an die fremde Regel an, statt deren Zeilen zu kopieren."},
+{g:"Wiederverwenden",t:"@extend",d:1,q:"Was entsteht im CSS?",code:".knopf { padding: 8px; }\n.rot   { @extend .knopf; }",o:["<code>.knopf, .rot { padding: 8px; }</code>", "Eine zweite Regel <code>.rot { padding: 8px; }</code>", "<code>.knopf .rot { padding: 8px; }</code>", "Zwei völlig gleiche Regeln"],a:0,tipp:"Der Selektor wird an die vorhandene Regel angehängt.",e:"Statt die Zeilen zu verdoppeln, wächst die Selektorliste. Das hält die CSS-Datei kleiner."},
+{g:"Wiederverwenden",t:"@extend",d:2,q:"Was ist der Unterschied zu einem Mixin?",o:["@extend fasst Selektoren zusammen, ein Mixin kopiert Zeilen", "Es gibt keinen Unterschied", "@extend kann zusätzlich Parameter", "Ein Mixin ist veraltet"],a:0,tipp:"Bei einem wächst die Selektorliste, beim anderen die Zeilenzahl.",e:"Daraus folgt die Faustregel: gleiche Stile ohne Parameter mit <code>@extend</code>, alles Einstellbare als Mixin."},
+{g:"Wiederverwenden",t:"@extend",d:3,q:"Warum macht @extend in Media Queries Ärger?",o:["Über die Grenze einer Media Query hinweg geht es nicht", "Es verdoppelt die Dateigröße", "Es ist dort ausdrücklich verboten", "Es wirkt dort nur auf Klassen"],a:0,tipp:"Selektoren aus verschiedenen Blöcken lassen sich nicht zu einer Liste zusammenfassen.",e:"Sass bricht mit einer Fehlermeldung ab. Innerhalb derselben Media Query klappt es dagegen."},
+/* ---------- Platzhalter % ---------- */
+{g:"Wiederverwenden",t:"Platzhalter %",d:1,typ:"luecke",q:"Ergänze das Zeichen für einen Platzhalter-Selektor.",code:"▁▁▁kasten {\n  border: 1px solid #ccc;\n  padding: 16px;\n}",loesung:["%"],tipp:"Ein einzelnes Zeichen – das Rechenzeichen für Prozent.",e:"Ein Platzhalter sieht aus wie eine Klasse, landet aber nur im CSS, wenn ihn jemand erweitert."},
+{g:"Wiederverwenden",t:"Platzhalter %",d:1,q:"Was steht im CSS, wenn niemand den Platzhalter erweitert?",code:"%kasten {\n  border: 1px solid #ccc;\n}",o:["Gar nichts", "<code>%kasten { … }</code>", "<code>.kasten { … }</code>", "Nur ein Kommentar"],a:0,tipp:"Ein Platzhalter erscheint nur, wenn ihn jemand nutzt.",e:"Deshalb kann man eine Sammlung von Platzhaltern anlegen, ohne die CSS-Datei aufzublähen."},
+{g:"Wiederverwenden",t:"Platzhalter %",d:2,typ:"luecke",q:"Nutze den Platzhalter in der Klasse.",code:"%kasten {\n  border: 1px solid #ccc;\n}\n\n.karte {\n  @extend ▁▁▁;\n}",loesung:["%kasten"],tipp:"Mit dem Prozentzeichen davor, genau wie oben geschrieben.",e:"Im CSS steht dann <code>.karte { border: 1px solid #ccc; }</code> – der Platzhalter selbst taucht nicht auf."},
+{g:"Wiederverwenden",t:"Platzhalter %",d:3,q:"Warum nimmt man lieber %kasten als .kasten?",o:["Die Hilfsklasse landet dann nicht im CSS", "Platzhalter sind schneller", "Klassen lassen sich nicht erweitern", "Platzhalter können Parameter"],a:0,tipp:"Eine Klasse, die im HTML niemand benutzt, ist toter Code.",e:"Mit einer echten Klasse stünde <code>.kasten</code> immer im CSS, auch wenn sie nirgends im HTML vorkommt."},
+/* ---------- Funktionen ---------- */
+{g:"Rechnen & Werte",t:"Funktionen",d:1,typ:"luecke",q:"Ergänze die Regel, die eine eigene Funktion anlegt.",code:"▁▁▁ doppelt($zahl) {\n  @return $zahl * 2;\n}",loesung:["@function"],tipp:"Ein Klammeraffe, dann das englische Wort für Funktion.",e:"Eine Funktion liefert einen einzelnen Wert zurück, den du hinter einen Doppelpunkt schreiben kannst."},
+{g:"Rechnen & Werte",t:"Funktionen",d:1,typ:"luecke",q:"Ergänze die Zeile, die das Ergebnis zurückgibt.",code:"@function doppelt($zahl) {\n  ▁▁▁ $zahl * 2;\n}",loesung:["@return"],tipp:"Ein Klammeraffe, dann das englische Wort für zurückgeben.",e:"Ohne diese Zeile weiß Sass nicht, was die Funktion liefern soll."},
+{g:"Rechnen & Werte",t:"Funktionen",d:2,q:"Was ist der Unterschied zwischen Funktion und Mixin?",o:["Eine Funktion liefert einen Wert, ein Mixin ganze Zeilen", "Es gibt keinen Unterschied", "Eine Funktion kennt keine Parameter", "Ein Mixin liefert einen Wert zurück"],a:0,tipp:"Das eine schreibst du hinter einen Doppelpunkt, das andere in einen eigenen Block.",e:"<code>width: doppelt(8px);</code> gegen <code>@include mitte;</code> – daran erkennt man sofort, was gemeint ist."},
+{g:"Rechnen & Werte",t:"Funktionen",d:3,q:"Was passiert ohne @return?",code:"@function doppelt($z) {\n  $z * 2;\n}",o:["Sass bricht mit einem Fehler ab", "Es kommt 0 heraus", "Der Wert wird trotzdem geliefert", "Die Funktion wird einfach übersprungen"],a:0,tipp:"Eine Funktion muss sagen, was sie liefert.",e:"Die Zeile <code>$z * 2;</code> rechnet zwar, gibt das Ergebnis aber nirgends heraus."},
+/* ---------- Rechnen & math ---------- */
+{g:"Rechnen & Werte",t:"Rechnen & math",d:1,q:"Welchen Wert bekommt width im fertigen CSS?",code:".box {\n  width: 100px + 20px;\n}",o:["<code>width: 120px;</code>", "<code>width: 100px 20px;</code>", "<code>width: calc(100px + 20px);</code>", "Ein Fehler"],a:0,tipp:"Sass rechnet schon beim Übersetzen, nicht erst im Browser.",e:"Anders als <code>calc()</code> ist die Rechnung fertig, bevor die Seite geladen wird."},
+{g:"Rechnen & Werte",t:"Rechnen & math",d:1,typ:"luecke",q:"Ergänze das eingebaute Modul, das div() mitbringt.",code:"@use \"▁▁▁\";\n\n.spalte {\n  width: math.div(600px, 960px) * 100%;\n}",loesung:["sass:math"],tipp:"Eingebaute Module beginnen mit sass und einem Doppelpunkt.",e:"Eingebaute Module lädt man wie eigene Dateien, nur steht <code>sass:</code> davor."},
+{g:"Rechnen & Werte",t:"Rechnen & math",d:2,q:"Warum schreibt man nicht mehr 600px / 960px?",o:["Der Schrägstrich ist in CSS schon ein Trennzeichen", "Sass kann nicht teilen", "Das Ergebnis wäre falsch gerundet", "Es ist zu langsam"],a:0,tipp:"Denk an eine Kurzschreibweise wie <code>font: 16px/1.5</code>.",e:"Weil der Schrägstrich mehrdeutig ist, wurde er fürs Teilen abgeschafft. Heute nimmt man <code>math.div()</code>."},
+{g:"Rechnen & Werte",t:"Rechnen & math",d:3,typ:"luecke",q:"Ergänze die Funktion fürs Teilen.",code:"@use \"sass:math\";\n\n.spalte {\n  width: math.▁▁▁(1, 3) * 100%;\n}",loesung:["div"],tipp:"Drei Buchstaben, Kurzform fürs Teilen.",e:"<code>math.div(1, 3)</code> ergibt ein Drittel. Mal 100% wird daraus eine Spaltenbreite."},
+/* ---------- Interpolation ---------- */
+{g:"Rechnen & Werte",t:"Interpolation",d:1,typ:"luecke",q:"Setze den Wert der Variablen in den Selektor ein.",code:"$name: \"mail\";\n\n.icon-▁▁▁ {\n  background: url(\"mail.svg\");\n}",loesung:["#{$name}"],tipp:"Eine Raute und geschweifte Klammern um die Variable.",e:"Daraus wird <code>.icon-mail</code>. Ohne die Klammern stünde die Variable wörtlich im Selektor."},
+{g:"Rechnen & Werte",t:"Interpolation",d:1,q:"Welcher Selektor entsteht?",code:"$name: \"mail\";\n\n.icon-#{$name} {\n  background: url(\"mail.svg\");\n}",o:["<code>.icon-mail</code>", "<code>.icon-$name</code>", "<code>.icon-#{$name}</code>", "<code>.mail</code>"],a:0,tipp:"Der Wert der Variablen rutscht an die Stelle der Klammern.",e:"Interpolation ist der Weg, Variablen an Stellen zu bringen, an denen Sass sonst keine erwartet."},
+{g:"Rechnen & Werte",t:"Interpolation",d:2,q:"Wann brauchst du Interpolation?",o:["Wenn die Variable im Selektor oder im Namen steht", "Immer, wenn du eine Variable benutzt", "Nur bei Farben", "Nur in Media Queries"],a:0,tipp:"Hinter einem Doppelpunkt geht es auch ohne.",e:"An einer normalen Wertstelle versteht Sass die Variable von allein. In Selektoren, Eigenschaftsnamen und Zeichenketten braucht es die Klammern."},
+{g:"Rechnen & Werte",t:"Interpolation",d:3,q:"Welche der beiden Zeilen ist unnötig umständlich?",code:".a { color: #{$farbe}; }\n.b { color: $farbe; }",o:["Die erste", "Die zweite", "Beide", "Keine von beiden"],a:0,tipp:"An einer Wertstelle versteht Sass die Variable auch ohne Klammern.",e:"<code>color: $farbe;</code> reicht völlig. Interpolation ist hier nur Schreibarbeit und kann sogar Einheitenprüfungen aushebeln."},
+/* ---------- Listen ---------- */
+{g:"Rechnen & Werte",t:"Listen",d:1,q:"Was ist $groessen hier?",code:"$groessen: 8px, 16px, 24px;",o:["Eine Liste", "Eine Map", "Eine Funktion", "Ein Mixin"],a:0,tipp:"Mehrere Werte hintereinander, durch Kommas getrennt.",e:"Listen kann man auch mit Leerzeichen trennen. Beides versteht Sass."},
+{g:"Rechnen & Werte",t:"Listen",d:1,typ:"luecke",q:"Ergänze das eingebaute Modul für Listenfunktionen.",code:"@use \"▁▁▁\";\n\n$anzahl: list.length($groessen);",loesung:["sass:list"],tipp:"Wie bei sass:math, nur mit dem englischen Wort für Liste.",e:"Jedes eingebaute Modul bringt seine eigenen Funktionen mit, hier zum Beispiel <code>list.length()</code>."},
+{g:"Rechnen & Werte",t:"Listen",d:2,typ:"luecke",q:"Hol den ersten Wert aus der Liste.",code:"@use \"sass:list\";\n\n$erster: list.▁▁▁($groessen, 1);",loesung:["nth"],tipp:"Drei Buchstaben – in CSS stehen sie direkt vor <code>-child</code>.",e:"<code>list.nth($liste, 1)</code> liefert den ersten Eintrag."},
+{g:"Rechnen & Werte",t:"Listen",d:3,q:"Bei welcher Zahl beginnt eine Liste in Sass?",o:["Bei 1", "Bei 0", "Bei -1", "Das hängt von der Liste ab"],a:0,tipp:"Anders als in JavaScript.",e:"Der erste Eintrag hat die Nummer 1. Wer aus JavaScript kommt, greift hier leicht daneben."},
+/* ---------- Maps ---------- */
+{g:"Rechnen & Werte",t:"Maps",d:1,q:"Was ist das hier?",code:"$farben: (\n  \"primaer\": #c0392b,\n  \"grau\": #888888\n);",o:["Eine Map aus Schlüssel und Wert", "Eine Liste", "Eine Funktion", "Ein Mixin"],a:0,tipp:"Jeder Eintrag hat einen Namen und einen Wert.",e:"Maps stehen in runden Klammern. Links der Schlüssel, nach dem Doppelpunkt der Wert."},
+{g:"Rechnen & Werte",t:"Maps",d:1,typ:"luecke",q:"Ergänze das eingebaute Modul für Map-Funktionen.",code:"@use \"▁▁▁\";\n\n.btn { color: map.get($farben, \"primaer\"); }",loesung:["sass:map"],tipp:"Wie bei sass:math, nur mit dem englischen Wort für Karte.",e:"Das Modul bringt unter anderem <code>map.get()</code>, <code>map.has-key()</code> und <code>map.keys()</code> mit."},
+{g:"Rechnen & Werte",t:"Maps",d:2,typ:"luecke",q:"Hol den Wert zum Schlüssel \"grau\".",code:"@use \"sass:map\";\n\n.rand {\n  border-color: map.▁▁▁($farben, \"grau\");\n}",loesung:["get"],tipp:"Drei Buchstaben, das englische Wort für holen.",e:"<code>map.get($map, $schluessel)</code> liefert den passenden Wert."},
+{g:"Rechnen & Werte",t:"Maps",d:3,q:"Was passiert bei einem Schlüssel, den es nicht gibt?",code:"@use \"sass:map\";\n\n$farben: (\"rot\": #c00);\n$x: map.get($farben, \"blau\");",o:["Es kommt <code>null</code> heraus", "Sass bricht mit einem Fehler ab", "Es kommt der erste Wert", "Es kommt eine leere Zeichenkette"],a:0,tipp:"Sass meldet hier nichts – das Ergebnis ist einfach leer.",e:"Die Eigenschaft fällt dann still aus dem CSS. Wer das früh merken will, prüft vorher mit <code>map.has-key()</code>."},
+/* ---------- @if & @else ---------- */
+{g:"Schleifen & Bedingungen",t:"@if & @else",d:1,typ:"luecke",q:"Ergänze die Regel für eine Bedingung.",code:"@mixin text($dunkel) {\n  ▁▁▁ $dunkel {\n    color: #ffffff;\n  }\n}",loesung:["@if"],tipp:"Ein Klammeraffe, dann das englische Wort für wenn.",e:"Der Block läuft nur, wenn die Bedingung zutrifft. Sonst fällt er beim Übersetzen weg."},
+{g:"Schleifen & Bedingungen",t:"@if & @else",d:1,typ:"luecke",q:"Ergänze den anderen Fall.",code:"@if $dunkel {\n  color: #ffffff;\n} ▁▁▁ {\n  color: #222222;\n}",loesung:["@else"],tipp:"Ein Klammeraffe, dann das englische Wort für sonst.",e:"<code>@else</code> steht direkt hinter der schließenden Klammer des vorigen Blocks."},
+{g:"Schleifen & Bedingungen",t:"@if & @else",d:2,q:"Welche Farbe landet im CSS?",code:"$modus: \"dunkel\";\n\n.seite {\n  @if $modus == \"dunkel\" { background: #111111; }\n  @else { background: #ffffff; }\n}",o:["<code>#111111</code>", "<code>#ffffff</code>", "Beide", "Keine von beiden"],a:0,tipp:"Prüf, ob die Bedingung zutrifft.",e:"Die Entscheidung fällt beim Übersetzen. Im CSS steht am Ende nur noch der Gewinner."},
+{g:"Schleifen & Bedingungen",t:"@if & @else",d:3,typ:"luecke",q:"Ergänze das Zeichen für den Vergleich.",code:"@if $modus ▁▁▁ \"dunkel\" {\n  background: #111111;\n}",loesung:["=="],tipp:"Zweimal dasselbe Zeichen – ein einzelnes wäre eine Zuweisung.",e:"<code>==</code> vergleicht, <code>!=</code> prüft auf ungleich."},
+/* ---------- @each ---------- */
+{g:"Schleifen & Bedingungen",t:"@each",d:1,typ:"luecke",q:"Ergänze die Regel für eine Schleife über eine Liste.",code:"$farben: rot, gruen, blau;\n\n▁▁▁ $farbe in $farben {\n  .text-#{$farbe} { color: $farbe; }\n}",loesung:["@each"],tipp:"Ein Klammeraffe, dann das englische Wort für jedes.",e:"Die Schleife läuft einmal pro Eintrag. Hier entstehen drei Regeln."},
+{g:"Schleifen & Bedingungen",t:"@each",d:1,typ:"luecke",q:"Ergänze das Wort zwischen Variable und Liste.",code:"@each $farbe ▁▁▁ $farben {\n  .text-#{$farbe} { color: $farbe; }\n}",loesung:["in"],tipp:"Zwei Buchstaben, im Deutschen und Englischen gleich.",e:"Die Schreibweise lautet immer <code>@each $wert in $liste</code>."},
+{g:"Schleifen & Bedingungen",t:"@each",d:2,typ:"luecke",q:"Lauf über eine Map und hol dabei Name und Wert.",code:"$farben: (\"rot\": #cc0000, \"blau\": #0066cc);\n\n@each ▁▁▁ in $farben {\n  .text-#{$name} { color: $wert; }\n}",loesung:["$name, $wert", "$name,$wert"],tipp:"Zwei Variablennamen, durch ein Komma getrennt – die Namen stehen schon im Block.",e:"Bei einer Map liefert die Schleife zwei Werte je Durchlauf: den Schlüssel und den Wert."},
+{g:"Schleifen & Bedingungen",t:"@each",d:3,q:"Wie viele Regeln entstehen hier?",code:"$groessen: sm, md, lg;\n\n@each $g in $groessen {\n  .box-#{$g} { padding: 8px; }\n}",o:["Drei", "Eine", "Zwei", "Gar keine"],a:0,tipp:"Eine je Eintrag in der Liste.",e:"Aus drei Einträgen werden <code>.box-sm</code>, <code>.box-md</code> und <code>.box-lg</code>."},
+/* ---------- @for & @while ---------- */
+{g:"Schleifen & Bedingungen",t:"@for & @while",d:1,typ:"luecke",q:"Ergänze die Regel für eine Zählschleife.",code:"▁▁▁ $i from 1 through 3 {\n  .spalte-#{$i} { width: 100px * $i; }\n}",loesung:["@for"],tipp:"Ein Klammeraffe, dann das englische Wort für für.",e:"Die Zählvariable steht direkt dahinter, danach folgen Start- und Endwert."},
+{g:"Schleifen & Bedingungen",t:"@for & @while",d:1,q:"Welche Zahlen durchläuft diese Schleife?",code:"@for $i from 1 through 3 {\n  .spalte-#{$i} { width: 100px * $i; }\n}",o:["1, 2 und 3", "1 und 2", "0, 1, 2 und 3", "Nur die 3"],a:0,tipp:"Das Wort vor der Zahl entscheidet, ob sie noch mitzählt.",e:"<code>through</code> nimmt den Endwert mit hinein."},
+{g:"Schleifen & Bedingungen",t:"@for & @while",d:2,q:"Was ändert sich durch to statt through?",code:"@for $i from 1 to 3 {\n  .spalte-#{$i} { width: 100px * $i; }\n}",o:["Die 3 zählt nicht mehr mit", "Die Schleife beginnt erst bei 2", "Es wird rückwärts gezählt", "Gar nichts"],a:0,tipp:"Ein anderes Wort, ein Durchlauf weniger.",e:"<code>to</code> hört vor dem Endwert auf, hier also nach der 2."},
+{g:"Schleifen & Bedingungen",t:"@for & @while",d:3,typ:"luecke",q:"Ergänze die Schleife, die läuft, solange die Bedingung stimmt.",code:"$i: 6;\n\n▁▁▁ $i > 0 {\n  .w-#{$i} { width: 10px * $i; }\n  $i: $i - 2;\n}",loesung:["@while"],tipp:"Ein Klammeraffe, dann das englische Wort für solange.",e:"Im Block muss sich die Bedingung ändern, sonst läuft die Schleife endlos. Meist reicht <code>@for</code> oder <code>@each</code>."},
+];
+
+/* =========================================================
+   Logik
+   ========================================================= */
+/* Lernmaterial je Thema: Suchbegriff für ein Video + passende Referenzseite */
+const LERNSTOFF = {
+ "Was ist Sass?": {
+  "doc": "https://sass-lang.com/guide/",
+  "yt": "Was ist Sass SCSS Grundlagen"
+ },
+ "Dateien & Kompilieren": {
+  "doc": "https://sass-lang.com/install/",
+  "yt": "Sass installieren und kompilieren"
+ },
+ "Kommentare": {
+  "doc": "https://sass-lang.com/documentation/syntax/comments/",
+  "yt": "Sass Kommentare"
+ },
+ "Variablen": {
+  "doc": "https://sass-lang.com/documentation/variables/",
+  "yt": "Sass Variablen"
+ },
+ "Verschachtelung": {
+  "doc": "https://sass-lang.com/documentation/style-rules/",
+  "yt": "Sass Verschachtelung nesting"
+ },
+ "Das &-Zeichen": {
+  "doc": "https://sass-lang.com/documentation/style-rules/parent-selector/",
+  "yt": "Sass Parent Selektor Ampersand"
+ },
+ "BEM mit &": {
+  "doc": "https://sass-lang.com/documentation/style-rules/parent-selector/",
+  "yt": "BEM mit SCSS schreiben"
+ },
+ "Verschachtelte Eigenschaften": {
+  "doc": "https://sass-lang.com/documentation/style-rules/declarations/",
+  "yt": "Sass verschachtelte Eigenschaften"
+ },
+ "Partials": {
+  "doc": "https://sass-lang.com/guide/",
+  "yt": "Sass Partials Dateien aufteilen"
+ },
+ "@use": {
+  "doc": "https://sass-lang.com/documentation/at-rules/use/",
+  "yt": "Sass use Modul laden"
+ },
+ "@forward": {
+  "doc": "https://sass-lang.com/documentation/at-rules/forward/",
+  "yt": "Sass forward index Datei"
+ },
+ "!default & Konfiguration": {
+  "doc": "https://sass-lang.com/documentation/variables/",
+  "yt": "Sass default Variablen konfigurieren"
+ },
+ "Mixins": {
+  "doc": "https://sass-lang.com/documentation/at-rules/mixin/",
+  "yt": "Sass Mixin include"
+ },
+ "Mixin-Parameter": {
+  "doc": "https://sass-lang.com/documentation/at-rules/mixin/",
+  "yt": "Sass Mixin Parameter Standardwert"
+ },
+ "@content": {
+  "doc": "https://sass-lang.com/documentation/at-rules/mixin/",
+  "yt": "Sass content Media Query Mixin"
+ },
+ "@extend": {
+  "doc": "https://sass-lang.com/documentation/at-rules/extend/",
+  "yt": "Sass extend"
+ },
+ "Platzhalter %": {
+  "doc": "https://sass-lang.com/documentation/style-rules/placeholder-selectors/",
+  "yt": "Sass Platzhalter Selektor"
+ },
+ "Funktionen": {
+  "doc": "https://sass-lang.com/documentation/at-rules/function/",
+  "yt": "Sass eigene Funktion schreiben"
+ },
+ "Rechnen & math": {
+  "doc": "https://sass-lang.com/documentation/modules/math/",
+  "yt": "Sass math div rechnen"
+ },
+ "Interpolation": {
+  "doc": "https://sass-lang.com/documentation/interpolation/",
+  "yt": "Sass Interpolation"
+ },
+ "Listen": {
+  "doc": "https://sass-lang.com/documentation/modules/list/",
+  "yt": "Sass Listen"
+ },
+ "Maps": {
+  "doc": "https://sass-lang.com/documentation/modules/map/",
+  "yt": "Sass Maps map get"
+ },
+ "@if & @else": {
+  "doc": "https://sass-lang.com/documentation/at-rules/control/if/",
+  "yt": "Sass if else Bedingung"
+ },
+ "@each": {
+  "doc": "https://sass-lang.com/documentation/at-rules/control/each/",
+  "yt": "Sass each Schleife"
+ },
+ "@for & @while": {
+  "doc": "https://sass-lang.com/documentation/at-rules/control/for/",
+  "yt": "Sass for Schleife"
+ }
+};
+const KURSE = [
+  {t:"Mit Mario · SASS in 25 Minuten", id:"Om3XeeSTN0U"},
+  {t:"Pascal Bajorat · Komplettkurs Sass/SCSS", id:"_FlbA-Su84Y"},
+  {t:"Script Raccoon · Sass Crashkurs", id:"DVPer7VWDcA"}
+];
+
+const $ = id => document.getElementById(id);
+
+/* Erzeugt die Linkzeile zu einem Thema */
+function lernLinks(thema, klein){
+  const l = LERNSTOFF[thema] || {};
+  const box = document.createElement("div");
+  box.className = klein ? "review__links" : "plan__links";
+  const a = (href, text, cls) => {
+    const el = document.createElement("a");
+    el.className = "lnk" + (cls ? " " + cls : "");
+    el.href = href; el.target = "_blank"; el.rel = "noopener";
+    el.textContent = text;
+    return el;
+  };
+  box.appendChild(a(
+    "https://www.youtube.com/results?search_query=" +
+      encodeURIComponent((l.yt || thema) + " Tutorial deutsch"),
+    "\u25B6 Lernvideo", "lnk--video"));
+  if (l.doc) box.appendChild(a(l.doc, "Nachlesen"));
+  return box;
+}
+
+/* Baut Text mit erlaubter Auszeichnung (<code>, <em>) auf.
+   Falls rohes Markup vom Browser verschluckt wuerde und nichts uebrig bleibt,
+   wird der Text stattdessen unveraendert angezeigt statt einer leeren Zeile. */
+function rich(txt, cls){
+  const el = document.createElement("span");
+  if (cls) el.className = cls;
+  el.innerHTML = txt;
+  if (!el.textContent.trim()) el.textContent = txt;
+  return el;
+}
+const DIFF = {1:{name:"Leicht",cls:"d1"},2:{name:"Mittel",cls:"d2"},3:{name:"Knifflig",cls:"d3"}};
+
+let selTopics = new Set();
+let selDiffs  = new Set([1,2,3]);
+let size      = 24;                       /* 0 = alle */
+let deck = [], idx = 0, score = 0, wrong = 0, answers = [], orders = [], log = [];
+
+/* ----- Zeitmessung & Fensterwechsel ----- */
+let running = false;          /* laeuft gerade ein Test? */
+let tStart = 0, tTotal = 0;   /* Startzeitpunkt, Gesamtdauer in ms */
+let ticker = null;
+let awayNow = false, awaySince = 0, awayCount = 0, awayTotal = 0;
+let tippBenutzt = [];        /* je Frage: wurde der Tipp aufgedeckt? */
+let tippVorrat = 3;          /* Startguthaben */
+let tippVergeben = [];       /* je Frage: wurde hier schon nachgelegt? */
+
+function fmt(ms){
+  const sec = Math.max(0, Math.round(ms/1000));
+  const h = Math.floor(sec/3600), m = Math.floor(sec%3600/60), s = sec%60;
+  const pad = n => String(n).padStart(2,"0");
+  return h ? h + ":" + pad(m) + ":" + pad(s) : pad(m) + ":" + pad(s);
+}
+function fmtLong(ms){
+  const sec = Math.max(0, Math.round(ms/1000));
+  if (sec < 60) return sec + " Sek.";
+  const m = Math.floor(sec/60), s = sec%60;
+  return m + " Min. " + s + " Sek.";
+}
+function paintClock(){
+  $("clock").textContent = fmt(Date.now() - tStart);
+  const b = $("awayBadge");
+  if (awayCount){
+    b.classList.remove("hidden");
+    b.textContent = "\u26A0 " + awayCount + "\u00D7 weg";
+  } else b.classList.add("hidden");
+  const t = $("tippBadge");
+  const n = tippBenutzt.filter(Boolean).length;
+  if (running){
+    t.classList.remove("hidden");
+    t.textContent = "\u{1F4A1} " + tippVorrat + " übrig" + (n ? " · " + n + " genutzt" : "");
+  } else t.classList.add("hidden");
+}
+function timerStart(){
+  running = true;
+  tStart = Date.now(); tTotal = 0;
+  awayNow = false; awaySince = 0; awayCount = 0; awayTotal = 0;
+  tippBenutzt = []; tippVorrat = 3; tippVergeben = [];
+  paintClock();
+  clearInterval(ticker);
+  ticker = setInterval(paintClock, 1000);
+}
+function timerStop(){
+  if (!running) return;
+  if (awayNow){ awayTotal += Date.now() - awaySince; awayNow = false; }
+  tTotal = Date.now() - tStart;
+  running = false;
+  clearInterval(ticker); ticker = null;
+}
+
+/* Zaehlt jedes Verlassen des Fensters: Tabwechsel, anderes Programm, minimiert */
+function leave(){
+  if (!running || awayNow) return;
+  awayNow = true; awaySince = Date.now(); awayCount++;
+  paintClock();
+}
+function comeBack(){
+  if (!running || !awayNow) return;
+  awayTotal += Date.now() - awaySince;
+  awayNow = false;
+  paintClock();
+}
+document.addEventListener("visibilitychange", () => document.hidden ? leave() : comeBack());
+window.addEventListener("blur",  leave);
+window.addEventListener("focus", comeBack);
+
+/* ----- Themen sammeln ----- */
+const topics = [];
+QUESTIONS.forEach(q => {
+  let t = topics.find(x => x.t === q.t);
+  if (!t) topics.push({ t:q.t, g:q.g, n:1 }); else t.n++;
+});
+const groups = [...new Set(topics.map(t => t.g))];
+$("count").textContent =
+  QUESTIONS.length + " Fragen · " + topics.length + " Themen · von leicht bis knifflig gestaffelt";
+
+/* ----- Schwierigkeits-Chips ----- */
+[1,2,3].forEach(d => {
+  const n = QUESTIONS.filter(q => q.d === d).length;
+  const b = document.createElement("button");
+  b.className = "chip chip--" + DIFF[d].cls;
+  b.type = "button";
+  b.setAttribute("aria-pressed","true");
+  b.innerHTML = DIFF[d].name + ' <span class="chip__n">' + n + '</span>';
+  b.onclick = () => {
+    if (selDiffs.has(d)) { if (selDiffs.size === 1) return; selDiffs.delete(d); b.setAttribute("aria-pressed","false"); }
+    else { selDiffs.add(d); b.setAttribute("aria-pressed","true"); }
+    updateGo();
+  };
+  $("diffs").appendChild(b);
+});
+
+/* ----- Umfang-Chips ----- */
+[{v:12,l:"Kurz · 12 Fragen"},{v:24,l:"Standard · 24 Fragen"},{v:40,l:"Ausführlich · 40 Fragen"},{v:0,l:"Alles"}].forEach(o => {
+  const b = document.createElement("button");
+  b.className = "chip"; b.type = "button"; b.textContent = o.l;
+  b.setAttribute("aria-pressed", String(o.v === size));
+  b.onclick = () => {
+    size = o.v;
+    [...$("sizes").children].forEach(c => c.setAttribute("aria-pressed","false"));
+    b.setAttribute("aria-pressed","true");
+    updateGo();
+  };
+  $("sizes").appendChild(b);
+});
+
+/* ----- Themen-Chips ----- */
+groups.forEach(g => {
+  const box = document.createElement("div");
+  box.className = "group";
+  const h = document.createElement("p");
+  h.className = "group__h"; h.textContent = g;
+  const row = document.createElement("div");
+  row.className = "chips";
+  topics.filter(t => t.g === g).forEach(t => {
+    const b = document.createElement("button");
+    b.className = "chip"; b.type = "button";
+    b.innerHTML = t.t + ' <span class="chip__n">' + t.n + '</span>';
+    b.setAttribute("aria-pressed","false");
+    b.onclick = () => {
+      if (selTopics.has(t.t)) { selTopics.delete(t.t); b.setAttribute("aria-pressed","false"); }
+      else { selTopics.add(t.t); b.setAttribute("aria-pressed","true"); }
+      updateGo();
+    };
+    row.appendChild(b);
+  });
+  box.append(h,row);
+  $("topics").appendChild(box);
+});
+
+$("topicToggle").onclick = () => {
+  const open = $("topicsBox").classList.toggle("open");
+  $("topicToggle").setAttribute("aria-expanded", String(open));
+};
+
+$("all").onclick = () => {
+  const on = selTopics.size !== topics.length;
+  selTopics = on ? new Set(topics.map(t => t.t)) : new Set();
+  document.querySelectorAll("#topics .chip").forEach(c => c.setAttribute("aria-pressed", String(on)));
+  updateGo();
+};
+
+function matching(){
+  return QUESTIONS.filter(q =>
+    selDiffs.has(q.d) && (selTopics.size === 0 || selTopics.has(q.t))
+  );
+}
+function updateGo(){
+  const n = matching().length;
+  const take = size === 0 ? n : Math.min(size, n);
+  $("go").disabled = n === 0;
+  $("go").textContent = n === 0 ? "Keine Fragen im Filter" : "Test starten · " + take + " Fragen";
+  $("topicSummary").textContent = selTopics.size === 0
+    ? "Themen eingrenzen — aktuell alle"
+    : "Themen eingrenzen — " + selTopics.size + " von " + topics.length + " gewählt";
+}
+updateGo();
+
+/* Selbsttest: meldet in der Konsole, falls ein Text beim Rendern leer bliebe */
+(function pruefe(){
+  const leer = [];
+  QUESTIONS.forEach((q,i) => {
+    const test = t => {
+      const d = document.createElement("span"); d.innerHTML = t;
+      const sichtbar = d.textContent.replace(/\\u00A0/g, " ").trim();
+      return !sichtbar || sichtbar.length < String(t).replace(/<[^>]*>/g, "").trim().length / 3;
+    };
+    if (test(q.q)) leer.push("Frage " + i + " (" + q.t + "): Fragetext");
+    if (q.typ === "luecke"){
+      if (!q.code || q.code.indexOf("\u2581\u2581\u2581") < 0)
+        leer.push("Frage " + i + " (" + q.t + "): keine Lücke im Code");
+      if (!Array.isArray(q.loesung) || !q.loesung.length || !String(q.loesung[0]).trim())
+        leer.push("Frage " + i + " (" + q.t + "): keine Lösung hinterlegt");
+    } else {
+      if (!Array.isArray(q.o) || q.o.length !== 4)
+        leer.push("Frage " + i + " (" + q.t + "): Antworten fehlen");
+      else q.o.forEach((o,j) => { if (test(o)) leer.push("Frage " + i + " (" + q.t + "): Antwort " + "ABCD"[j]); });
+    }
+    if (test(q.e)) leer.push("Frage " + i + " (" + q.t + "): Erklaerung");
+  });
+  if (leer.length) console.warn("Leer gerenderte Texte:\\n" + leer.join("\\n"));
+})();
+
+/* Statusanzeige oben rechts */
+function zeigeStats(q){
+  $("stats").innerHTML =
+    '<span class="badge badge--' + DIFF[q.d].cls + '">' + DIFF[q.d].name + '</span>' +
+    '<span class="tally tally--ok">&#10003; ' + score + '</span>' +
+    '<span class="tally tally--bad">&#10007; ' + wrong + '</span>';
+}
+
+/* Codeblock ausgeben; bei Lueckenfragen wird die Luecke hervorgehoben.
+   Alles ueber Textknoten, damit Markup niemals interpretiert wird. */
+const LUECKE = "\u2581\u2581\u2581";
+function baueCode(ziel, text, zustand, ersatz){
+  ziel.textContent = "";
+  const teile = String(text).split(LUECKE);
+  teile.forEach((t, i) => {
+    ziel.appendChild(document.createTextNode(t));
+    if (i < teile.length - 1){
+      const m = document.createElement("span");
+      m.className = "gapmark" + (zustand ? " gapmark--" + zustand : "");
+      m.textContent = ersatz || LUECKE;
+      ziel.appendChild(m);
+    }
+  });
+  return ziel;
+}
+function zeigeCode(text, zustand, ersatz){
+  baueCode($("code"), text, zustand, ersatz).classList.remove("hidden");
+}
+
+/* Vergleich grosszuegig: Gross-/Kleinschreibung, Mehrfach-Leerzeichen
+   und die Anfuehrungszeichenart sind egal. */
+function normAntwort(t){
+  return String(t).trim().toLowerCase()
+    .replace(/\s+/g, " ")
+    .replace(/[\u2018\u2019\u201A\u201C\u201D\u201E']/g, '"')
+    .replace(/\s*:\s*/g, ":")
+    .replace(/;+$/, "");
+}
+
+function lueckeSperren(q, eingabe, ok){
+  $("gapInput").value = eingabe;
+  $("gapInput").disabled = true;
+  $("gapCheck").disabled = true;
+  zeigeCode(q.code, ok ? "ok" : "bad", ok ? q.loesung[0] : eingabe);
+  $("gapTipp").textContent = "";
+
+  const ex = $("explain");
+  ex.className = "explain " + (ok ? "explain--ok" : "explain--bad");
+  ex.textContent = "";
+  const titel = document.createElement("strong");
+  titel.textContent = ok ? "Richtig" : "Leider falsch";
+  ex.appendChild(titel);
+  if (!ok){
+    const zeile = document.createElement("p");
+    zeile.style.margin = "0 0 7px";
+    zeile.appendChild(document.createTextNode("Richtig wäre: "));
+    const l = document.createElement("span");
+    l.className = "loesung";
+    l.textContent = q.loesung[0];
+    zeile.appendChild(l);
+    ex.appendChild(zeile);
+  }
+  ex.insertAdjacentHTML("beforeend", q.e);
+}
+
+function lueckePruefen(){
+  const q = deck[idx];
+  if (!q || q.typ !== "luecke" || answers[idx] !== undefined) return;
+  const eingabe = $("gapInput").value;
+  if (!eingabe.trim()){ $("gapInput").focus(); return; }
+  const ok = q.loesung.some(l => normAntwort(l) === normAntwort(eingabe));
+  answers[idx] = eingabe;
+  ok ? score++ : wrong++;
+  log[idx] = { q, chosen: eingabe, ok, tipp: !!tippBenutzt[idx] };
+  lueckeSperren(q, eingabe, ok);
+  $("tipprow").classList.add("hidden");
+  zeigeStats(q);
+  $("next").disabled = false;
+  $("next").focus();
+}
+
+const shuffle = a => a.map(v => [Math.random(), v]).sort((x,y) => x[0]-y[0]).map(p => p[1]);
+
+/* Zieht eine Auswahl, die die gewählten Schwierigkeiten möglichst gleichmäßig abbildet */
+function buildDeck(){
+  const pool = matching();
+  /* Auch bei "Alles" gemischt – sonst käme immer dieselbe Reihenfolge */
+  if (size === 0 || size >= pool.length) return shuffle(pool);
+  const levels = [...selDiffs].sort();
+  const buckets = levels.map(d => shuffle(pool.filter(q => q.d === d)));
+  const out = [];
+  let i = 0;
+  while (out.length < size) {
+    const b = buckets[i % buckets.length];
+    if (b.length) out.push(b.pop());
+    else if (buckets.every(x => x.length === 0)) break;
+    i++;
+  }
+  return shuffle(out);
+}
+
+/* ----- Ablauf ----- */
+function start(pool){
+  deck = pool; idx = 0; score = 0; wrong = 0; answers = []; orders = []; log = [];
+  timerStart();
+  $("start").classList.add("hidden");
+  $("result").classList.add("hidden");
+  $("quiz").classList.remove("hidden");
+  render();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+$("go").onclick = () => start(buildDeck());
+
+function render(){
+  const q = deck[idx];
+  $("pos").textContent = "Frage " + (idx+1) + " von " + deck.length;
+  $("stats").innerHTML =
+    '<span class="badge badge--' + DIFF[q.d].cls + '">' + DIFF[q.d].name + '</span>' +
+    '<span class="tally tally--ok">&#10003; ' + score + '</span>' +
+    '<span class="tally tally--bad">&#10007; ' + wrong + '</span>';
+  $("fill").style.width = (idx / deck.length * 100) + "%";
+  $("topicline").textContent = q.g + " · " + q.t;
+  $("q").replaceChildren(rich(q.q));
+
+  const istLuecke = q.typ === "luecke";
+  $("opts").classList.toggle("hidden", istLuecke);
+  $("gapbox").classList.toggle("hidden", !istLuecke);
+  $("keyhint").innerHTML = istLuecke
+    ? 'Antwort eintippen · <kbd>Enter</kbd> prüfen, dann <kbd>Enter</kbd> weiter'
+    : '<kbd>A</kbd>\u2013<kbd>D</kbd> antworten · <kbd>Enter</kbd> weiter · <kbd>\u2190</kbd> <kbd>\u2192</kbd> blättern';
+
+  if (q.code){
+    if (istLuecke) zeigeCode(q.code);
+    else { $("code").textContent = q.code; $("code").classList.remove("hidden"); }
+  } else $("code").classList.add("hidden");
+
+  $("prev").disabled = idx === 0;
+  $("next").textContent = idx+1 === deck.length ? "Auswerten" : "Weiter";
+
+  const opts = $("opts");
+  opts.innerHTML = "";
+  if (!istLuecke){
+  if (!orders[idx]) orders[idx] = shuffle(q.o.map((text,i) => ({text,i})));
+  orders[idx].forEach((o,n) => {
+    const b = document.createElement("button");
+    b.className = "opt"; b.type = "button";
+    const key = document.createElement("span");
+    key.className = "opt__key"; key.textContent = "ABCD"[n];
+    const mark = document.createElement("span");
+    mark.className = "opt__mark";
+    b.append(key, rich(o.text, "opt__txt"), mark);
+    b.onclick = () => answer(o.i, q, opts);
+    opts.appendChild(b);
+  });
+  }
+
+  /* Ab jeder 10. Frage kommt ein Tipp dazu – pro Frage nur einmal */
+  let neuerTipp = false;
+  if ((idx + 1) % 10 === 0 && !tippVergeben[idx]){
+    tippVergeben[idx] = true;
+    tippVorrat++;
+    neuerTipp = true;
+  }
+  if (running) paintClock();   /* Anzeige oben sofort nachziehen, nicht erst beim nächsten Takt */
+
+  /* Tipp gibt es auf Knopfdruck – er nennt nie die Lösung selbst */
+  const hatTipp = !!q.tipp && answers[idx] === undefined;
+  $("tipprow").classList.toggle("hidden", !hatTipp);
+  $("tippNeu").classList.toggle("hidden", !(neuerTipp && hatTipp));
+  /* Knopfbeschriftung immer aktuell halten, auch wenn die Zeile gerade versteckt ist */
+  $("tippBtn").disabled = tippVorrat < 1;
+  $("tippBtn").textContent = tippVorrat > 0
+    ? "\u{1F4A1} Tipp anzeigen (" + tippVorrat + " übrig)"
+    : "\u{1F4A1} Keine Tipps mehr übrig";
+
+  if (hatTipp){
+    $("tippText").textContent = "";
+    $("tippText").appendChild(rich(q.tipp));
+    if (tippBenutzt[idx]){
+      /* schon aufgedeckt: Text zeigen, nicht erneut abbuchen */
+      $("tippBtn").classList.add("hidden");
+      $("tippText").classList.remove("hidden");
+    } else {
+      $("tippBtn").classList.remove("hidden");
+      $("tippText").classList.add("hidden");
+    }
+  }
+
+  if (answers[idx] === undefined){
+    $("explain").classList.add("hidden");
+    $("next").disabled = true;
+    if (istLuecke){
+      $("gapInput").value = "";
+      $("gapInput").disabled = false;
+      $("gapCheck").disabled = false;
+      setTimeout(() => $("gapInput").focus(), 0);
+    }
+  } else {
+    if (istLuecke) lueckeSperren(q, answers[idx], log[idx] && log[idx].ok);
+    else lock(opts, q, answers[idx]);
+    $("next").disabled = false;
+  }
+}
+
+function lock(opts, q, chosen){
+  const ok = chosen === q.a;
+  [...opts.children].forEach((b,n) => {
+    b.disabled = true;
+    const i = orders[idx][n].i;
+    const mark = b.querySelector(".opt__mark");
+    if (i === q.a){ b.classList.add("opt--right"); mark.textContent = "✓"; }
+    else if (i === chosen){ b.classList.add("opt--wrong"); mark.textContent = "✗"; }
+    else b.classList.add("opt--dim");
+  });
+  const ex = $("explain");
+  ex.className = "explain " + (ok ? "explain--ok" : "explain--bad");
+  ex.innerHTML = "<strong>" + (ok ? "Richtig" : "Leider falsch") + "</strong>" + q.e;
+}
+
+function answer(chosen, q, opts){
+  if (answers[idx] !== undefined) return;
+  answers[idx] = chosen;
+  const ok = chosen === q.a;
+  ok ? score++ : wrong++;
+  log[idx] = { q, chosen, ok, tipp: !!tippBenutzt[idx] };
+  lock(opts, q, chosen);
+  $("tipprow").classList.add("hidden");
+  zeigeStats(q);
+  $("next").disabled = false;
+  $("next").focus();
+}
+
+$("tippBtn").onclick = () => {
+  if (tippVorrat < 1 || tippBenutzt[idx]) return;
+  tippVorrat--;
+  tippBenutzt[idx] = true;
+  $("tippBtn").classList.add("hidden");
+  $("tippNeu").classList.add("hidden");
+  $("tippText").classList.remove("hidden");
+  paintClock();
+};
+$("gapCheck").onclick = lueckePruefen;
+$("prev").onclick = () => { if (idx > 0){ idx--; render(); } };
+$("next").onclick = () => { idx++; idx < deck.length ? render() : (timerStop(), finish(false)); };
+$("quit").onclick = () => {
+  const beantwortet = log.filter(Boolean).length;
+  timerStop();
+  if (!beantwortet){                                  /* nichts beantwortet: nur zurueck */
+    $("quiz").classList.add("hidden");
+    $("start").classList.remove("hidden");
+    return;
+  }
+  finish(true);                                       /* sonst Auswertung des Bearbeiteten */
+};
+$("again").onclick = () => { $("result").classList.add("hidden"); $("start").classList.remove("hidden"); };
+
+/* ----- Fehler-Dialog ----- */
+let dialogAusloeser = null;
+function dialogAuf(){
+  if ($("fehlerBtn").disabled) return;
+  dialogAusloeser = $("fehlerBtn");
+  $("fehlerDialog").classList.remove("hidden");
+  document.body.classList.add("dialog-offen");
+  $("fehlerZu").focus();
+}
+function dialogZu(){
+  $("fehlerDialog").classList.add("hidden");
+  document.body.classList.remove("dialog-offen");
+  if (dialogAusloeser) dialogAusloeser.focus();
+}
+$("fehlerBtn").onclick = dialogAuf;
+$("fehlerZu").onclick  = dialogZu;
+/* Klick auf die Fläche daneben schließt ebenfalls */
+$("fehlerDialog").addEventListener("click", e => { if (e.target === $("fehlerDialog")) dialogZu(); });
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !$("fehlerDialog").classList.contains("hidden")) dialogZu();
+});
+$("wrongOnly").onclick = () => start(log.filter(l => l && !l.ok).map(l => l.q));
+
+/* ----- Auswertung ----- */
+function finish(aborted){
+  timerStop();
+  $("quiz").classList.add("hidden");
+  $("result").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+
+  const total = log.filter(Boolean).length;           /* bei Abbruch nur das Bearbeitete */
+  $("resultLabel").textContent = aborted ? "Auswertung · abgebrochen" : "Auswertung";
+  const note = $("abortNote");
+  if (aborted){
+    note.classList.remove("hidden");
+    note.textContent = "Test vorzeitig beendet — ausgewertet sind die " + total +
+      " von " + deck.length + " bearbeiteten Fragen.";
+  } else note.classList.add("hidden");
+
+  const pct = Math.round(score / total * 100);
+  $("ring").style.setProperty("--p", pct);
+  $("ringNum").innerHTML = pct + '<span>%</span>';
+
+  /* Trefferquote je Schwierigkeit */
+  const per = {};
+  [1,2,3].forEach(d => {
+    const all = log.filter(l => l && l.q.d === d);
+    if (all.length) per[d] = { n:all.length, ok:all.filter(l => l.ok).length };
+  });
+  const rate = d => per[d] ? Math.round(per[d].ok / per[d].n * 100) : null;
+
+  /* Niveau */
+  let name, desc;
+  if (pct >= 92)      { name = "Sehr sicher";            desc = "Nahezu alles sitzt — auch die kniffligen Details."; }
+  else if (pct >= 78) { name = "Fortgeschritten";        desc = "Gutes, belastbares Verständnis. Es fehlen nur einzelne Feinheiten."; }
+  else if (pct >= 62) { name = "Solide Grundlagen";      desc = "Die wichtigsten Bausteine sind da, bei Details wird es stellenweise unsicher."; }
+  else if (pct >= 45) { name = "Grundlagen im Aufbau";   desc = "Vieles ist bekannt, aber noch nicht gefestigt. Wiederholung lohnt sich."; }
+  else                { name = "Einsteiger";             desc = "Die Basis ist noch dünn — am besten Schritt für Schritt von vorn."; }
+
+  const r1 = rate(1), r3 = rate(3);
+  if (r1 !== null && r3 !== null){
+    if (r1 >= 80 && r3 < 45) desc += " Auffällig: Die Grundlagen sitzen, bei den kniffligen Fragen wird es deutlich dünner — es fehlt noch das Verständnis hinter den Regeln.";
+    else if (r1 < 60 && r3 >= 70) desc += " Interessant: Die schweren Fragen laufen besser als die leichten — hier fehlen eher Begriffe als Verständnis.";
+    else if (r3 >= 75) desc += " Auch die kniffligen Fragen sitzen — das spricht für echtes Verständnis, nicht nur Auswendiggelerntes.";
+  }
+  $("levelName").textContent = name;
+  $("levelDesc").textContent = score + " von " + total + " richtig. " + desc;
+
+  /* Tipps: wo wurde geholfen? */
+  const beantwortet = log.filter(Boolean);
+  const mitTipp = beantwortet.filter(l => l.tipp);
+  const tippMoeglich = beantwortet.filter(l => l.q.tipp).length;
+  const tippVerfuegbar = 3 + Math.floor(beantwortet.length / 10);   /* Start plus Nachschub */
+
+  /* Zeit & Fensterwechsel */
+  const facts = $("facts");
+  facts.innerHTML = "";
+  const proFrage = total ? tTotal / total : 0;
+  const fact = (k,v,sub,cls) =>
+    '<div class="fact ' + (cls||"") + '"><p class="fact__k">' + k + '</p>' +
+    '<p class="fact__v">' + v + '</p>' +
+    (sub ? '<p class="fact__s">' + sub + '</p>' : '') + '</div>';
+
+  facts.innerHTML =
+    fact("Benötigte Zeit", fmt(tTotal), total + " Fragen bearbeitet") +
+    fact("Pro Frage", Math.round(proFrage/1000) + " Sek.",
+         proFrage < 12000 ? "zügig — sehr schnell entschieden"
+         : proFrage > 45000 ? "gründlich — lange überlegt"
+         : "in normalem Tempo") +
+    fact("Fenster verlassen", awayCount + "\u00D7",
+         awayCount === 0 ? "durchgehend im Test geblieben"
+         : "insgesamt " + fmtLong(awayTotal) + " außerhalb",
+         awayCount === 0 ? "fact--ok" : "fact--warn") +
+    fact("Tipps genutzt", mitTipp.length + " von " + tippVerfuegbar,
+         mitTipp.length === 0 ? "ohne Hilfe durchgekommen"
+         : "noch " + Math.max(0, tippVerfuegbar - mitTipp.length) + " übrig · " +
+           tippMoeglich + " Fragen boten einen Tipp an",
+         mitTipp.length === 0 ? "fact--ok" : "");
+
+  /* Balken je Schwierigkeit */
+  const bars = $("bars");
+  bars.innerHTML = '<p class="label">Nach Schwierigkeit</p>';
+  [1,2,3].forEach(d => {
+    if (!per[d]) return;
+    const p = rate(d);
+    const el = document.createElement("div");
+    el.innerHTML =
+      '<div class="bar__head"><span class="bar__name">' + DIFF[d].name + '</span>' +
+      '<span class="bar__val">' + per[d].ok + '/' + per[d].n + ' · ' + p + '%</span></div>' +
+      '<div class="bar__track"><div class="bar__fill bar__fill--' + DIFF[d].cls + '" style="width:' + p + '%"></div></div>';
+    bars.appendChild(el);
+  });
+
+  /* Welche Fragen brauchten einen Tipp? */
+  const tl = $("tippliste");
+  if (mitTipp.length){
+    tl.classList.remove("hidden");
+    tl.innerHTML = '<p class="label">Tipp geholt bei diesen Fragen (' + mitTipp.length + ')</p>';
+    const liste = document.createElement("div");
+    liste.className = "tippliste__list";
+    mitTipp.forEach(l => {
+      const zeile = document.createElement("div");
+      zeile.className = "tippitem " + (l.ok ? "tippitem--ok" : "tippitem--bad");
+      const mark = document.createElement("span");
+      mark.className = "tippitem__mark";
+      mark.textContent = l.ok ? "\u2713" : "\u2717";
+      const txt = document.createElement("span");
+      txt.className = "tippitem__txt";
+      const thema = document.createElement("span");
+      thema.className = "tippitem__thema";
+      thema.textContent = l.q.t + " · " + DIFF[l.q.d].name +
+        (l.ok ? " · danach richtig" : " · danach trotzdem falsch");
+      txt.append(thema, rich(l.q.q));
+      zeile.append(mark, txt);
+      liste.appendChild(zeile);
+    });
+    tl.appendChild(liste);
+  } else tl.classList.add("hidden");
+
+  /* Schwache Themen */
+  const bad = {};
+  log.forEach(l => { if (l && !l.ok) bad[l.q.t] = (bad[l.q.t] || 0) + 1; });
+  const badList = Object.keys(bad).sort((a,b) => bad[b] - bad[a]);
+  const gaps = $("gaps");
+  if (badList.length){
+    gaps.classList.remove("hidden");
+    gaps.innerHTML = '<p class="label">Lernplan — diese Themen nochmal ansehen</p>';
+    const liste = document.createElement("div");
+    liste.className = "plan__list";
+    badList.forEach(t => {
+      const zeile = document.createElement("div");
+      zeile.className = "plan__item";
+      const name = document.createElement("span");
+      name.className = "plan__name";
+      name.textContent = t;
+      const n = document.createElement("span");
+      n.className = "plan__n";
+      n.textContent = bad[t] + (bad[t] === 1 ? " Fehler" : " Fehler");
+      name.appendChild(n);
+      zeile.append(name, lernLinks(t, false));
+      liste.appendChild(zeile);
+    });
+    gaps.appendChild(liste);
+
+    const kurse = document.createElement("div");
+    kurse.className = "kurse";
+    kurse.innerHTML = '<p class="label" style="margin:0">Oder von vorn: komplette Kurse</p>';
+    const kl = document.createElement("div");
+    kl.className = "kurse__list";
+    KURSE.forEach(k => {
+      const a = document.createElement("a");
+      a.className = "lnk"; a.target = "_blank"; a.rel = "noopener";
+      a.href = "https://www.youtube.com/watch?v=" + k.id;
+      a.textContent = "\u25B6 " + k.t;
+      kl.appendChild(a);
+    });
+    kurse.appendChild(kl);
+    const q = document.createElement("p");
+    q.className = "quelle";
+    q.textContent = "Videolinks führen zur YouTube-Suche zum jeweiligen Thema, „Nachlesen“ in die Sass-Doku.";
+    kurse.appendChild(q);
+    gaps.appendChild(kurse);
+  } else gaps.classList.add("hidden");
+
+  /* Fehler im Detail */
+  const wrongs = log.filter(l => l && !l.ok);
+  $("wrongOnly").disabled = wrongs.length === 0;
+  $("fehlerBtn").disabled = wrongs.length === 0;
+  $("fehlerBtn").textContent = wrongs.length
+    ? "Fehler anzeigen (" + wrongs.length + ")"
+    : "Keine Fehler";
+  $("fehlerTitel").textContent = "Falsch beantwortet (" + wrongs.length + ")";
+  const rev = $("review");
+  rev.innerHTML = "";
+  if (!wrongs.length) return;
+  wrongs.forEach(l => {
+    const d = document.createElement("div");
+    d.className = "review__item";
+    d.innerHTML =
+      '<div class="review__top">' +
+        '<span class="badge badge--' + DIFF[l.q.d].cls + '">' + DIFF[l.q.d].name + '</span>' +
+        '<span class="review__topic">' + l.q.t + '</span>' +
+        (l.tipp ? '<span class="badge badge--tipp">Tipp benutzt</span>' : '') +
+      '</div>' +
+      '<p class="review__q">' + l.q.q + '</p>' +
+      '<div class="review__a"></div>' +
+      '<p class="review__e">' + l.q.e + '</p>';
+
+    /* Code mitzeigen, sonst fehlt der Zusammenhang zur Frage.
+       Bei Lücken steht die richtige Lösung grün an ihrer Stelle. */
+    if (l.q.code){
+      const pre = document.createElement("pre");
+      pre.className = "review__code";
+      if (l.q.typ === "luecke") baueCode(pre, l.q.code, "ok", l.q.loesung[0]);
+      else pre.textContent = l.q.code;
+      d.querySelector(".review__q").after(pre);
+    }
+
+    const box = d.querySelector(".review__a");
+    const zeile = (titel, text, cls) => {
+      const s = document.createElement("span");
+      s.className = cls;
+      s.innerHTML = "<b>" + titel + "</b> ";
+      s.appendChild(rich(text));
+      return s;
+    };
+    if (l.q.typ === "luecke"){
+      const nur = (titel, text, cls) => {
+        const s = document.createElement("span");
+        s.className = cls;
+        s.innerHTML = "<b>" + titel + "</b> ";
+        const c = document.createElement("code");
+        c.textContent = text;
+        s.appendChild(c);
+        return s;
+      };
+      box.append(
+        nur("Deine Antwort:", l.chosen,        "review__mine"),
+        nur("Richtig:",       l.q.loesung[0],  "review__right")
+      );
+    } else {
+      /* Alle Antwortmöglichkeiten zeigen – mit Markierung, was gewählt
+         war und was gestimmt hätte. */
+      const liste = document.createElement("div");
+      liste.className = "review__opts";
+      l.q.o.forEach((text, n) => {
+        const richtig  = n === l.q.a;
+        const gewaehlt = n === l.chosen;
+        const el = document.createElement("div");
+        el.className = "review__opt " +
+          (richtig ? "review__opt--right" : gewaehlt ? "review__opt--wrong" : "review__opt--rest");
+        const m = document.createElement("span");
+        m.className = "review__opt__m";
+        m.textContent = richtig ? "\u2713" : gewaehlt ? "\u2717" : "\u00B7";
+        el.append(m, rich(text, "review__opt__t"));
+        if (richtig || gewaehlt){
+          const tag = document.createElement("span");
+          tag.className = "review__opt__tag";
+          tag.textContent = richtig ? "richtig" : "deine Wahl";
+          el.appendChild(tag);
+        }
+        liste.appendChild(el);
+      });
+      box.appendChild(liste);
+    }
+    d.appendChild(lernLinks(l.q.t, true));
+    rev.appendChild(d);
+  });
+}
+
+/* ----- Tastatur ----- */
+document.addEventListener("keydown", e => {
+  if ($("quiz").classList.contains("hidden")) return;
+  /* Waehrend des Tippens keine Buchstaben-Kuerzel abfangen */
+  if (document.activeElement && document.activeElement.tagName === "INPUT"){
+    if (e.key === "Enter"){
+      e.preventDefault();
+      if (!$("gapCheck").disabled) $("gapCheck").click();
+      else if (!$("next").disabled) $("next").click();
+    }
+    return;
+  }
+  const map = {a:0,b:1,c:2,d:3,"1":0,"2":1,"3":2,"4":3};
+  const k = e.key.toLowerCase();
+  const onBtn = ["BUTTON"].includes(document.activeElement && document.activeElement.tagName);
+  if (k in map){ const b = $("opts").children[map[k]]; if (b && !b.disabled){ e.preventDefault(); b.click(); } }
+  /* Enter nicht doppelt ausloesen, wenn bereits ein Button den Fokus hat */
+  if (e.key === "Enter" && !onBtn && !$("next").disabled) $("next").click();
+  if (e.key === "ArrowLeft"  && !$("prev").disabled) $("prev").click();
+  if (e.key === "ArrowRight" && !$("next").disabled) $("next").click();
+});
+</script>
+</body>
+</html>

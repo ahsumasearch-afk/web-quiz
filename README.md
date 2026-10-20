@@ -1,6 +1,6 @@
 # Web-Quiz
 
-Drei Selbsttests, um den Wissensstand in HTML, CSS und Bootstrap einzuschätzen — gedacht zum Abfragen von Lernenden.
+Vier Selbsttests, um den Wissensstand in HTML, CSS, SCSS und Bootstrap einzuschätzen — gedacht zum Abfragen von Lernenden.
 
 **→ [Zu den Tests](https://ahsumasearch-afk.github.io/web-quiz/)**
 
@@ -8,11 +8,12 @@ Drei Selbsttests, um den Wissensstand in HTML, CSS und Bootstrap einzuschätzen 
 
 | Test | Fragen | Themen | Lücken zum Eintippen |
 |---|---|---|---|
-| [HTML](html-quiz.html) | 100 | 25 | 15 |
-| [CSS](css-quiz.html) | 100 | 20 | 31 |
-| [Bootstrap 5.3](bootstrap-quiz.html) | 100 | 33 | 25 |
+| [HTML](html-quiz.html) | 100 | 25 | 16 |
+| [CSS](css-quiz.html) | 100 | 20 | 34 |
+| [SCSS / Sass](scss-quiz.html) | 100 | 25 | 45 |
+| [Bootstrap 5.3](bootstrap-quiz.html) | 100 | 33 | 47 |
 
-Die Fragen sind nach Schwierigkeit gestaffelt (leicht / mittel / knifflig) und werden bei jedem Start neu gemischt. Neben Auswahlfragen gibt es Lückenaufgaben, bei denen der fehlende Tag, das fehlende Attribut, die fehlende Eigenschaft oder die fehlende Klasse selbst eingetippt wird.
+Die Fragen sind nach Schwierigkeit gestaffelt (leicht / mittel / knifflig) und werden bei jedem Start neu gemischt. Neben Auswahlfragen gibt es Lückenaufgaben, bei denen der fehlende Tag, das fehlende Attribut, die fehlende Eigenschaft, die fehlende Regel oder die fehlende Klasse selbst eingetippt wird.
 
 ## Auswertung
 
