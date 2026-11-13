@@ -606,31 +606,31 @@ body.dialog-offen{overflow:hidden}
    a = Index der richtigen Antwort (immer 0, Optionen werden gemischt)
    ========================================================= */
 const QUESTIONS = [
-/* ---------- Was ist Sass? ---------- */
-{g:"Grundlagen",t:"Was ist Sass?",d:1,q:"Was ist Sass?",o:["Ein Aufsatz für CSS", "Eine Sprache wie HTML", "Eine JavaScript-Bibliothek", "Ein Browser-Plugin"],a:0,tipp:"Es läuft vor dem Browser, nicht im Browser.",e:"Sass erweitert CSS um Variablen, Verschachtelung und Bausteine. Am Ende entsteht ganz normales CSS."},
-{g:"Grundlagen",t:"Was ist Sass?",d:1,q:"Was macht der Browser mit .scss?",o:["Nichts, erst zu CSS machen", "Er liest sie wie CSS", "Er lädt sie schneller", "Er wandelt sie selbst um"],a:0,tipp:"Browser kennen nur CSS.",e:"Kein Browser versteht SCSS. Nur das übersetzte Ergebnis landet auf der Seite."},
-{g:"Grundlagen",t:"Was ist Sass?",d:2,q:"Ist CSS auch gültiges SCSS?",o:["Ja, jede CSS-Datei", "Nein, nie", "Nur ohne Kommentare", "Nur ohne Media Queries"],a:0,tipp:"Deshalb kann man eine fertige Datei einfach umbenennen.",e:"SCSS ist eine Erweiterung von CSS. Du kannst deine Datei umbenennen und Schritt für Schritt Sass einbauen."},
-{g:"Grundlagen",t:"Was ist Sass?",d:3,q:"Was hat .scss, was .sass nicht hat?",o:["Klammern und Semikolons", "Variablen", "Mixins", "Verschachtelung"],a:0,tipp:"Eine der beiden Schreibweisen sieht genau aus wie CSS.",e:"Die ältere <code>.sass</code>-Schreibweise arbeitet mit Einrückungen. Können tun beide dasselbe."},
+/* ---------- Was ist SCSS? ---------- */
+{g:"Grundlagen",t:"Was ist SCSS?",d:1,q:"Was ist SCSS?",o:["Ein Aufsatz für CSS", "Eine Sprache wie HTML", "Eine JavaScript-Bibliothek", "Ein Browser-Plugin"],a:0,tipp:"Es läuft vor dem Browser, nicht im Browser.",e:"SCSS erweitert CSS um Variablen, Verschachtelung und Bausteine. Am Ende entsteht ganz normales CSS."},
+{g:"Grundlagen",t:"Was ist SCSS?",d:1,q:"Was macht der Browser mit .scss?",o:["Nichts, erst zu CSS machen", "Er liest sie wie CSS", "Er lädt sie schneller", "Er wandelt sie selbst um"],a:0,tipp:"Browser kennen nur CSS.",e:"Kein Browser versteht SCSS. Nur das übersetzte Ergebnis landet auf der Seite."},
+{g:"Grundlagen",t:"Was ist SCSS?",d:2,q:"Ist CSS auch gültiges SCSS?",o:["Ja, jede CSS-Datei", "Nein, nie", "Nur ohne Kommentare", "Nur ohne Media Queries"],a:0,tipp:"Deshalb kann man eine fertige Datei einfach umbenennen.",e:"SCSS ist eine Erweiterung von CSS. Du kannst deine Datei umbenennen und Schritt für Schritt SCSS-Funktionen einbauen."},
+{g:"Grundlagen",t:"Was ist SCSS?",d:3,q:"Welche Zeile gibt es nur in SCSS?",o:["<code>$farbe: red;</code>","<code>color: red;</code>","<code>.btn { color: red; }</code>","<code>/* Notiz */</code>"],a:0,tipp:"Drei der vier Zeilen schreibst du genauso in einer .css-Datei.",e:"Das <code>$</code> für Variablen gibt es nur in SCSS. Alles andere ist ganz normales CSS."},
 /* ---------- Dateien & Kompilieren ---------- */
-{g:"Grundlagen",t:"Dateien & Kompilieren",d:1,q:"Welche Datei lädt der Browser?",o:["<code>style.css</code>", "<code>style.scss</code>", "<code>style.sass</code>", "<code>style.min.scss</code>"],a:0,tipp:"Die, die der Browser lesen kann.",e:"Im HTML steht immer die fertige CSS-Datei."},
+{g:"Grundlagen",t:"Dateien & Kompilieren",d:1,q:"Welche Datei lädt der Browser?",o:["<code>style.css</code>", "<code>style.scss</code>", "<code>scss/style.scss</code>", "<code>style.min.scss</code>"],a:0,tipp:"Die, die der Browser lesen kann.",e:"Im HTML steht immer die fertige CSS-Datei."},
 {g:"Grundlagen",t:"Dateien & Kompilieren",d:1,typ:"luecke",q:"Ergänze die Endung.",code:"style.▁▁▁",loesung:["scss", ".scss"],tipp:"Vier Buchstaben.",e:"Aus einer <code>.scss</code>-Datei macht der Übersetzer eine <code>.css</code>-Datei."},
-{g:"Grundlagen",t:"Dateien & Kompilieren",d:2,q:"Was macht der Sass-Übersetzer?",o:["SCSS zu CSS", "CSS zu SCSS", "HTML zu CSS", "CSS zu JavaScript"],a:0,tipp:"Er übersetzt in die Sprache, die der Browser kennt.",e:"Variablen, Verschachtelung und Bausteine werden aufgelöst, heraus kommt reines CSS."},
+{g:"Grundlagen",t:"Dateien & Kompilieren",d:2,q:"Was macht der SCSS-Übersetzer?",o:["SCSS zu CSS", "CSS zu SCSS", "HTML zu CSS", "CSS zu JavaScript"],a:0,tipp:"Er übersetzt in die Sprache, die der Browser kennt.",e:"Variablen, Verschachtelung und Bausteine werden aufgelöst, heraus kommt reines CSS."},
 {g:"Grundlagen",t:"Dateien & Kompilieren",d:3,q:"Welcher Ausgabestil packt am stärksten?",o:["<code>compressed</code>", "<code>expanded</code>", "<code>nested</code>", "<code>compact</code>"],a:0,tipp:"Der Name sagt, dass nichts Überflüssiges übrig bleibt.",e:"<code>compressed</code> wirft Umbrüche und Leerzeichen weg. <code>expanded</code> ist die lesbare Fassung."},
 /* ---------- Kommentare ---------- */
-{g:"Grundlagen",t:"Kommentare",d:1,typ:"luecke",q:"Ergänze den Kommentar nur für dich.",code:"▁▁▁ Das sieht nur ich\n.btn { color: red; }",loesung:["//"],tipp:"Zweimal dasselbe Zeichen, wie in JavaScript.",e:"<code>//</code> wirft Sass beim Übersetzen weg."},
-{g:"Grundlagen",t:"Kommentare",d:1,q:"Welcher Kommentar bleibt im CSS?",o:["<code>/* Hinweis */</code>", "<code>// Hinweis</code>", "<code>&lt;!-- Hinweis --&gt;</code>", "<code># Hinweis</code>"],a:0,tipp:"Der, den CSS selbst auch kennt.",e:"CSS kennt nur <code>/* … */</code>. Diesen Kommentar übernimmt Sass."},
-{g:"Grundlagen",t:"Kommentare",d:2,q:"Welcher Kommentar bleibt stehen?",code:"// Farben\n/* Buttons */\n.btn { color: red; }",o:["<code>/* Buttons */</code>", "<code>// Farben</code>", "Beide", "Keiner"],a:0,tipp:"Einen der beiden behält Sass, den anderen nicht.",e:"<code>//</code> verschwindet, <code>/* … */</code> bleibt."},
+{g:"Grundlagen",t:"Kommentare",d:1,typ:"luecke",q:"Ergänze den Kommentar nur für dich.",code:"▁▁▁ Das sieht nur ich\n.btn { color: red; }",loesung:["//"],tipp:"Zweimal dasselbe Zeichen, wie in JavaScript.",e:"<code>//</code> wirft SCSS beim Übersetzen weg."},
+{g:"Grundlagen",t:"Kommentare",d:1,q:"Welcher Kommentar bleibt im CSS?",o:["<code>/* Hinweis */</code>", "<code>// Hinweis</code>", "<code>&lt;!-- Hinweis --&gt;</code>", "<code># Hinweis</code>"],a:0,tipp:"Der, den CSS selbst auch kennt.",e:"CSS kennt nur <code>/* … */</code>. Diesen Kommentar übernimmt SCSS."},
+{g:"Grundlagen",t:"Kommentare",d:2,q:"Welcher Kommentar bleibt stehen?",code:"// Farben\n/* Buttons */\n.btn { color: red; }",o:["<code>/* Buttons */</code>", "<code>// Farben</code>", "Beide", "Keiner"],a:0,tipp:"Einen der beiden behält SCSS, den anderen nicht.",e:"<code>//</code> verschwindet, <code>/* … */</code> bleibt."},
 {g:"Grundlagen",t:"Kommentare",d:3,q:"Welcher Kommentar überlebt compressed?",o:["<code>/*! wichtig */</code>", "<code>/* wichtig */</code>", "<code>// wichtig</code>", "Keiner"],a:0,tipp:"Ein Ausrufezeichen nach dem Stern macht ihn unantastbar.",e:"Mit <code>/*!</code> bleibt zum Beispiel ein Lizenzhinweis auch in der gepackten Datei stehen."},
 /* ---------- Variablen ---------- */
-{g:"Grundlagen",t:"Variablen",d:1,typ:"luecke",q:"Ergänze das Zeichen vor dem Namen.",code:"▁▁▁hauptfarbe: #c0392b;",loesung:["$"],tipp:"Ein einzelnes Zeichen – in reinem CSS wären es zwei Striche.",e:"Sass-Variablen beginnen mit <code>$</code>. Die CSS-Variante <code>--name</code> ist etwas anderes."},
+{g:"Grundlagen",t:"Variablen",d:1,typ:"luecke",q:"Ergänze das Zeichen vor dem Namen.",code:"▁▁▁hauptfarbe: #c0392b;",loesung:["$"],tipp:"Ein einzelnes Zeichen – in reinem CSS wären es zwei Striche.",e:"SCSS-Variablen beginnen mit <code>$</code>. Die CSS-Variante <code>--name</code> ist etwas anderes."},
 {g:"Grundlagen",t:"Variablen",d:1,typ:"luecke",q:"Setz die Variable ein.",code:"$hauptfarbe: #c0392b;\n\n.btn {\n  background: ▁▁▁;\n}",loesung:["$hauptfarbe"],tipp:"Genau so geschrieben wie oben.",e:"Im CSS steht danach <code>background: #c0392b;</code>."},
 {g:"Grundlagen",t:"Variablen",d:2,q:"Wo gilt $rand?",code:".karte {\n  $rand: 8px;\n  padding: $rand;\n}\n\n.box {\n  padding: $rand;\n}",o:["Nur in <code>.karte</code>", "In der ganzen Datei", "In der nächsten Regel", "In allen Dateien"],a:0,tipp:"Geschweifte Klammern grenzen nicht nur Regeln ab.",e:"Eine Variable im Block gilt nur dort. Für die ganze Datei schreibt man sie außerhalb jeder Regel."},
-{g:"Grundlagen",t:"Variablen",d:3,q:"Welche Farbe kommt heraus?",code:"$farbe: blue;\n$farbe: green;\n\n.a { color: $farbe; }",o:["<code>green</code>", "<code>blue</code>", "Beide", "Ein Fehler"],a:0,tipp:"Die zweite Zuweisung überschreibt die erste.",e:"Sass arbeitet die Datei von oben nach unten ab."},
+{g:"Grundlagen",t:"Variablen",d:3,q:"Welche Farbe kommt heraus?",code:"$farbe: blue;\n$farbe: green;\n\n.a { color: $farbe; }",o:["<code>green</code>", "<code>blue</code>", "Beide", "Ein Fehler"],a:0,tipp:"Die zweite Zuweisung überschreibt die erste.",e:"SCSS arbeitet die Datei von oben nach unten ab."},
 /* ---------- Verschachtelung ---------- */
 {g:"Struktur & Verschachtelung",t:"Verschachtelung",d:1,typ:"luecke",q:"Ergänze den Selektor für den Absatz.",code:".karte {\n  padding: 16px;\n\n  ▁▁▁ {\n    margin: 0;\n  }\n}",loesung:["p"],tipp:"Nur der Elementname, genau wie in CSS.",e:"Daraus wird <code>.karte p</code>."},
-{g:"Struktur & Verschachtelung",t:"Verschachtelung",d:1,q:"Welcher Selektor entsteht?",code:".karte {\n  p { margin: 0; }\n}",o:["<code>.karte p</code>", "<code>.karte, p</code>", "<code>.karte &gt; p</code>", "<code>p .karte</code>"],a:0,tipp:"Ein Leerzeichen dazwischen heißt: irgendwo darin.",e:"Sass setzt den äußeren Selektor davor und trennt mit einem Leerzeichen."},
+{g:"Struktur & Verschachtelung",t:"Verschachtelung",d:1,q:"Welcher Selektor entsteht?",code:".karte {\n  p { margin: 0; }\n}",o:["<code>.karte p</code>", "<code>.karte, p</code>", "<code>.karte &gt; p</code>", "<code>p .karte</code>"],a:0,tipp:"Ein Leerzeichen dazwischen heißt: irgendwo darin.",e:"SCSS setzt den äußeren Selektor davor und trennt mit einem Leerzeichen."},
 {g:"Struktur & Verschachtelung",t:"Verschachtelung",d:2,q:"Welche Selektoren entstehen?",code:"nav {\n  ul { margin: 0; }\n  a  { color: red; }\n}",o:["<code>nav ul</code> und <code>nav a</code>", "<code>nav ul a</code>", "<code>ul a</code>", "<code>nav, ul, a</code>"],a:0,tipp:"Jede innere Regel bekommt den äußeren Selektor davor.",e:"Aus zwei inneren Regeln werden zwei eigene Selektoren."},
-{g:"Struktur & Verschachtelung",t:"Verschachtelung",d:3,q:"Darf eine Media Query hier hinein?",code:".karte {\n  padding: 16px;\n\n  @media (min-width: 768px) {\n    padding: 32px;\n  }\n}",o:["Ja, Sass zieht sie nach außen", "Nein, das ist ein Fehler", "Nur ganz oben in der Datei", "Nur in einem Mixin"],a:0,tipp:"Schau nach, wo die Media Query im fertigen CSS landet.",e:"Im CSS steht danach <code>@media … { .karte { padding: 32px; } }</code>. So bleibt die Angabe bei der Regel, zu der sie gehört."},
+{g:"Struktur & Verschachtelung",t:"Verschachtelung",d:3,q:"Darf eine Media Query hier hinein?",code:".karte {\n  padding: 16px;\n\n  @media (min-width: 768px) {\n    padding: 32px;\n  }\n}",o:["Ja, SCSS zieht sie nach außen", "Nein, das ist ein Fehler", "Nur ganz oben in der Datei", "Nur in einem Mixin"],a:0,tipp:"Schau nach, wo die Media Query im fertigen CSS landet.",e:"Im CSS steht danach <code>@media … { .karte { padding: 32px; } }</code>. So bleibt die Angabe bei der Regel, zu der sie gehört."},
 /* ---------- Das &-Zeichen ---------- */
 {g:"Struktur & Verschachtelung",t:"Das &-Zeichen",d:1,typ:"luecke",q:"Ergänze das Zeichen für .btn.",code:".btn {\n  ▁▁▁:hover {\n    background: #333333;\n  }\n}",loesung:["&"],tipp:"Ein einzelnes Zeichen, das man auch „und“ liest.",e:"<code>&amp;</code> steht für den Selektor der äußeren Regel."},
 {g:"Struktur & Verschachtelung",t:"Das &-Zeichen",d:1,q:"Welcher Selektor entsteht?",code:".btn {\n  &:hover { color: red; }\n}",o:["<code>.btn:hover</code>", "<code>.btn :hover</code>", "<code>.btn &amp;:hover</code>", "<code>:hover .btn</code>"],a:0,tipp:"Das Zeichen wird ersetzt – ohne Leerzeichen dazwischen.",e:"Ohne <code>&amp;</code> käme <code>.btn :hover</code> heraus, also ein Kind statt desselben Elements."},
@@ -642,7 +642,7 @@ const QUESTIONS = [
 {g:"Struktur & Verschachtelung",t:"BEM mit &",d:2,q:"Welche Klasse entsteht innen?",code:".menu {\n  &__item {\n    &--aktiv { color: red; }\n  }\n}",o:["<code>.menu__item--aktiv</code>", "<code>.menu__item .aktiv</code>", "<code>.menu--aktiv__item</code>", "<code>.menu .item .aktiv</code>"],a:0,tipp:"Jede Ebene hängt ihr Stück hinten an.",e:"Das Eltern-Zeichen nimmt jeweils den vollen Selektor der Ebene darüber."},
 {g:"Struktur & Verschachtelung",t:"BEM mit &",d:3,q:"Welche zwei Selektoren entstehen?",code:".btn {\n  &--klein { padding: 4px; }\n  &:hover  { opacity: .8; }\n}",o:["<code>.btn--klein</code> und <code>.btn:hover</code>", "<code>.btn--klein</code> und <code>.btn :hover</code>", "<code>.btn-klein</code> und <code>.btn:hover</code>", "Nur <code>.btn</code>"],a:0,tipp:"Beide Male wird das Zeichen durch denselben Selektor ersetzt.",e:"Variante und Zustand entstehen nach genau derselben Regel."},
 /* ---------- Verschachtelte Eigenschaften ---------- */
-{g:"Struktur & Verschachtelung",t:"Verschachtelte Eigenschaften",d:1,q:"Welche Eigenschaften entstehen?",code:".text {\n  font: {\n    size: 16px;\n    weight: 700;\n  }\n}",o:["<code>font-size</code> und <code>font-weight</code>", "Nur <code>font-size</code>", "Nur <code>font</code>", "Ein Fehler"],a:0,tipp:"Der Name vor dem Doppelpunkt kommt vor jede innere Zeile.",e:"Sass setzt Stamm und inneren Namen mit einem Bindestrich zusammen."},
+{g:"Struktur & Verschachtelung",t:"Verschachtelte Eigenschaften",d:1,q:"Welche Eigenschaften entstehen?",code:".text {\n  font: {\n    size: 16px;\n    weight: 700;\n  }\n}",o:["<code>font-size</code> und <code>font-weight</code>", "Nur <code>font-size</code>", "Nur <code>font</code>", "Ein Fehler"],a:0,tipp:"Der Name vor dem Doppelpunkt kommt vor jede innere Zeile.",e:"SCSS setzt Stamm und inneren Namen mit einem Bindestrich zusammen."},
 {g:"Struktur & Verschachtelung",t:"Verschachtelte Eigenschaften",d:1,typ:"luecke",q:"Ergänze das Zeichen nach margin.",code:".box {\n  margin▁▁▁ {\n    top: 8px;\n    bottom: 8px;\n  }\n}",loesung:[":"],tipp:"Dasselbe Zeichen wie sonst zwischen Eigenschaft und Wert.",e:"Heraus kommen <code>margin-top</code> und <code>margin-bottom</code>."},
 {g:"Struktur & Verschachtelung",t:"Verschachtelte Eigenschaften",d:2,q:"Was entsteht zusätzlich zu border?",code:".box {\n  border: 1px solid #cccccc {\n    radius: 8px;\n  }\n}",o:["<code>border-radius</code>", "<code>radius</code>", "<code>border-style</code>", "Nichts"],a:0,tipp:"Vor der geschweiften Klammer darf schon ein Wert stehen.",e:"Der Wert hinter dem Doppelpunkt wird als <code>border</code> ausgegeben, der Block ergänzt den Rest."},
 {g:"Struktur & Verschachtelung",t:"Verschachtelte Eigenschaften",d:3,typ:"luecke",q:"Ergänze den Stamm für background-color und -image.",code:".held {\n  ▁▁▁: {\n    color: #000000;\n    image: url(\"bild.jpg\");\n  }\n}",loesung:["background"],tipp:"Der gemeinsame vordere Teil.",e:"Der Stamm steht einmal vorn, die inneren Zeilen nennen nur den Rest."},
@@ -677,7 +677,7 @@ const QUESTIONS = [
 {g:"Wiederverwenden",t:"Mixin-Parameter",d:2,typ:"luecke",q:"Gib $r den Vorgabewert 4px.",code:"@mixin rand($r▁▁▁) {\n  border-radius: $r;\n}",loesung:[": 4px", ":4px"],tipp:"Wie bei einer Eigenschaft: Doppelpunkt, dann der Wert.",e:"Mit Vorgabewert wird der Parameter freiwillig: <code>@include rand;</code> nimmt dann 4px."},
 {g:"Wiederverwenden",t:"Mixin-Parameter",d:3,q:"Wie setzt du nur $rand?",code:"@mixin knopf($farbe: blue, $rand: 4px) {\n  background: $farbe;\n  border-radius: $rand;\n}",o:["<code>@include knopf($rand: 8px)</code>", "<code>@include knopf(, 8px)</code>", "<code>@include knopf(8px)</code>", "<code>@include knopf[8px]</code>"],a:0,tipp:"Man darf den Namen mitschreiben.",e:"Benannte Argumente lassen die Reihenfolge außer Acht. Was du nicht nennst, behält seinen Vorgabewert."},
 /* ---------- @content ---------- */
-{g:"Wiederverwenden",t:"@content",d:1,typ:"luecke",q:"Ergänze die Stelle für den Block.",code:"@mixin ab-tablet {\n  @media (min-width: 768px) {\n    ▁▁▁;\n  }\n}",loesung:["@content"],tipp:"Ein Klammeraffe, dann das englische Wort für Inhalt.",e:"Hier setzt Sass den Block ein, den der Aufruf mitgibt."},
+{g:"Wiederverwenden",t:"@content",d:1,typ:"luecke",q:"Ergänze die Stelle für den Block.",code:"@mixin ab-tablet {\n  @media (min-width: 768px) {\n    ▁▁▁;\n  }\n}",loesung:["@content"],tipp:"Ein Klammeraffe, dann das englische Wort für Inhalt.",e:"Hier setzt SCSS den Block ein, den der Aufruf mitgibt."},
 {g:"Wiederverwenden",t:"@content",d:1,q:"Was passiert mit dem Block in den Klammern?",code:".karte {\n  @include ab-tablet {\n    padding: 32px;\n  }\n}",o:["Er geht an den Mixin", "Er überschreibt den Mixin", "Er legt einen Mixin an", "Nichts"],a:0,tipp:"Die Klammern hinter dem Aufruf sind kein Zufall.",e:"Der Block wandert in den Mixin und landet dort, wo <code>@content</code> steht."},
 {g:"Wiederverwenden",t:"@content",d:2,q:"Wo landet padding: 32px?",code:"@mixin ab-tablet {\n  @media (min-width: 768px) { @content; }\n}\n\n.karte {\n  @include ab-tablet { padding: 32px; }\n}",o:["In der Media Query", "Direkt in <code>.karte</code>", "Im Mixin", "Nirgends"],a:0,tipp:"Folge dem Block bis zur Stelle mit @content.",e:"Heraus kommt <code>@media (min-width: 768px) { .karte { padding: 32px; } }</code>."},
 {g:"Wiederverwenden",t:"@content",d:3,q:"Was fehlt dem Mixin?",code:"@mixin ab-tablet {\n  @media (min-width: 768px) { }\n}\n\n.karte {\n  @include ab-tablet { padding: 32px; }\n}",o:["<code>@content</code>", "<code>@return</code>", "<code>@include</code>", "<code>@extend</code>"],a:0,tipp:"Der übergebene Block braucht eine Stelle, an der er landet.",e:"Ohne diese Zeile verschwindet der Block aus dem Aufruf spurlos."},
@@ -693,29 +693,29 @@ const QUESTIONS = [
 {g:"Wiederverwenden",t:"Platzhalter %",d:3,q:"Welche Selektoren stehen im CSS?",code:"%kasten { padding: 16px; }\n\n.karte { @extend %kasten; }\n.box   { @extend %kasten; }",o:["<code>.karte, .box</code>", "<code>%kasten, .karte, .box</code>", "<code>.karte</code>", "Gar keine"],a:0,tipp:"Der Platzhalter selbst taucht nie auf.",e:"Genau deshalb nimmt man einen Platzhalter statt einer Klasse: die Hilfsregel bleibt draußen."},
 /* ---------- Funktionen ---------- */
 {g:"Rechnen & Werte",t:"Funktionen",d:1,typ:"luecke",q:"Ergänze die Regel für eine Funktion.",code:"▁▁▁ doppelt($zahl) {\n  @return $zahl * 2;\n}",loesung:["@function"],tipp:"Ein Klammeraffe, dann das englische Wort für Funktion.",e:"Eine Funktion liefert einen Wert, den du hinter einen Doppelpunkt schreiben kannst."},
-{g:"Rechnen & Werte",t:"Funktionen",d:1,typ:"luecke",q:"Ergänze die Zeile für das Ergebnis.",code:"@function doppelt($zahl) {\n  ▁▁▁ $zahl * 2;\n}",loesung:["@return"],tipp:"Ein Klammeraffe, dann das englische Wort für zurückgeben.",e:"Ohne diese Zeile weiß Sass nicht, was die Funktion liefern soll."},
+{g:"Rechnen & Werte",t:"Funktionen",d:1,typ:"luecke",q:"Ergänze die Zeile für das Ergebnis.",code:"@function doppelt($zahl) {\n  ▁▁▁ $zahl * 2;\n}",loesung:["@return"],tipp:"Ein Klammeraffe, dann das englische Wort für zurückgeben.",e:"Ohne diese Zeile weiß SCSS nicht, was die Funktion liefern soll."},
 {g:"Rechnen & Werte",t:"Funktionen",d:2,q:"Was liefert eine Funktion?",o:["Einen Wert", "Ganze Zeilen", "Einen Selektor", "Nichts"],a:0,tipp:"Das Ergebnis schreibst du hinter einen Doppelpunkt.",e:"<code>width: doppelt(8px);</code> gegen <code>@include mitte;</code> – daran erkennt man den Unterschied zum Mixin."},
 {g:"Rechnen & Werte",t:"Funktionen",d:3,q:"Was passiert ohne @return?",code:"@function doppelt($z) {\n  $z * 2;\n}",o:["Ein Fehler", "Es kommt 0 heraus", "Der Wert kommt trotzdem", "Nichts"],a:0,tipp:"Eine Funktion muss sagen, was sie liefert.",e:"Die Zeile rechnet zwar, gibt das Ergebnis aber nirgends heraus."},
 /* ---------- Rechnen & math ---------- */
-{g:"Rechnen & Werte",t:"Rechnen & math",d:1,q:"Welcher Wert steht im CSS?",code:".box {\n  width: 100px + 20px;\n}",o:["<code>120px</code>", "<code>100px 20px</code>", "<code>calc(100px + 20px)</code>", "Ein Fehler"],a:0,tipp:"Sass rechnet schon beim Übersetzen.",e:"Anders als bei <code>calc()</code> ist die Rechnung fertig, bevor die Seite geladen wird."},
-{g:"Rechnen & Werte",t:"Rechnen & math",d:1,typ:"luecke",q:"Ergänze das Modul für div().",code:"@use \"▁▁▁\";\n\n.spalte {\n  width: math.div(600px, 960px) * 100%;\n}",loesung:["sass:math"],tipp:"Eingebaute Module beginnen mit sass und einem Doppelpunkt.",e:"Eingebaute Module lädt man wie eigene Dateien, nur steht <code>sass:</code> davor."},
-{g:"Rechnen & Werte",t:"Rechnen & math",d:2,typ:"luecke",q:"Ergänze das Zeichen für mal.",code:"$doppelt: $wert ▁▁▁ 2;",loesung:["*"],tipp:"Dasselbe Zeichen wie auf dem Taschenrechner.",e:"Plus, minus und mal schreibt Sass wie gewohnt. Nur fürs Teilen braucht es eine Funktion."},
+{g:"Rechnen & Werte",t:"Rechnen & math",d:1,q:"Welcher Wert steht im CSS?",code:".box {\n  width: 100px + 20px;\n}",o:["<code>120px</code>", "<code>100px 20px</code>", "<code>calc(100px + 20px)</code>", "Ein Fehler"],a:0,tipp:"SCSS rechnet schon beim Übersetzen.",e:"Anders als bei <code>calc()</code> ist die Rechnung fertig, bevor die Seite geladen wird."},
+{g:"Rechnen & Werte",t:"Rechnen & math",d:1,typ:"luecke",q:"Ergänze das Modul für div().",code:"@use \"▁▁▁\";\n\n.spalte {\n  width: math.div(600px, 960px) * 100%;\n}",loesung:["sass:math"],tipp:"Eingebaute Module beginnen mit <code>sass:</code>.",e:"Eingebaute Module lädt man wie eigene Dateien, nur steht <code>sass:</code> davor."},
+{g:"Rechnen & Werte",t:"Rechnen & math",d:2,typ:"luecke",q:"Ergänze das Zeichen für mal.",code:"$doppelt: $wert ▁▁▁ 2;",loesung:["*"],tipp:"Dasselbe Zeichen wie auf dem Taschenrechner.",e:"Plus, minus und mal schreibt SCSS wie gewohnt. Nur fürs Teilen braucht es eine Funktion."},
 {g:"Rechnen & Werte",t:"Rechnen & math",d:3,typ:"luecke",q:"Ergänze die Funktion fürs Teilen.",code:"@use \"sass:math\";\n\n.spalte {\n  width: math.▁▁▁(1, 3) * 100%;\n}",loesung:["div"],tipp:"Drei Buchstaben, Kurzform fürs Rechnen mit dem Schrägstrich.",e:"Der Schrägstrich ist in CSS schon ein Trennzeichen, zum Beispiel bei <code>font: 16px/1.5</code>. Darum gibt es dafür eine eigene Funktion."},
 /* ---------- Interpolation ---------- */
 {g:"Rechnen & Werte",t:"Interpolation",d:1,typ:"luecke",q:"Setz $name in den Selektor ein.",code:"$name: \"mail\";\n\n.icon-▁▁▁ {\n  background: url(\"mail.svg\");\n}",loesung:["#{$name}"],tipp:"Eine Raute und geschweifte Klammern um die Variable.",e:"Daraus wird <code>.icon-mail</code>."},
-{g:"Rechnen & Werte",t:"Interpolation",d:1,q:"Welcher Selektor entsteht?",code:"$name: \"mail\";\n\n.icon-#{$name} {\n  background: url(\"mail.svg\");\n}",o:["<code>.icon-mail</code>", "<code>.icon-$name</code>", "<code>.icon-#{$name}</code>", "<code>.mail</code>"],a:0,tipp:"Der Wert rutscht an die Stelle der Klammern.",e:"So bringt man Variablen an Stellen, an denen Sass sonst keine erwartet."},
-{g:"Rechnen & Werte",t:"Interpolation",d:2,q:"Wo brauchst du #{} wirklich?",o:["Im Selektor", "Hinter dem Doppelpunkt", "Im Kommentar", "Nirgends"],a:0,tipp:"An einer Wertstelle versteht Sass die Variable auch so.",e:"In Selektoren, Eigenschaftsnamen und Zeichenketten braucht es die Klammern, sonst nicht."},
+{g:"Rechnen & Werte",t:"Interpolation",d:1,q:"Welcher Selektor entsteht?",code:"$name: \"mail\";\n\n.icon-#{$name} {\n  background: url(\"mail.svg\");\n}",o:["<code>.icon-mail</code>", "<code>.icon-$name</code>", "<code>.icon-#{$name}</code>", "<code>.mail</code>"],a:0,tipp:"Der Wert rutscht an die Stelle der Klammern.",e:"So bringt man Variablen an Stellen, an denen SCSS sonst keine erwartet."},
+{g:"Rechnen & Werte",t:"Interpolation",d:2,q:"Wo brauchst du #{} wirklich?",o:["Im Selektor", "Hinter dem Doppelpunkt", "Im Kommentar", "Nirgends"],a:0,tipp:"An einer Wertstelle versteht SCSS die Variable auch so.",e:"In Selektoren, Eigenschaftsnamen und Zeichenketten braucht es die Klammern, sonst nicht."},
 {g:"Rechnen & Werte",t:"Interpolation",d:3,q:"Welche Zeile ist unnötig umständlich?",code:".a { color: #{$farbe}; }\n.b { color: $farbe; }",o:["<code>color: #{$farbe};</code>", "<code>color: $farbe;</code>", "Beide", "Keine"],a:0,tipp:"Hinter dem Doppelpunkt geht es ohne Klammern.",e:"Interpolation ist hier nur Schreibarbeit und kann sogar die Einheitenprüfung aushebeln."},
 /* ---------- Listen ---------- */
-{g:"Rechnen & Werte",t:"Listen",d:1,q:"Was ist $groessen?",code:"$groessen: 8px, 16px, 24px;",o:["Eine Liste", "Eine Map", "Eine Funktion", "Ein Mixin"],a:0,tipp:"Mehrere Werte, durch Kommas getrennt.",e:"Listen kann man auch mit Leerzeichen trennen. Beides versteht Sass."},
+{g:"Rechnen & Werte",t:"Listen",d:1,q:"Was ist $groessen?",code:"$groessen: 8px, 16px, 24px;",o:["Eine Liste", "Eine Map", "Eine Funktion", "Ein Mixin"],a:0,tipp:"Mehrere Werte, durch Kommas getrennt.",e:"Listen kann man auch mit Leerzeichen trennen. Beides versteht SCSS."},
 {g:"Rechnen & Werte",t:"Listen",d:1,typ:"luecke",q:"Ergänze das Modul für Listen.",code:"@use \"▁▁▁\";\n\n$anzahl: list.length($groessen);",loesung:["sass:list"],tipp:"Wie bei sass:math, nur mit dem englischen Wort für Liste.",e:"Jedes eingebaute Modul bringt eigene Funktionen mit, hier <code>list.length()</code>."},
 {g:"Rechnen & Werte",t:"Listen",d:2,typ:"luecke",q:"Hol den ersten Wert.",code:"@use \"sass:list\";\n\n$erster: list.▁▁▁($groessen, 1);",loesung:["nth"],tipp:"Drei Buchstaben – in CSS stehen sie direkt vor <code>-child</code>.",e:"<code>list.nth($liste, 1)</code> liefert den ersten Eintrag."},
-{g:"Rechnen & Werte",t:"Listen",d:3,q:"Welche Nummer hat der erste Eintrag?",o:["1", "0", "-1", "Keine"],a:0,tipp:"Anders als in JavaScript.",e:"Sass zählt ab 1. Wer aus JavaScript kommt, greift hier leicht daneben."},
+{g:"Rechnen & Werte",t:"Listen",d:3,q:"Welche Nummer hat der erste Eintrag?",o:["1", "0", "-1", "Keine"],a:0,tipp:"Anders als in JavaScript.",e:"SCSS zählt ab 1. Wer aus JavaScript kommt, greift hier leicht daneben."},
 /* ---------- Maps ---------- */
 {g:"Rechnen & Werte",t:"Maps",d:1,q:"Was ist $farben?",code:"$farben: (\n  \"primaer\": #c0392b,\n  \"grau\": #888888\n);",o:["Eine Map", "Eine Liste", "Eine Funktion", "Ein Mixin"],a:0,tipp:"Jeder Eintrag hat einen Namen und einen Wert.",e:"Maps stehen in runden Klammern: links der Schlüssel, nach dem Doppelpunkt der Wert."},
 {g:"Rechnen & Werte",t:"Maps",d:1,typ:"luecke",q:"Ergänze das Modul für Maps.",code:"@use \"▁▁▁\";\n\n.btn { color: map.get($farben, \"primaer\"); }",loesung:["sass:map"],tipp:"Wie bei sass:math, nur mit dem englischen Wort für Karte.",e:"Das Modul bringt <code>map.get()</code>, <code>map.has-key()</code> und <code>map.keys()</code> mit."},
 {g:"Rechnen & Werte",t:"Maps",d:2,typ:"luecke",q:"Hol den Wert zu \"grau\".",code:"@use \"sass:map\";\n\n.rand {\n  border-color: map.▁▁▁($farben, \"grau\");\n}",loesung:["get"],tipp:"Drei Buchstaben, das englische Wort für holen.",e:"<code>map.get($map, $schluessel)</code> liefert den passenden Wert."},
-{g:"Rechnen & Werte",t:"Maps",d:3,q:"Was kommt bei \"blau\" heraus?",code:"@use \"sass:map\";\n\n$farben: (\"rot\": #cc0000);\n$x: map.get($farben, \"blau\");",o:["<code>null</code>", "Ein Fehler", "Der erste Wert", "Eine leere Zeichenkette"],a:0,tipp:"Sass meldet hier nichts.",e:"Die Eigenschaft fällt dann still aus dem CSS. Wer das früh merken will, prüft mit <code>map.has-key()</code>."},
+{g:"Rechnen & Werte",t:"Maps",d:3,q:"Was kommt bei \"blau\" heraus?",code:"@use \"sass:map\";\n\n$farben: (\"rot\": #cc0000);\n$x: map.get($farben, \"blau\");",o:["<code>null</code>", "Ein Fehler", "Der erste Wert", "Eine leere Zeichenkette"],a:0,tipp:"SCSS meldet hier nichts.",e:"Die Eigenschaft fällt dann still aus dem CSS. Wer das früh merken will, prüft mit <code>map.has-key()</code>."},
 /* ---------- @if & @else ---------- */
 {g:"Schleifen & Bedingungen",t:"@if & @else",d:1,typ:"luecke",q:"Ergänze die Regel für die Bedingung.",code:"@mixin text($dunkel) {\n  ▁▁▁ $dunkel {\n    color: #ffffff;\n  }\n}",loesung:["@if"],tipp:"Ein Klammeraffe, dann das englische Wort für wenn.",e:"Der Block läuft nur, wenn die Bedingung zutrifft."},
 {g:"Schleifen & Bedingungen",t:"@if & @else",d:1,typ:"luecke",q:"Ergänze den anderen Fall.",code:"@if $dunkel {\n  color: #ffffff;\n} ▁▁▁ {\n  color: #222222;\n}",loesung:["@else"],tipp:"Ein Klammeraffe, dann das englische Wort für sonst.",e:"<code>@else</code> steht direkt hinter der schließenden Klammer."},
@@ -738,29 +738,29 @@ const QUESTIONS = [
    ========================================================= */
 /* Lernmaterial je Thema: Suchbegriff für ein Video + passende Referenzseite */
 const LERNSTOFF = {
- "Was ist Sass?": {
+ "Was ist SCSS?": {
   "doc": "https://sass-lang.com/guide/",
-  "yt": "Was ist Sass SCSS Grundlagen"
+  "yt": "Was ist SCSS Grundlagen"
  },
  "Dateien & Kompilieren": {
   "doc": "https://sass-lang.com/install/",
-  "yt": "Sass installieren und kompilieren"
+  "yt": "SCSS installieren und kompilieren"
  },
  "Kommentare": {
   "doc": "https://sass-lang.com/documentation/syntax/comments/",
-  "yt": "Sass Kommentare"
+  "yt": "SCSS Kommentare"
  },
  "Variablen": {
   "doc": "https://sass-lang.com/documentation/variables/",
-  "yt": "Sass Variablen"
+  "yt": "SCSS Variablen"
  },
  "Verschachtelung": {
   "doc": "https://sass-lang.com/documentation/style-rules/",
-  "yt": "Sass Verschachtelung nesting"
+  "yt": "SCSS Verschachtelung nesting"
  },
  "Das &-Zeichen": {
   "doc": "https://sass-lang.com/documentation/style-rules/parent-selector/",
-  "yt": "Sass Parent Selektor Ampersand"
+  "yt": "SCSS Parent Selektor Ampersand"
  },
  "BEM mit &": {
   "doc": "https://sass-lang.com/documentation/style-rules/parent-selector/",
@@ -768,81 +768,81 @@ const LERNSTOFF = {
  },
  "Verschachtelte Eigenschaften": {
   "doc": "https://sass-lang.com/documentation/style-rules/declarations/",
-  "yt": "Sass verschachtelte Eigenschaften"
+  "yt": "SCSS verschachtelte Eigenschaften"
  },
  "Partials": {
   "doc": "https://sass-lang.com/guide/",
-  "yt": "Sass Partials Dateien aufteilen"
+  "yt": "SCSS Partials Dateien aufteilen"
  },
  "@use": {
   "doc": "https://sass-lang.com/documentation/at-rules/use/",
-  "yt": "Sass use Modul laden"
+  "yt": "SCSS use Modul laden"
  },
  "@forward": {
   "doc": "https://sass-lang.com/documentation/at-rules/forward/",
-  "yt": "Sass forward index Datei"
+  "yt": "SCSS forward index Datei"
  },
  "!default & Konfiguration": {
   "doc": "https://sass-lang.com/documentation/variables/",
-  "yt": "Sass default Variablen konfigurieren"
+  "yt": "SCSS default Variablen konfigurieren"
  },
  "Mixins": {
   "doc": "https://sass-lang.com/documentation/at-rules/mixin/",
-  "yt": "Sass Mixin include"
+  "yt": "SCSS Mixin include"
  },
  "Mixin-Parameter": {
   "doc": "https://sass-lang.com/documentation/at-rules/mixin/",
-  "yt": "Sass Mixin Parameter Standardwert"
+  "yt": "SCSS Mixin Parameter Standardwert"
  },
  "@content": {
   "doc": "https://sass-lang.com/documentation/at-rules/mixin/",
-  "yt": "Sass content Media Query Mixin"
+  "yt": "SCSS content Media Query Mixin"
  },
  "@extend": {
   "doc": "https://sass-lang.com/documentation/at-rules/extend/",
-  "yt": "Sass extend"
+  "yt": "SCSS extend"
  },
  "Platzhalter %": {
   "doc": "https://sass-lang.com/documentation/style-rules/placeholder-selectors/",
-  "yt": "Sass Platzhalter Selektor"
+  "yt": "SCSS Platzhalter Selektor"
  },
  "Funktionen": {
   "doc": "https://sass-lang.com/documentation/at-rules/function/",
-  "yt": "Sass eigene Funktion schreiben"
+  "yt": "SCSS eigene Funktion schreiben"
  },
  "Rechnen & math": {
   "doc": "https://sass-lang.com/documentation/modules/math/",
-  "yt": "Sass math div rechnen"
+  "yt": "SCSS math div rechnen"
  },
  "Interpolation": {
   "doc": "https://sass-lang.com/documentation/interpolation/",
-  "yt": "Sass Interpolation"
+  "yt": "SCSS Interpolation"
  },
  "Listen": {
   "doc": "https://sass-lang.com/documentation/modules/list/",
-  "yt": "Sass Listen"
+  "yt": "SCSS Listen"
  },
  "Maps": {
   "doc": "https://sass-lang.com/documentation/modules/map/",
-  "yt": "Sass Maps map get"
+  "yt": "SCSS Maps map get"
  },
  "@if & @else": {
   "doc": "https://sass-lang.com/documentation/at-rules/control/if/",
-  "yt": "Sass if else Bedingung"
+  "yt": "SCSS if else Bedingung"
  },
  "@each": {
   "doc": "https://sass-lang.com/documentation/at-rules/control/each/",
-  "yt": "Sass each Schleife"
+  "yt": "SCSS each Schleife"
  },
  "@for & @while": {
   "doc": "https://sass-lang.com/documentation/at-rules/control/for/",
-  "yt": "Sass for Schleife"
+  "yt": "SCSS for Schleife"
  }
 };
 const KURSE = [
-  {t:"Mit Mario · SASS in 25 Minuten", id:"Om3XeeSTN0U"},
-  {t:"Pascal Bajorat · Komplettkurs Sass/SCSS", id:"_FlbA-Su84Y"},
-  {t:"Script Raccoon · Sass Crashkurs", id:"DVPer7VWDcA"}
+  {t:"Mit Mario · Einstieg in 25 Minuten", id:"Om3XeeSTN0U"},
+  {t:"Pascal Bajorat · Komplettkurs", id:"_FlbA-Su84Y"},
+  {t:"Script Raccoon · Crashkurs", id:"DVPer7VWDcA"}
 ];
 
 const $ = id => document.getElementById(id);
@@ -1504,7 +1504,7 @@ function finish(aborted){
     kurse.appendChild(kl);
     const q = document.createElement("p");
     q.className = "quelle";
-    q.textContent = "Videolinks führen zur YouTube-Suche zum jeweiligen Thema, „Nachlesen“ in die Sass-Doku.";
+    q.textContent = "Videolinks führen zur YouTube-Suche zum jeweiligen Thema, „Nachlesen“ in die offizielle Doku.";
     kurse.appendChild(q);
     gaps.appendChild(kurse);
   } else gaps.classList.add("hidden");
